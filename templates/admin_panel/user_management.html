@@ -13,8 +13,13 @@
                             <form action="{% url 'user_search' %}" method="post" class="nav-link mt-2 mt-md-0 col-12 d-lg-flex search">
                               {% csrf_token %}
                               <input type="text" name="search_input" class="form-control mb-1 text-light" placeholder="Search User">
-                              <button type="submit" class="btn-inverse-info mb-1">Search</button>
+                              <button type="submit" class="btn-inverse-info mb-1 ">Search</button>
                           </form>
+                          <div class="container mt-4">
+                            <div class="d-flex justify-content-end">
+                                <button class="btn btn-inverse-info ms-auto "><a href="{% url 'add_user' %}" class="text-decoration-none" style="color: #8a59cc;">Add User</a></button>
+                            </div>
+                          </div>
                           </div>
                           <table class="table">
                               <thead>
@@ -23,8 +28,8 @@
                                       <th>First Name</th>
                                       <th>Last Name</th>
                                       <th>Email</th>
-                                      <th>Status</th>
                                       <th>Edit</th>
+                                      <th>Status</th>
                                       <th>Delete</th>
                                   </tr>
                               </thead>
@@ -35,13 +40,17 @@
                                       <td>{{i.first_name}}</td>
                                       <td>{{i.last_name}}</td>
                                       <td>{{i.email}}</td>
-                                      
+                                      <td><button class="btn btn-light"><a href={% url 'edit_user' i.id %}>Edit</a></button></td>
+                                      {% if not i.is_superuser%}
                                       {% if i.is_active == True %}
-                                      <td><button class="btn btn-light"><a href='#'>Block</a></button></td>  
+                                      <td><button class="btn btn-light"><a href={% url 'block_user' i.id %}>Block</a></button>
+                                    </td>  
                                       {% else %}
-                                      <td><button class="btn btn-light"><a href='#'>Unblock</a></button></td> 
+                                      <td><button class="btn btn-light"><a href={% url 'unblock_user' i.id %}>Unblock</a></button></td> 
                                       {% endif %}
-                                      <td><button class="btn btn-light"><a href='#'>Edit</a></button></td>
+                                      {%else%}
+                                      <td></td>
+                                      {% endif %}
                                       {% if not i.is_superuser%}
                                       <td><button class="btn btn-light"><a href={% url 'delete_user' i.id%}>Delete</a></button></td>
                                       {% endif %} 
