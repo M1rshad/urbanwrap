@@ -12,7 +12,7 @@
                           <div class="search-bar">
                             <form action="{% url 'user_search' %}" method="post" class="nav-link mt-2 mt-md-0 col-12 d-lg-flex search">
                               {% csrf_token %}
-                              <input type="text" name="search_input" class="form-control mb-1 text-light" placeholder="Search User">
+                              <input type="text" name="search_input" class="form-control mb-1 text-light" placeholder="Search Category">
                               <button type="submit" class="btn-inverse-info mb-1 ">Search</button>
                           </form>
                           <div class="container mt-4">

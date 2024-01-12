@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.shortcuts import render,redirect
 from django.contrib.auth import login, logout, authenticate
 from user_auth.models import User
-from home.models import Category
+from home.models import Category, Product
 from django.contrib import messages
 from django.views.decorators.cache import never_cache
 from django.contrib.postgres.search import SearchVector
@@ -112,3 +112,10 @@ def category_management(request):
     cat_obj = Category.objects.all().order_by('id')
     context = {'cat_obj' : cat_obj}
     return render(request, 'admin_panel/category_management.html',context)
+
+@never_cache
+@user_passes_test(is_user_admin, login_url='admin_login')
+def product_management(request):
+    prod_obj = Product.objects.all().order_by('id')
+    context = {'prod_obj' : prod_obj}
+    return render(request, 'admin_panel/product_management.html',context)

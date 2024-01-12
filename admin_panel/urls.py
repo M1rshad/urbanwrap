@@ -12,6 +12,8 @@ urlpatterns = [
     path('user-management/block_user/<pk>', views.block_user, name='block_user'),
     path('user-management/unblock_user/<pk>', views.unblock_user, name='unblock_user'),
     path('category-management', views.category_management, name='category_management'),
+    path('product-management', views.product_management, name='product_management'),
+
 
     
 ]
