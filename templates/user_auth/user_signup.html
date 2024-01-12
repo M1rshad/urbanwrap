@@ -116,9 +116,9 @@
                       </div>
                     </div>
                   </form>
-                  {% for message in messages %}
-                    <p class="text-danger">{{message}}</p>
-                    {% endfor %}
+                  {% if form.errors %}
+                    <p class="text-danger">{{form.error}}</p>
+                    {% endif %}
                     <div class="text-center">
                       Already have an account?<a href="{% url 'log_in' %}" class="link-secondary text-decoration-none text-primary">Login</a>
                   </div>

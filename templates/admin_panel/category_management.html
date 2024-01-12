@@ -1,0 +1,52 @@
+{% extends 'partials/base_admin.html' %}
+
+{% block content %}
+<div class="main-panel">
+    <div class="content-wrapper">
+      <div class="row">
+          <div class="col-lg-12 grid-margin stretch-card">
+              <div class="card">
+                  <div class="card-body">
+                      <h4 class="card-title">Category Management</h4>
+                      <div class="table-responsive">
+                          <div class="search-bar">
+                            <form action="{% url 'user_search' %}" method="post" class="nav-link mt-2 mt-md-0 col-12 d-lg-flex search">
+                              {% csrf_token %}
+                              <input type="text" name="search_input" class="form-control mb-1 text-light" placeholder="Search User">
+                              <button type="submit" class="btn-inverse-info mb-1 ">Search</button>
+                          </form>
+                          <div class="container mt-4">
+                            <div class="d-flex justify-content-end">
+                                <button class="btn btn-inverse-info ms-auto "><a href="{% url 'add_user' %}" class="text-decoration-none" style="color: #8a59cc;">Add Category</a></button>
+                            </div>
+                          </div>
+                          </div>
+                          <table class="table">
+                              <thead>
+                                  <tr>
+                                      <th>Category Name</th>
+                                      <th>slug</th>
+                                      <th>Edit</th>
+                                      <th>Delete</th>
+                                  </tr>
+                              </thead>
+                              <tbody>
+                                  {% for i in cat_obj %}
+                                  <tr>
+                                      <td>{{i.category_name}}</td>
+                                      <td>{{i.slug}}</td>
+                                      <td><button class="btn btn-light"><a href={% url 'edit_user' i.id %}>Edit</a></button></td>
+                                      <td><button class="btn btn-light"><a href={% url 'delete_user' i.id%}>Delete</a></button></td>
+                                  </tr>
+                                  {% endfor %}
+                              </tbody>
+                          </table>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+{% endblock content %}
+    

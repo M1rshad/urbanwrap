@@ -4,16 +4,21 @@ from django.shortcuts import render
 from django.shortcuts import render,redirect
 from django.contrib.auth import login, logout, authenticate
 from user_auth.models import User
+from home.models import Category
 from django.contrib import messages
 from django.views.decorators.cache import never_cache
 from django.contrib.postgres.search import SearchVector
 from user_auth.forms import SignupForm
 from .forms import EditUserForm
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
+
 # Create your views here.
+def is_user_admin(user):
+    return user.is_authenticated and user.is_superuser
+
 @never_cache
 def admin_login(request):
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and request.user.is_superuser:
         return redirect(admin_panel)
     if request.POST:
         email = request.POST.get('email')
@@ -29,7 +34,7 @@ def admin_login(request):
 
 
 @never_cache
-@login_required(login_url='admin_login')
+@user_passes_test(is_user_admin, login_url='admin_login')
 def admin_panel(request):
     return render(request, 'admin_panel/admin_panel.html')
 
@@ -39,20 +44,19 @@ def log_out(request):
     return redirect(admin_login)
 
 @never_cache
+@user_passes_test(is_user_admin, login_url='admin_login')
 def user_management(request):
     user_obj = User.objects.all().order_by('id')
     context = {'user_obj' : user_obj}
     return render(request, 'admin_panel/user_management.html',context)
 
-
+@user_passes_test(is_user_admin, login_url='admin_login')
 def delete_user(request,pk):
     instance = User.objects.get(pk=pk)
     instance.delete()
-    user_obj = User.objects.all().order_by('id')
-    context = {'user_obj' : user_obj}
-    return render(request, 'admin_panel/user_management.html',context)
+    return redirect('user_management')
 
-
+@user_passes_test(is_user_admin, login_url='admin_login')
 def user_search(request):
     if request.POST:
         search_item = request.POST.get('search_input')
@@ -65,7 +69,7 @@ def user_search(request):
     else:
         return redirect(user_management)
 
-
+@user_passes_test(is_user_admin, login_url='admin_login')
 def edit_user(request, pk):
     instance = User.objects.get(pk=pk)
     if request.POST:
@@ -77,6 +81,7 @@ def edit_user(request, pk):
     context = {'form': form}
     return render(request, 'admin_panel/edit_user.html',context)
 
+@user_passes_test(is_user_admin, login_url='admin_login')
 def add_user(request):
     form = SignupForm()
     if request.POST:
@@ -87,20 +92,23 @@ def add_user(request):
     context = {'form' : form}
     return render(request, 'admin_panel/add_user.html',context)
 
-
+@user_passes_test(is_user_admin, login_url='admin_login')
 def block_user(request,pk):
     instance = User.objects.get(pk=pk)
     instance.is_active = False
     instance.save()
-    user_obj = User.objects.all().order_by('id')
-    context = {'user_obj' : user_obj}
-    return render(request, 'admin_panel/user_management.html',context)
+    return redirect('user_management')
 
-
+@user_passes_test(is_user_admin, login_url='admin_login')
 def unblock_user(request,pk):
     instance = User.objects.get(pk=pk)
     instance.is_active = True
     instance.save()
-    user_obj = User.objects.all().order_by('id')
-    context = {'user_obj' : user_obj}
-    return render(request, 'admin_panel/user_management.html',context)
+    return redirect('user_management')
+
+@never_cache
+@user_passes_test(is_user_admin, login_url='admin_login')
+def category_management(request):
+    cat_obj = Category.objects.all().order_by('id')
+    context = {'cat_obj' : cat_obj}
+    return render(request, 'admin_panel/category_management.html',context)
