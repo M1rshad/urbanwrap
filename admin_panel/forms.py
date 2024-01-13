@@ -1,5 +1,6 @@
 from django import forms 
 from user_auth.models import User
+from home.models import Category, Product
 
 class EditUserForm(forms.ModelForm):
     email = forms.EmailField(required=True)
@@ -10,3 +11,11 @@ class EditUserForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ('username', 'email', 'first_name', 'last_name')
+
+
+
+class AddCategoryForm(forms.ModelForm):
+
+    class Meta:
+        model = Category
+        fields = ('category_name', 'slug', 'description', 'cat_image')

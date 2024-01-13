@@ -9,12 +9,14 @@ from django.contrib import messages
 from django.views.decorators.cache import never_cache
 from django.contrib.postgres.search import SearchVector
 from user_auth.forms import SignupForm
-from .forms import EditUserForm
+from .forms import EditUserForm, AddCategoryForm
 from django.contrib.auth.decorators import login_required, user_passes_test
+
 
 # Create your views here.
 def is_user_admin(user):
     return user.is_authenticated and user.is_superuser
+
 
 @never_cache
 def admin_login(request):
@@ -43,6 +45,7 @@ def log_out(request):
     logout(request)
     return redirect(admin_login)
 
+
 @never_cache
 @user_passes_test(is_user_admin, login_url='admin_login')
 def user_management(request):
@@ -50,11 +53,13 @@ def user_management(request):
     context = {'user_obj' : user_obj}
     return render(request, 'admin_panel/user_management.html',context)
 
+
 @user_passes_test(is_user_admin, login_url='admin_login')
 def delete_user(request,pk):
     instance = User.objects.get(pk=pk)
     instance.delete()
     return redirect('user_management')
+
 
 @user_passes_test(is_user_admin, login_url='admin_login')
 def user_search(request):
@@ -69,6 +74,7 @@ def user_search(request):
     else:
         return redirect(user_management)
 
+
 @user_passes_test(is_user_admin, login_url='admin_login')
 def edit_user(request, pk):
     instance = User.objects.get(pk=pk)
@@ -81,6 +87,7 @@ def edit_user(request, pk):
     context = {'form': form}
     return render(request, 'admin_panel/edit_user.html',context)
 
+
 @user_passes_test(is_user_admin, login_url='admin_login')
 def add_user(request):
     form = SignupForm()
@@ -92,12 +99,14 @@ def add_user(request):
     context = {'form' : form}
     return render(request, 'admin_panel/add_user.html',context)
 
+
 @user_passes_test(is_user_admin, login_url='admin_login')
 def block_user(request,pk):
     instance = User.objects.get(pk=pk)
     instance.is_active = False
     instance.save()
     return redirect('user_management')
+
 
 @user_passes_test(is_user_admin, login_url='admin_login')
 def unblock_user(request,pk):
@@ -106,12 +115,60 @@ def unblock_user(request,pk):
     instance.save()
     return redirect('user_management')
 
+
 @never_cache
 @user_passes_test(is_user_admin, login_url='admin_login')
 def category_management(request):
     cat_obj = Category.objects.all().order_by('id')
     context = {'cat_obj' : cat_obj}
     return render(request, 'admin_panel/category_management.html',context)
+
+
+@user_passes_test(is_user_admin, login_url='admin_login')
+def delete_category(request, pk):
+    instance = Category.objects.get(pk=pk)
+    instance.delete()
+    return redirect('category_management')
+
+
+@user_passes_test(is_user_admin, login_url='admin_login')
+def add_category(request):
+    form = AddCategoryForm()
+    if request.POST:
+        form = AddCategoryForm(request.POST, {'slug': ('category_name',)})
+        if form.is_valid():
+            form.save()
+            return redirect(category_management)
+    context = {'form' : form}
+    return render(request, 'admin_panel/add_category.html',context)
+
+
+@user_passes_test(is_user_admin, login_url='admin_login')
+def edit_category(request, pk):
+    instance = Category.objects.get(pk=pk)
+    if request.POST:
+        form = AddCategoryForm(request.POST, instance=instance)
+        if form.is_valid():
+            form.save()
+            return redirect(category_management)
+    form = AddCategoryForm(instance=instance)
+    context = {'form': form}
+    return render(request, 'admin_panel/edit_category.html',context)
+
+
+@user_passes_test(is_user_admin, login_url='admin_login')
+def category_search(request):
+    if request.POST:
+        search_item = request.POST.get('search_input')
+        if search_item == '':
+            return redirect(category_management)
+        cat_obj = Category.objects.annotate(
+        search=SearchVector('category_name','slug')).filter(search=search_item)
+        context = {'cat_obj':cat_obj}
+        return render(request, 'admin_panel/category_management.html',context)
+    else:
+        return redirect(category_management)
+
 
 @never_cache
 @user_passes_test(is_user_admin, login_url='admin_login')
