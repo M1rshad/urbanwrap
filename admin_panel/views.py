@@ -195,3 +195,30 @@ def add_product(request):
             return redirect(product_management)
     context = {'form' : form}
     return render(request, 'admin_panel/add_product.html',context)
+
+
+@user_passes_test(is_user_admin, login_url='admin_login')
+def edit_product(request, pk):
+    instance = Product.objects.get(pk=pk)
+    if request.POST:
+        form = AddProductForm(request.POST, instance=instance)
+        if form.is_valid():
+            form.save()
+            return redirect(category_management)
+    form = AddProductForm(instance=instance)
+    context = {'form': form}
+    return render(request, 'admin_panel/edit_product.html',context)
+
+
+@user_passes_test(is_user_admin, login_url='admin_login')
+def product_search(request):
+    if request.POST:
+        search_item = request.POST.get('search_input')
+        if search_item == '':
+            return redirect(product_management)
+        prod_obj = Product.objects.annotate(
+        search=SearchVector('product_name','slug')).filter(search=search_item)
+        context = {'prod_obj':prod_obj}
+        return render(request, 'admin_panel/product_management.html',context)
+    else:
+        return redirect(product_management)

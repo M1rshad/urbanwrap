@@ -10,14 +10,14 @@
                       <h4 class="card-title">Product Management</h4>
                       <div class="table-responsive">
                           <div class="search-bar">
-                            <form action="{% url 'user_search' %}" method="post" class="nav-link mt-2 mt-md-0 col-12 d-lg-flex search">
+                            <form action="{% url 'product_search' %}" method="post" class="nav-link mt-2 mt-md-0 col-12 d-lg-flex search">
                               {% csrf_token %}
                               <input type="text" name="search_input" class="form-control mb-1 text-light" placeholder="Search Product">
                               <button type="submit" class="btn-inverse-info mb-1 ">Search</button>
                           </form>
                           <div class="container mt-4">
                             <div class="d-flex justify-content-end">
-                                <button class="btn btn-inverse-info ms-auto "><a href="{% url 'add_user' %}" class="text-decoration-none" style="color: #8a59cc;">Add Product</a></button>
+                                <button class="btn btn-inverse-info ms-auto "><a href="{% url 'add_product' %}" class="text-decoration-none" style="color: #8a59cc;">Add Product</a></button>
                             </div>
                           </div>
                           </div>
@@ -43,7 +43,7 @@
                                       <td>{{i.category}}</td>
                                       <td>{{i.modified_date}}</td>
                                       <td>{{i.is_available}}</td>
-                                      <td><button class="btn btn-light"><a href={% url 'edit_user' i.id %}>Edit</a></button></td>
+                                      <td><button class="btn btn-light"><a href={% url 'edit_product' i.id %}>Edit</a></button></td>
                                       <td><button class="btn btn-light"><a href={% url 'delete_product' i.id%}>Delete</a></button></td>
                                   </tr>
                                   {% endfor %}

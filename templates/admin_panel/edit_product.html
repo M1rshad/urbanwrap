@@ -8,7 +8,7 @@
           <div class="col-lg-12 grid-margin stretch-card">
               <div class="card">
                   <div class="card-body">
-                      <h4 class="card-title">Add Product</h4>
+                      <h4 class="card-title">Edit Product</h4>
                       <div class="container">
                         <div class="row justify-content-center">
                           <div class="col-12 col-md-9 col-lg-7 col-xl-6 col-xxl-5">
@@ -17,7 +17,7 @@
                                 <div class="row">
                                   <div class="col-12">
                                     <div class="mb-5">
-                                      <h3 class="text-center text-uppercase">Create Product</h3>
+                                      <h3 class="text-center text-uppercase">Edit Product</h3>
                                     </div>
                                   </div>
                                 </div>
@@ -30,7 +30,8 @@
                                         <input type="{{ form.product_name.field.widget.input_type }}"
                                         name="{{ form.product_name.name }}"
                                         id="{{ form.product_name.id_for_label }}"
-                                        class="form-control text-light" required>
+                                        class="form-control text-light" 
+                                        value="{{ form.product_name.value }}" required>
                                         <label for="product_name" class="form-label">Product name</label>
                                       </div>
                                     </div>
@@ -39,7 +40,8 @@
                                         <input type="{{ form.slug.field.widget.input_type }}"
                                         name="{{ form.slug.name }}"
                                         id="{{ form.slug.id_for_label }}"
-                                        class="form-control text-light"  required>
+                                        class="form-control text-light"  
+                                        value="{{ form.slug.value }}" required>
                                         <label for="slug" class="form-label">Slug</label>
                                       </div>
                                     </div>
@@ -48,7 +50,8 @@
                                         <input type="{{ form.description.field.widget.input_type }}"
                                         name="{{ form.description.name }}"
                                         id="{{ form.description.id_for_label }}"
-                                        class="form-control text-light" >
+                                        class="form-control text-light" 
+                                        value="{{ form.description.value }}" >
                                         <label for="description" class="form-label">Description</label>
                                       </div>
                                     </div>
@@ -57,7 +60,8 @@
                                         <input type="{{ form.price.field.widget.input_type }}"
                                         name="{{ form.price.name }}"
                                         id="{{ form.price.id_for_label }}"
-                                        class="form-control text-light" required>
+                                        class="form-control text-light" 
+                                        value="{{ form.price.value }}" required>
                                         <label for="price" class="form-label">Price</label>
                                       </div>
                                     </div>
@@ -66,7 +70,8 @@
                                         <input type="{{ form.product_image.field.widget.input_type }}"
                                         name="{{ form.product_image.name }}"
                                         id="{{ form.product_image.id_for_label }}"
-                                        class="form-control text-light" required>
+                                        class="form-control text-light" 
+                                        value="{{ form.product_image.value }}" required>
                                         <label for="product_image" class="form-label">Product Image</label>
                                       </div>
                                     </div>
@@ -75,7 +80,8 @@
                                         <input type="{{ form.stock.field.widget.input_type }}"
                                         name="{{ form.stock.name }}"
                                         id="{{ form.stock.id_for_label }}"
-                                        class="form-control text-light" required>
+                                        class="form-control text-light" 
+                                        value="{{ form.stock.value }}" required>
                                         <label for="stock" class="form-label">Stock</label>
                                       </div>
                                     </div>
@@ -84,7 +90,8 @@
                                         <input type="{{ form.is_available.field.widget.input_type }}"
                                         name="{{ form.is_available.name }}"
                                         id="{{ form.is_available.id_for_label }}"
-                                        class="form-control text-light" required>
+                                        class="form-control text-light" 
+                                        value="{{ form.is_available.value }}" required>
                                         <label for="is_available" class="form-label">Is available</label>
                                       </div>
                                     </div>
@@ -93,13 +100,14 @@
                                         <input type="{{ form.category.field.widget.input_type }}"
                                         name="{{ form.category.name }}"
                                         id="{{ form.category.id_for_label }}"
-                                        class="form-control text-light" required>
+                                        class="form-control text-light" 
+                                        value="{{ form.category.value }}" required>
                                         <label for="category" class="form-label">Category</label>
                                       </div>
                                     </div>
                                     <div class="col-12">
                                       <div class="d-grid">
-                                        <button class="btn bsb-btn-2xl btn-primary " type="submit">Create</button> 
+                                        <button class="btn bsb-btn-2xl btn-primary " type="submit">Save</button> 
                                         <button class="btn bsb-btn-2xl btn-primary ml-5" type="button"><a href="{% url 'product_management' %}" class="text-light">Back</a></button>
                                     </div>
                                   </div>
