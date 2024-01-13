@@ -204,7 +204,7 @@ def edit_product(request, pk):
         form = AddProductForm(request.POST, instance=instance)
         if form.is_valid():
             form.save()
-            return redirect(category_management)
+            return redirect(product_management)
     form = AddProductForm(instance=instance)
     context = {'form': form}
     return render(request, 'admin_panel/edit_product.html',context)
