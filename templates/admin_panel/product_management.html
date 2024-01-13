@@ -38,9 +38,13 @@
                                   {% for i in prod_obj %}
                                   <tr>
                                       <td>{{i.product_name}}</td>
-                                      <td>{{i.slug}}</td>
+                                      <td>{{i.price}}</td>
+                                      <td>{{i.stock}}</td>
+                                      <td>{{i.category}}</td>
+                                      <td>{{i.modified_date}}</td>
+                                      <td>{{i.is_available}}</td>
                                       <td><button class="btn btn-light"><a href={% url 'edit_user' i.id %}>Edit</a></button></td>
-                                      <td><button class="btn btn-light"><a href={% url 'delete_user' i.id%}>Delete</a></button></td>
+                                      <td><button class="btn btn-light"><a href={% url 'delete_product' i.id%}>Delete</a></button></td>
                                   </tr>
                                   {% endfor %}
                               </tbody>

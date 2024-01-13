@@ -176,3 +176,10 @@ def product_management(request):
     prod_obj = Product.objects.all().order_by('id')
     context = {'prod_obj' : prod_obj}
     return render(request, 'admin_panel/product_management.html',context)
+
+
+@user_passes_test(is_user_admin, login_url='admin_login')
+def delete_product(request, pk):
+    instance = Product.objects.get(pk=pk)
+    instance.delete()
+    return redirect('product_management')
