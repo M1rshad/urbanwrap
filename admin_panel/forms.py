@@ -15,7 +15,6 @@ class EditUserForm(forms.ModelForm):
 
 
 class AddCategoryForm(forms.ModelForm):
-
     class Meta:
         model = Category
         fields = ('category_name', 'slug', 'description', 'cat_image')

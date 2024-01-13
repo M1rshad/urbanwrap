@@ -135,7 +135,7 @@ def delete_category(request, pk):
 def add_category(request):
     form = AddCategoryForm()
     if request.POST:
-        form = AddCategoryForm(request.POST)
+        form = AddCategoryForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
             return redirect(category_management)
@@ -147,7 +147,7 @@ def add_category(request):
 def edit_category(request, pk):
     instance = Category.objects.get(pk=pk)
     if request.POST:
-        form = AddCategoryForm(request.POST, instance=instance)
+        form = AddCategoryForm(request.POST, request.FILES, instance=instance)
         if form.is_valid():
             form.save()
             return redirect(category_management)
@@ -189,10 +189,13 @@ def delete_product(request, pk):
 def add_product(request):
     form = AddProductForm()
     if request.POST:
-        form = AddProductForm(request.POST)
+        form = AddProductForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
             return redirect(product_management)
+        else:
+            print('form is not saved')
+            print(form.errors)
     context = {'form' : form}
     return render(request, 'admin_panel/add_product.html',context)
 
@@ -201,7 +204,7 @@ def add_product(request):
 def edit_product(request, pk):
     instance = Product.objects.get(pk=pk)
     if request.POST:
-        form = AddProductForm(request.POST, instance=instance)
+        form = AddProductForm(request.POST, request.FILES, instance=instance)
         if form.is_valid():
             form.save()
             return redirect(product_management)

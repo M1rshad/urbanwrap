@@ -22,7 +22,7 @@
                                   </div>
                                 </div>
                               
-                                <form action="" method="post">
+                                <form action="" method="post" enctype="multipart/form-data">
                                   {% csrf_token %}
                                   <div class="row gy-3 overflow-hidden">
                                     <div class="col-12">
@@ -88,22 +88,13 @@
                                     <div class="col-12">
                                       <div class="form-floating mb-3">
                                         <label for="is_available" class="form-label">Is available</label>
-                                        <input type="{{ form.is_available.field.widget.input_type }}"
-                                        name="{{ form.is_available.name }}"
-                                        id="{{ form.is_available.id_for_label }}"
-                                        class="form-control text-light" 
-                                        value="{{ form.is_available.value }}" required>
+                                        {{form.is_available}}
                                       </div>
                                     </div>
                                     <div class="col-12">
                                       <div class="form-floating mb-3">
                                         <label for="category" class="form-label">Category</label>
-                                        <input type="{{ form.category.field.widget.input_type }}"
-                                        name="{{ form.category.name }}"
-                                        id="{{ form.category.id_for_label }}"
-                                        class="form-control text-light" 
-                                        value="{{ form.category.value }}" required>
-                                      </div>
+                                        {{form.category}}
                                     </div>
                                     <div class="col-12">
                                       <div class="d-grid">
