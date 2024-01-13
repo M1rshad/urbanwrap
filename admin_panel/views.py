@@ -9,7 +9,7 @@ from django.contrib import messages
 from django.views.decorators.cache import never_cache
 from django.contrib.postgres.search import SearchVector
 from user_auth.forms import SignupForm
-from .forms import EditUserForm, AddCategoryForm
+from .forms import EditUserForm, AddCategoryForm, AddProductForm
 from django.contrib.auth.decorators import login_required, user_passes_test
 
 
@@ -135,7 +135,7 @@ def delete_category(request, pk):
 def add_category(request):
     form = AddCategoryForm()
     if request.POST:
-        form = AddCategoryForm(request.POST, {'slug': ('category_name',)})
+        form = AddCategoryForm(request.POST)
         if form.is_valid():
             form.save()
             return redirect(category_management)
@@ -183,3 +183,15 @@ def delete_product(request, pk):
     instance = Product.objects.get(pk=pk)
     instance.delete()
     return redirect('product_management')
+
+
+@user_passes_test(is_user_admin, login_url='admin_login')
+def add_product(request):
+    form = AddProductForm()
+    if request.POST:
+        form = AddProductForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(product_management)
+    context = {'form' : form}
+    return render(request, 'admin_panel/add_product.html',context)

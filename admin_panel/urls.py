@@ -18,5 +18,6 @@ urlpatterns = [
     path('category-management/category_search', views.category_search, name='category_search'),
     path('product-management', views.product_management, name='product_management'),
     path('product-management/product-delete/<pk>', views.delete_product, name='delete_product'),
+    path('product-management/add_product', views.add_product, name='add_product'),
 
 ]
