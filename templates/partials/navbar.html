@@ -26,6 +26,10 @@
                     <img src={% static 'home/assets/images/logo/urbanwrap-logo.png' %} alt="UrbanWrap Logo" width="110" height="40">
                 </a>
             </div>
+            
+            {% block menu %}
+                
+            
             <div class="header-center">
                 <nav class="main-nav">
                     <ul class="menu sf-arrows">
@@ -34,7 +38,7 @@
                         </li>
                         <li>
                             <a href="{% url 'shop' %}" class="">Shop</a>
-
+                            
                         </li>
                         <li>
                             <a href="product.html" class="">Product</a>
@@ -48,6 +52,7 @@
                     </ul><!-- End .menu -->
                 </nav><!-- End .main-nav -->
             </div><!-- End .header-left -->
+            {% endblock menu %}
 
             <div class="header-right">
                 <div class="header-search">

@@ -1,13 +1,32 @@
 {% extends 'partials/base.html' %}
 {% load static %}
 
-{% block content %}
-{% include 'partials/navbar.html' with block_name = 'menu' %}
-
 {% block menu %}
-    
+<div class="header-center">
+    <nav class="main-nav">
+        <ul class="menu sf-arrows">
+            <li>
+                <a href="{% url 'home' %}" class="">Home</a>
+            </li>
+            <li class="megamenu-container active">
+                <a href="{% url 'shop' %}" class="">Shop</a>
+                
+            </li>
+            <li>
+                <a href="product.html" class="">Product</a>
+            </li>
+            <li>
+                <a href="#" class="">About</a>
+            </li>
+            <li>
+                <a href="blog.html" class="">Contact Us</a>
+            </li>
+        </ul><!-- End .menu -->
+    </nav><!-- End .main-nav -->
+</div><!-- End .header-left -->
 {% endblock menu %}
     
+{% block content %}
 
 
 <main class="main">
