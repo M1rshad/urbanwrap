@@ -21,7 +21,7 @@ urlpatterns = [
     path('product-management/add_product', views.add_product, name='add_product'),
     path('product-management/edit_product/<pk>', views.edit_product, name='edit_product'),
     path('product-management/product_search', views.product_search, name='product_search'),
-
+    path('variant-management', views.variant_management, name='variant_management'),
 
 
 ]

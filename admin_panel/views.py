@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.shortcuts import render,redirect
 from django.contrib.auth import login, logout, authenticate
 from user_auth.models import User
-from home.models import Category, Product
+from home.models import Category, Product, Variation
 from django.contrib import messages
 from django.views.decorators.cache import never_cache
 from django.contrib.postgres.search import SearchVector
@@ -225,3 +225,11 @@ def product_search(request):
         return render(request, 'admin_panel/product_management.html',context)
     else:
         return redirect(product_management)
+    
+
+@never_cache
+@user_passes_test(is_user_admin, login_url='admin_login')
+def variant_management(request):
+    var_obj = Variation.objects.all().order_by('id')
+    context = {'var_obj' : var_obj}
+    return render(request, 'admin_panel/variant_management.html',context)
