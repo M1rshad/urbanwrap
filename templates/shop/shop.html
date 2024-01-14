@@ -82,7 +82,11 @@
                             <figure class="product-media">
                                 <span class="product-label label-new">New</span>
                                 <a href="{{product.get_url}}">
-                                    <img src="{{product.product_image.url}}" alt="Product image" class="product-image">
+                                    {% for image in product.product_img.all %}
+                                    {% if forloop.first %}
+                                    <img src="{{image.image.url}}" alt="Product image" class="product-image">
+                                    {% endif %}
+                                    {% endfor %}
                                 </a>
 
                                 <div class="product-action-vertical">

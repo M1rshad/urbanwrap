@@ -1,6 +1,6 @@
 from django import forms 
 from user_auth.models import User
-from home.models import Category, Product, Variation
+from home.models import Category, Product, Variation, ProductImages
 
 class EditUserForm(forms.ModelForm):
     email = forms.EmailField(required=True)
@@ -24,7 +24,7 @@ class AddProductForm(forms.ModelForm):
 
     class Meta:
         model = Product
-        fields = ('product_name', 'slug', 'description', 'price', 'product_image', 'stock', 'is_available', 'category')
+        fields = ('product_name', 'slug', 'description', 'price', 'stock', 'is_available', 'category')
 
 
 class AddVariantForm(forms.ModelForm):
@@ -32,3 +32,10 @@ class AddVariantForm(forms.ModelForm):
     class Meta:
         model = Variation
         fields = ('product', 'variation_category', 'variation_value', 'is_active')
+
+
+class ProductImageForm(forms.ModelForm):
+
+    class Meta:
+        model = ProductImages
+        fields =('image',)

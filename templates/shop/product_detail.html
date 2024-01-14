@@ -57,7 +57,11 @@
                         <div class="product-gallery product-gallery-vertical">
                             <div class="row">
                                 <figure class="product-main-image">
-                                    <img id="product-zoom" src="{{single_product.product_image.url}}" data-zoom-image="assets/images/products/single/centered/1-big.jpg" alt="product image">
+                                    {% for image in single_product.product_img.all %}
+                                    {% if forloop.first %}
+                                    <img id="product-zoom" src="{{image.image.url}}" data-zoom-image="{{image.image.url}}" alt="product image">
+                                    {% endif %}
+                                    {% endfor %}
 
                                     <a href="#" id="btn-product-gallery" class="btn-product-gallery">
                                         <i class="icon-arrows"></i>
