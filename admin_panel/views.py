@@ -262,3 +262,17 @@ def edit_variant(request, pk):
     form = AddVariantForm(instance=instance)
     context = {'form': form}
     return render(request, 'admin_panel/edit_variant.html',context)
+
+
+@user_passes_test(is_user_admin, login_url='admin_login')
+def variant_search(request):
+    if request.POST:
+        search_item = request.POST.get('search_input')
+        if search_item == '':
+            return redirect(variant_management)
+        var_obj = Variation.objects.annotate(
+        search=SearchVector('product','variation_category')).filter(search=search_item)
+        context = {'var_obj':var_obj}
+        return render(request, 'admin_panel/variant_management.html',context)
+    else:
+        return redirect(variant_management)
