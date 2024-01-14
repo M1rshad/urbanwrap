@@ -17,7 +17,7 @@
                           </form>
                           <div class="container mt-4">
                             <div class="d-flex justify-content-end">
-                                <button class="btn btn-inverse-info ms-auto "><a href="{% url 'add_category' %}" class="text-decoration-none" style="color: #8a59cc;">Add Variant</a></button>
+                                <button class="btn btn-inverse-info ms-auto "><a href="{% url 'add_variant' %}" class="text-decoration-none" style="color: #8a59cc;">Add Variant</a></button>
                             </div>
                           </div>
                           </div>
@@ -40,7 +40,7 @@
                                       <td>{{i.variation_value}}</td>
                                       <td>{{i.is_active}}</td>
                                       <td><button class="btn btn-light"><a href={% url 'edit_category' i.id %}>Edit</a></button></td>
-                                      <td><button class="btn btn-light"><a href={% url 'delete_category' i.id%}>Delete</a></button></td>
+                                      <td><button class="btn btn-light"><a href={% url 'delete_variant' i.id%}>Delete</a></button></td>
                                   </tr>
                                   {% endfor %}
                               </tbody>

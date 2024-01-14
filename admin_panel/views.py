@@ -9,7 +9,7 @@ from django.contrib import messages
 from django.views.decorators.cache import never_cache
 from django.contrib.postgres.search import SearchVector
 from user_auth.forms import SignupForm
-from .forms import EditUserForm, AddCategoryForm, AddProductForm
+from .forms import EditUserForm, AddCategoryForm, AddProductForm, AddVariantForm
 from django.contrib.auth.decorators import login_required, user_passes_test
 
 
@@ -193,9 +193,6 @@ def add_product(request):
         if form.is_valid():
             form.save()
             return redirect(product_management)
-        else:
-            print('form is not saved')
-            print(form.errors)
     context = {'form' : form}
     return render(request, 'admin_panel/add_product.html',context)
 
@@ -233,3 +230,22 @@ def variant_management(request):
     var_obj = Variation.objects.all().order_by('id')
     context = {'var_obj' : var_obj}
     return render(request, 'admin_panel/variant_management.html',context)
+
+
+@user_passes_test(is_user_admin, login_url='admin_login')
+def delete_variant(request, pk):
+    instance = Variation.objects.get(pk=pk)
+    instance.delete()
+    return redirect('variant_management')
+
+
+@user_passes_test(is_user_admin, login_url='admin_login')
+def add_variant(request):
+    form = AddVariantForm()
+    if request.POST:
+        form = AddVariantForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(variant_management)
+    context = {'form' : form}
+    return render(request, 'admin_panel/add_variant.html',context)
