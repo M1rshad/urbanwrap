@@ -4,12 +4,12 @@ from django.shortcuts import render
 from django.shortcuts import render,redirect
 from django.contrib.auth import login, logout, authenticate
 from user_auth.models import User
-from home.models import Category, Product, Variation
+from home.models import Category, Product, Variation , ProductImages
 from django.contrib import messages
 from django.views.decorators.cache import never_cache
 from django.contrib.postgres.search import SearchVector
 from user_auth.forms import SignupForm
-from .forms import EditUserForm, AddCategoryForm, AddProductForm, AddVariantForm
+from .forms import EditUserForm, AddCategoryForm, AddProductForm, AddVariantForm, ProductImageForm
 from django.contrib.auth.decorators import login_required, user_passes_test
 
 
@@ -188,12 +188,21 @@ def delete_product(request, pk):
 @user_passes_test(is_user_admin, login_url='admin_login')
 def add_product(request):
     form = AddProductForm()
+    image_form = ProductImageForm()
     if request.POST:
-        form = AddProductForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
+        form = AddProductForm(request.POST)
+        image_form = ProductImageForm(request.POST, request.FILES)
+        if form.is_valid() and image_form.is_valid():
+            product = form.save()
+            image = image_form.save(commit=False)
+            image.product = product
+            image.save()
+
             return redirect(product_management)
-    context = {'form' : form}
+    context = {
+        'form' : form,
+        'image_form' : image_form
+        }
     return render(request, 'admin_panel/add_product.html',context)
 
 

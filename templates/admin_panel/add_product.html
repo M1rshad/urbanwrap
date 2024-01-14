@@ -61,12 +61,7 @@
                                         class="form-control text-light" required>
                                       </div>
                                     </div>
-                                    <div class="col-12">
-                                      <div class="form-floating mb-3">
-                                        <label for="product_image" class="form-label">Product Image</label>
-                                        {{form.product_image}}
-                                      </div>
-                                    </div>
+                                    
                                     <div class="col-12">
                                       <div class="form-floating mb-3">
                                         <label for="stock" class="form-label">Stock</label>
@@ -87,6 +82,16 @@
                                         <label for="is_available" class="form-label">Category</label>
                                         {{form.category}}
                                     </div>
+                                    </div>
+                                    <div class="col-12">
+                                      <div class="form-floating mb-3">
+                                        <label for="product_image" class="form-label">Product Image</label>
+                                        <input type="{{ image_form.image.field.widget.input_type }}"
+                                        name="{{ image_form.image.name }}"
+                                        id="formFile "multiple
+                                        class="form-control text-light" required>
+                                      </div>
+                                      </div>
                                     </div>
                                     <div class="col-12">
                                       <div class="d-grid">
