@@ -117,11 +117,11 @@
                                 <label for="size">Size:</label>
                                 <div class="select-custom">
                                     <select name="size" id="size" class="form-control">
-                                        <option value="#" selected="selected">One Size</option>
-                                        <option value="s">Small</option>
-                                        <option value="m">Medium</option>
-                                        <option value="l">Large</option>
-                                        <option value="xl">Extra Large</option>
+                                        <option value="#" selected="selected" disabled>Select size</option>
+                                        
+                                        {% for i in single_product.variation_set.all %}
+                                        <option value="{{i.variation_value}}">{{i.variation_value}}</option> 
+                                        {% endfor %}
                                     </select>
                                 </div><!-- End .select-custom -->
 
