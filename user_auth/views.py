@@ -21,7 +21,7 @@ def log_in(request):
     email = request.POST.get('email')
     password = request.POST.get('password')
     user = authenticate(email=email, password=password)
-    if user is not None:
+    if user is not None and user.is_active:
         login(request, user)
         url = 'home/index.html'
         return redirect(index)
