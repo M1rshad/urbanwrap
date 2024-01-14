@@ -249,3 +249,16 @@ def add_variant(request):
             return redirect(variant_management)
     context = {'form' : form}
     return render(request, 'admin_panel/add_variant.html',context)
+
+
+@user_passes_test(is_user_admin, login_url='admin_login')
+def edit_variant(request, pk):
+    instance = Variation.objects.get(pk=pk)
+    if request.POST:
+        form = AddVariantForm(request.POST,instance=instance)
+        if form.is_valid():
+            form.save()
+            return redirect(variant_management)
+    form = AddVariantForm(instance=instance)
+    context = {'form': form}
+    return render(request, 'admin_panel/edit_variant.html',context)

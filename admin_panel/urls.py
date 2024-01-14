@@ -24,5 +24,6 @@ urlpatterns = [
     path('variant-management', views.variant_management, name='variant_management'),
     path('variant-management/variant-delete/<pk>', views.delete_variant, name='delete_variant'),
     path('variant-management/add_variant', views.add_variant, name='add_variant'),
+    path('variant-management/edit_variant/<pk>', views.edit_variant, name='edit_variant'),
 
 ]
