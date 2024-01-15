@@ -23,7 +23,6 @@ def log_in(request):
     user = authenticate(email=email, password=password)
     if user is not None and user.is_active:
         login(request, user)
-        url = 'home/index.html'
         return redirect(index)
     else:
         messages.error(request, 'Invalid username or password')

@@ -30,7 +30,6 @@
                                       <th>Email</th>
                                       <th>Edit</th>
                                       <th>Status</th>
-                                      <th>Delete</th>
                                   </tr>
                               </thead>
                               <tbody>
@@ -51,9 +50,6 @@
                                       {%else%}
                                       <td></td>
                                       {% endif %}
-                                      {% if not i.is_superuser%}
-                                      <td><button class="btn btn-light"><a href={% url 'delete_user' i.id%}>Delete</a></button></td>
-                                      {% endif %} 
                                   </tr>
                                   {% endfor %}
                               </tbody>

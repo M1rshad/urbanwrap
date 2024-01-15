@@ -54,12 +54,6 @@ def user_management(request):
     return render(request, 'admin_panel/user_management.html',context)
 
 
-@user_passes_test(is_user_admin, login_url='admin_login')
-def delete_user(request,pk):
-    instance = User.objects.get(pk=pk)
-    instance.delete()
-    return redirect('user_management')
-
 
 @user_passes_test(is_user_admin, login_url='admin_login')
 def user_search(request):
