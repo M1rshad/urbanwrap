@@ -68,11 +68,11 @@
                                     <div class="col-12">
                                       <div class="form-floating mb-3">
                                         <label for="product_image" class="form-label">Product Image</label>
-                                        <input type="{{ form.product_image.field.widget.input_type }}"
-                                        name="{{ form.product_image.name }}"
-                                        id="{{ form.product_image.id_for_label }}"
-                                        class="form-control text-light" >
-                                        <label for="product_image" >{{form.product_image.value.url}}</label>
+                                        <input type="{{ image_form.image.field.widget.input_type }}"
+                                        name="{{ image_form.image.name }}"
+                                        id="formFile "multiple
+                                        class="form-control text-light" required>
+                                        <label for="product_image" >{{image_form.image.value.url}}</label>
                                       </div>
                                     </div>
                                     <div class="col-12">

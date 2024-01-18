@@ -1,6 +1,8 @@
 from django import forms 
 from user_auth.models import User
 from home.models import Category, Product, Variation, ProductImages
+from django.core.validators import FileExtensionValidator
+
 
 class EditUserForm(forms.ModelForm):
     email = forms.EmailField(required=True)
@@ -15,6 +17,7 @@ class EditUserForm(forms.ModelForm):
 
 
 class AddCategoryForm(forms.ModelForm):
+    cat_image = forms.ImageField(validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png', 'webp'])], required=False)
     class Meta:
         model = Category
         fields = ('category_name', 'slug', 'description', 'cat_image')
@@ -35,6 +38,7 @@ class AddVariantForm(forms.ModelForm):
 
 
 class ProductImageForm(forms.ModelForm):
+    image = forms.ImageField(validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png', 'webp'])], )
     class Meta:
         model = ProductImages
         fields =('image',)

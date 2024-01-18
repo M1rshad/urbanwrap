@@ -41,7 +41,7 @@
                                       <td>{{i.email}}</td>
                                       <td><button class="btn btn-light"><a href={% url 'edit_user' i.id %}>Edit</a></button></td>
                                       {% if not i.is_superuser%}
-                                      {% if i.is_active == True %}
+                                      {% if i.is_block == False %}
                                       <td><button class="btn btn-light"><a href={% url 'block_user' i.id %}>Block</a></button>
                                     </td>  
                                       {% else %}

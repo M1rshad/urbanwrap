@@ -22,14 +22,13 @@ def log_in(request):
     if request.POST:
         email = request.POST.get('email')
         password = request.POST.get('password')
-        user = authenticate(request, email=email, password=password)
+        user = authenticate(email=email, password=password)
         if user is not None:
-            print(f"user.is_active: {user.is_active}")
-            if user.is_active:
-                login(request, user)
-                return redirect(index)
-            elif not user.is_active:
+            if hasattr(user, 'is_block') and user.is_block:  # Check if the user is blocked
                 messages.error(request, 'Your account is blocked. Please contact support.')
+            elif not user.is_block:  # Check if the user is not blocked
+                login(request, user)
+                return redirect('home')
             else:
                 messages.error(request, 'Invalid username or password')
         else:

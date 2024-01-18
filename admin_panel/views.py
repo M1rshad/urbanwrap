@@ -78,6 +78,7 @@ def edit_user(request, pk):
             form.save()
             return redirect(user_management)
     form = EditUserForm(instance=instance)
+    print(form.errors)
     context = {'form': form}
     return render(request, 'admin_panel/edit_user.html',context)
 
@@ -97,7 +98,7 @@ def add_user(request):
 @user_passes_test(is_user_admin, login_url='admin_login')
 def block_user(request,pk):
     instance = User.objects.get(pk=pk)
-    instance.is_active = False
+    instance.is_block = True
     instance.save()
     return redirect('user_management')
 
@@ -105,7 +106,7 @@ def block_user(request,pk):
 @user_passes_test(is_user_admin, login_url='admin_login')
 def unblock_user(request,pk):
     instance = User.objects.get(pk=pk)
-    instance.is_active = True
+    instance.is_block = False
     instance.save()
     return redirect('user_management')
 
@@ -204,12 +205,20 @@ def add_product(request):
 def edit_product(request, pk):
     instance = Product.objects.get(pk=pk)
     if request.POST:
-        form = AddProductForm(request.POST, request.FILES, instance=instance)
-        if form.is_valid():
-            form.save()
+        form = AddProductForm(request.POST, instance=instance)
+        image_form = ProductImageForm(request.POST, request.FILES, instance=instance)
+        if form.is_valid() and image_form.is_valid():
+            product = form.save()
+            image = image_form.save(commit=False)
+            image.product = product
+            image.save()
             return redirect(product_management)
     form = AddProductForm(instance=instance)
-    context = {'form': form}
+    image_form = ProductImageForm(instance=instance)
+    context = {
+        'form': form,
+        'image_form': image_form
+        }
     return render(request, 'admin_panel/edit_product.html',context)
 
 
