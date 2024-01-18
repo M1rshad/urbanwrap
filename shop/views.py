@@ -21,3 +21,7 @@ def product_detail(request, product_slug):
         'single_product' : single_product,
         }
     return render(request, 'shop/product_detail.html', context)
+
+
+def cart(request):
+    return render(request, 'shop/cart.html')
