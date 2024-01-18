@@ -56,57 +56,57 @@
                     {% csrf_token %}
                     <div class="row gy-3 overflow-hidden">
                       <div class="col-12">
+                        <label for="email" class="form-label">Email</label>
                         <div class="form-floating mb-3">
                           <input type="{{ form.email.field.widget.input_type }}"
                           name="{{ form.email.name }}"
                           id="{{ form.email.id_for_label }}"
                           class="form-control" required>
-                          <label for="email" class="form-label">Email</label>
                         </div>
                       </div>
                       <div class="col-12">
+                        <label for="fname" class="form-label">First Name</label>
                         <div class="form-floating mb-3">
                           <input type="{{ form.first_name.field.widget.input_type }}"
                           name="{{ form.first_name.name }}"
                           id="{{ form.first_name.id_for_label }}"
                           class="form-control" required>
-                          <label for="fname" class="form-label">First Name</label>
                         </div>
                       </div>
                       <div class="col-12">
+                        <label for="lname" class="form-label">Last Name</label>
                         <div class="form-floating mb-3">
                           <input type="{{ form.last_name.field.widget.input_type }}"
                           name="{{ form.last_name.name }}"
                           id="{{ form.last_name.id_for_label }}"
                           class="form-control" required>
-                          <label for="lname" class="form-label">Last Name</label>
                         </div>
                       </div>
                       <div class="col-12">
+                        <label for="username" class="form-label">Username</label>
                         <div class="form-floating mb-3">
                           <input type="{{ form.username.field.widget.input_type }}"
                           name="{{ form.username.name }}"
                           id="{{ form.username.id_for_label }}"
                           class="form-control" required>
-                          <label for="username" class="form-label">Username</label>
                         </div>
                       </div>
                       <div class="col-12">
+                        <label for="password1" class="form-label">Password</label>
                         <div class="form-floating mb-3">
                           <input type="{{ form.password1.field.widget.input_type }}"
                           name="{{ form.password1.name }}"
                           id="{{ form.password1.id_for_label }}"
                           class="form-control" required>
-                          <label for="password1" class="form-label">Password</label>
                         </div>
                       </div>
                       <div class="col-12">
+                        <label for="password2" class="form-label">Confirm Password</label>
                         <div class="form-floating mb-3">
                           <input type="{{ form.password2.field.widget.input_type }}"
                           name="{{ form.password2.name }}"
                           id="{{ form.password2.id_for_label }}"
                           class="form-control" required>
-                          <label for="password2" class="form-label">Confirm Password</label>
                         </div>
                       </div>
                       <div class="col-12">
@@ -116,9 +116,11 @@
                       </div>
                     </div>
                   </form>
-                  {% if form.errors %}
-                    <p class="text-danger">{{form.error}}</p>
-                    {% endif %}
+                  {% for field, errors in form.errors.items %}
+                  {% for error in errors %}
+                    <p class="text-center text-danger">{{ error }}</p>
+                  {% endfor %}
+                  {% endfor %}
                     <div class="text-center">
                       Already have an account?<a href="{% url 'log_in' %}" class="link-secondary text-decoration-none text-primary">Login</a>
                   </div>

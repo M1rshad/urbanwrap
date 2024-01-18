@@ -47,15 +47,15 @@
                     {% csrf_token %}
                     <div class="row gy-3 overflow-hidden">
                       <div class="col-12">
+                        <label for="email" class="form-label">Email</label>
                         <div class="form-floating mb-3">
                           <input type="email" class="form-control" name="email" id="email"  required>
-                          <label for="email" class="form-label">Email</label>
                         </div>
                       </div>
                       <div class="col-12">
+                        <label for="email" class="form-label">Password</label>
                         <div class="form-floating mb-3">
                           <input type="password" class="form-control" name="password" id="password" value=""  required>
-                          <label for="password" class="form-label">Password</label>
                         </div>
                       </div>
                       <div class="col-12">
@@ -65,15 +65,17 @@
                       </div>
                     </div>
                   </form>
-                  
-                  {% if {{}} %}
-                    
-                  {% endif %}
-                    
+
                   {% for message in messages %}
+                    {% if message.tags == 'success' %}
+                    <p class="text-success text-center">{{message}}</p>
+                    {% elif message.tags == 'error' %}
                     <p class="text-danger text-center">{{message}}</p>
-                  {% endfor %}
-                  <div class="row">
+                    {% else %}
+                    <p class="text-center">{{message}}</p>
+                    {% endif %}
+                    {% endfor %}
+                    <div class="row">
                     <div class="col-12">
                       <hr class="mt-5 mb-4 border-secondary-subtle">
                       <div class="d-flex gap-2 gap-md-4 flex-column flex-md-row justify-content-md-end">
