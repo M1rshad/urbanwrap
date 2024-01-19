@@ -45,6 +45,8 @@
                 <div class="header-right ml-auto">
                     {% if not user.is_authenticated %}
                     <a href="{% url 'log_in' %}" class="link-secondary text-decoration-none text-primary">Sign in / Sign up</a>
+                    {% else %}
+                    <button><a href={% url 'log_out' %}>logout</a></button>
                 {% endif %}
                 </div><!-- End .header-right -->
         
@@ -180,9 +182,7 @@
             </div><!-- End .container -->
         </div><!-- End .header-bottom -->
     </header><!-- End .header -->                
-    {% if user.is_authenticated %}
-    <button><a href={% url 'log_out' %}>logout</a></button>
-    {% endif %}
+
 {% block content %}
     
 {% endblock content %}
