@@ -8,6 +8,5 @@ def send_otp(request):
     request.session['otp_secret_key']= totp.secret
     valid_date = datetime.now() + timedelta(minutes = 1)
     request.session['otp_valid_date'] = str(valid_date)
-    print(otp)
     send_mail("UrbanWrap - OTP for Sign up", otp, "abdullamirshadcl@gmail.com", [request.session['email']], fail_silently=False)
 

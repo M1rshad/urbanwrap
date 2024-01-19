@@ -74,9 +74,11 @@
                                     </div>
                                   </div>
                                 </form>
-                                {% for message in messages %}
-                                  <p class="text-danger">{{message}}</p>
-                                  {% endfor %}
+                                {% for field, errors in form.errors.items %}
+                                {% for error in errors %}
+                                  <p class="text-center text-danger">{{ error }}</p>
+                                {% endfor %}
+                                {% endfor %}
                                 </div>
                               </div>
                             </div>

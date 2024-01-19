@@ -78,7 +78,6 @@ def edit_user(request, pk):
             form.save()
             return redirect(user_management)
     form = EditUserForm(instance=instance)
-    print(form.errors)
     context = {'form': form}
     return render(request, 'admin_panel/edit_user.html',context)
 

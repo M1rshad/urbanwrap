@@ -7,6 +7,7 @@ class Category(models.Model):
     slug = models.SlugField(max_length=100, unique=True)
     description = models.TextField(max_length=255, blank=True)
     cat_image = models.ImageField(upload_to='images/category', blank=True)
+    is_active = models.BooleanField(default=True)
 
 
     def __str__(self) -> str:
