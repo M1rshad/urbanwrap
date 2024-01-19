@@ -87,6 +87,10 @@ def resend_otp(request):
     return redirect(otp_view)
 
 
+def forgot_password(request):
+    return render(request, 'forgot_password.html')
+            
+
 
 def log_out(request):
     logout(request)
