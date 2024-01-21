@@ -9,6 +9,10 @@ class Category(models.Model):
     cat_image = models.ImageField(upload_to='images/category', blank=True)
     is_active = models.BooleanField(default=True)
 
+    
+    def get_url(self):
+        return reverse('products_by_category',args=[self.slug])
+    
 
     def __str__(self) -> str:
         return self.category_name

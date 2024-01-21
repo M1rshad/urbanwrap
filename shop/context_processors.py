@@ -1,4 +1,5 @@
 from .models import Cart, CartItem
+from home.models import Category
 from .views import _cart_id
 
 def counter(request):
@@ -15,3 +16,7 @@ def counter(request):
             item_count = 0
     return dict(item_count=item_count)
             
+
+def category_filter(request):
+    cat_filter = Category.objects.all()
+    return dict(cat_filter=cat_filter)
