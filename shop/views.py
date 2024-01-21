@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 from home.models import Product
 from .models import Cart, CartItem
 
@@ -16,10 +16,12 @@ def shop(request):
 def product_detail(request, product_slug):
     try:
         single_product = Product.objects.get(slug=product_slug)
+        in_cart =  CartItem.objects.filter(cart__cart_id=_cart_id(request), product = single_product).exists()
     except Exception as e:
         raise e
     context = {
         'single_product' : single_product,
+        'in_cart' : in_cart,
         }
     return render(request, 'shop/product_detail.html', context)
 
@@ -78,7 +80,7 @@ def cart(request, total=0, quantity=0, cart_items=None):
         for cart_item in cart_items:
             total += (cart_item.product.price * cart_item.quantity)
             quantity += cart_item.quantity
-        tax =  0.2 * total
+        tax =  0.02 * total
         grand_total = total + tax
     except Cart.DoesNotExist:
         pass

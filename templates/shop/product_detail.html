@@ -137,8 +137,14 @@
                                     <div class="product-details-quantity">
                                         <input type="number" id="qty" class="form-control" value="1" min="1" max="10" step="1" data-decimals="0" required>
                                     </div><!-- End .product-details-quantity -->
-
+                                    
+                                    {% if not in_cart %}
                                     <a href="{% url 'add_cart' single_product.id %}" class="btn-product btn-cart"><span>add to cart</span></a>
+                                    {% else %}
+                                    <button href="#" class="btn btn-success"><span>Added to cart</span></button>
+                                    <a href="{% url 'cart'%}" class="btn-product btn-cart ml-4"><span>View cart</span></a>
+                                    {% endif %}
+                                        
                                 </div><!-- End .details-action-col -->
 
                                 <div class="details-action-wrapper">
