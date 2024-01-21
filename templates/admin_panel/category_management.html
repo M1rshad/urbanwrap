@@ -27,7 +27,7 @@
                                       <th>Category Name</th>
                                       <th>slug</th>
                                       <th>Edit</th>
-                                      <th>Delete</th>
+                                      <th>Delist</th>
                                   </tr>
                               </thead>
                               <tbody>
@@ -36,7 +36,13 @@
                                       <td>{{i.category_name}}</td>
                                       <td>{{i.slug}}</td>
                                       <td><button class="btn btn-light"><a href={% url 'edit_category' i.id %}>Edit</a></button></td>
-                                      <td><button class="btn btn-light"><a href={% url 'delete_category' i.id%}>Delete</a></button></td>
+                                      
+                                      {% if i.is_active%}
+                                      <td><button class="btn btn-light"><a href={% url 'delist_category' i.id%}>Delist</a></button></td>
+                                      {% else %}
+                                      <td><button class="btn btn-light"><a href={% url 'list_category' i.id%}>List</a></button></td>
+                                      {% endif %}
+                                        
                                   </tr>
                                   {% endfor %}
                               </tbody>

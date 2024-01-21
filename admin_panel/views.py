@@ -130,9 +130,18 @@ def category_management(request):
 
 
 @user_passes_test(is_user_admin, login_url='admin_login')
-def delete_category(request, pk):
+def delist_category(request, pk):
     instance = Category.objects.get(pk=pk)
-    instance.delete()
+    instance.is_active = False
+    instance.save()
+    return redirect('category_management')
+
+
+@user_passes_test(is_user_admin, login_url='admin_login')
+def list_category(request, pk):
+    instance = Category.objects.get(pk=pk)
+    instance.is_active = True
+    instance.save()
     return redirect('category_management')
 
 
