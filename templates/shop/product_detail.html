@@ -62,7 +62,6 @@
                                     <img id="product-zoom" src="{{image.image.url}}" data-zoom-image="{{image.image.url}}" alt="product image">
                                     {% endif %}
                                     {% endfor %} 
-                                    for image isdfjlsajfl
 
                                     <a href="#" id="btn-product-gallery" class="btn-product-gallery">
                                         <i class="icon-arrows"></i>
@@ -139,7 +138,7 @@
                                         <input type="number" id="qty" class="form-control" value="1" min="1" max="10" step="1" data-decimals="0" required>
                                     </div><!-- End .product-details-quantity -->
 
-                                    <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
+                                    <a href="{% url 'add_cart' single_product.id %}" class="btn-product btn-cart"><span>add to cart</span></a>
                                 </div><!-- End .details-action-col -->
 
                                 <div class="details-action-wrapper">

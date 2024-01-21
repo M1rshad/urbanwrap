@@ -2,6 +2,14 @@
 
 
 {% block content %}
+<style>
+  .errorlist{
+    color: red;
+    font-size: small;
+    list-style: none;
+    padding-left:0
+  }
+</style>
 <div class="main-panel">
     <div class="content-wrapper">
       <div class="row">
@@ -33,6 +41,7 @@
                                         id="{{ form.email.id_for_label }}"
                                         class="form-control text-light" 
                                         value="{{form.email.value}}" required>
+                                      {{ error_email }}
                                       </div>
                                     </div>
                                     <div class="col-12">
@@ -43,6 +52,7 @@
                                         id="{{ form.first_name.id_for_label }}"
                                         class="form-control text-light" 
                                         value="{{form.first_name.value}}" required>
+                                      {{ error_firstname }}
                                       </div>
                                     </div>
                                     <div class="col-12">
@@ -53,6 +63,7 @@
                                         id="{{ form.last_name.id_for_label }}"
                                         class="form-control text-light" 
                                         value="{{form.last_name.value}}" required>
+                                      {{ error_lastname }}
                                       </div>
                                     </div>
                                     <div class="col-12">
@@ -63,6 +74,7 @@
                                         id="{{ form.username.id_for_label }}"
                                         class="form-control text-light" 
                                         value="{{form.username.value}}" required>
+                                      {{ error_username }}
                                       </div>
                                     </div>
                                     <div class="col-12">
@@ -72,7 +84,6 @@
                                     </div>
                                   </div>
                                 </form>
-                                
                                 </div>
                               </div>
                             </div>

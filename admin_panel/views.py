@@ -77,8 +77,19 @@ def edit_user(request, pk):
         if form.is_valid():
             form.save()
             return redirect(user_management)
+        else: 
+            error_username = form['username'].errors
+            error_email = form['email'].errors
+            error_first_name = form['first_name'].errors
+            error_last_name = form['last_name'].errors
+            print(error_email)
     form = EditUserForm(instance=instance)
-    context = {'form': form}
+    context = {'form': form,
+               'error_username': error_username,
+               'error_email': error_email,
+               'error_first_name':error_first_name,
+               'error_last_name' : error_last_name
+               }
     return render(request, 'admin_panel/edit_user.html',context)
 
 
