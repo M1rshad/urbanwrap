@@ -35,7 +35,7 @@ def log_in(request):
         password = request.POST.get('password')
         user = authenticate(email=email, password=password)
         if user is not None:
-            if hasattr(user, 'is_block') and user.is_block: 
+            if user.is_block: 
                 messages.error(request, 'Your account is blocked. Please contact support.')
             elif not user.is_block: 
                 login(request, user)
@@ -71,7 +71,7 @@ def otp_view(request):
                     user.save()
                     messages.success(request, 'OTP successfully verified. Your account has been created')
                     del request.session['otp_secret_key']
-                    del request.session['otp_secret_key']
+                    del request.session['otp_valid_date']
                     return redirect(log_in)
                 else:
                     messages.error(request, 'Incorrect OTP. Please double-check and try again.')
@@ -84,11 +84,21 @@ def otp_view(request):
 
 def resend_otp(request):
     send_otp(request)
+    messages.info(request, 'The OTP has sent again, please check now.')
     return redirect(otp_view)
 
+def forgot_password_otp(request):
+    return render(request, 'user_auth/forgot_password_otp.html')
 
 def forgot_password(request):
-    return render(request, 'forgot_password.html')
+    if request.POST:     
+        email = request.POST['email']
+        is_user_exists = User.objects.all().filter(email=email).exists()
+        if is_user_exists:
+            return redirect(forgot_password_otp)
+        else:
+            messages.error(request, 'User not found')
+    return render(request, 'user_auth/forgot_password.html')
             
 
 
