@@ -139,7 +139,12 @@
                                     </div><!-- End .product-details-quantity -->
                                     
                                     {% if not in_cart %}
+                                    
+                                    {% if single_product.stock <= 0 %}
+                                    <h5 class="text-danger m-3">Out of stock</h5>
+                                    {% else %}
                                     <a href="{% url 'add_cart' single_product.id %}" class="btn-product btn-cart"><span>add to cart</span></a>
+                                    {% endif %}
                                     {% else %}
                                     <button href="#" class="btn btn-success"><span>Added to cart</span></button>
                                     <a href="{% url 'cart'%}" class="btn-product btn-cart ml-4"><span>View cart</span></a>

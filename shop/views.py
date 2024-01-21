@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 from home.models import Product, Category
 from .models import Cart, CartItem
-
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 # Create your views here.
 def shop(request, category_slug=None):
     categories = None
@@ -10,12 +10,18 @@ def shop(request, category_slug=None):
     if category_slug != None:
         categories = get_object_or_404(Category, slug=category_slug, is_active=True)
         products = Product.objects.filter(category=categories, is_available=True)
+        paginator = Paginator(products, 4)
+        page = request.GET.get('page')
+        paged_product = paginator.get_page(page)
         product_count = products.count()
     else:
-        products = Product.objects.all().filter(is_available=True)
+        products = Product.objects.all().filter(is_available=True).order_by('id')
+        paginator = Paginator(products, 4)
+        page = request.GET.get('page')
+        paged_product = paginator.get_page(page)
         product_count = products.count()
     context = {
-        'products' : products,
+        'products' : paged_product,
         'product_count' : product_count      
         }
     return render(request, 'shop/shop.html', context)
@@ -83,6 +89,8 @@ def remove_cart_item(request, product_id):
 
 def cart(request, total=0, quantity=0, cart_items=None):
     try:
+        tax = 0 
+        grand_total = 0
         cart = Cart.objects.get(cart_id=_cart_id(request))
         cart_items = CartItem.objects.filter(cart=cart, is_active=True)
         for cart_item in cart_items:
