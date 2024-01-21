@@ -27,10 +27,10 @@
                                   <div class="row gy-3 overflow-hidden">
                                     <div class="col-12">
                                       <div class="form-floating mb-3">
-                                        <label for="product_name" class="form-label">Product name</label>
+                                        <label for="productName" class="form-label">Product name</label>
                                         <input type="{{ form.product_name.field.widget.input_type }}"
-                                        name="{{ form.product_name.name }}"
-                                        id="{{ form.product_name.id_for_label }}"
+                                        name="productName"
+                                        id="productName"
                                         class="form-control text-light" 
                                         value="{{ form.product_name.value }}" required>
                                       </div>
@@ -39,8 +39,8 @@
                                       <div class="form-floating mb-3">
                                         <label for="slug" class="form-label">Slug</label>
                                         <input type="{{ form.slug.field.widget.input_type }}"
-                                        name="{{ form.slug.name }}"
-                                        id="{{ form.slug.id_for_label }}"
+                                        name="slug"
+                                        id="slug"
                                         class="form-control text-light"  
                                         value="{{ form.slug.value }}" required>
                                       </div>
@@ -73,6 +73,7 @@
                                         id="formFile "multiple
                                         class="form-control text-light" required>
                                         <label for="product_image" >{{image_form.image.value.url}}</label>
+                                          
                                       </div>
                                     </div>
                                     <div class="col-12">
@@ -117,5 +118,19 @@
       </div>
   </div>
 </div>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+  $(document).ready(function() {
+      function generateSlug(productName) {
+          return productName.trim().toLowerCase().replace(/\s+/g, '-');
+      }
+
+      $('#productName').on('input', function() {
+          var productName = $(this).val();
+          var slug = generateSlug(productName);
+          $('#slug').val(slug);
+      });
+  });
+</script>
 {% endblock content %}
     

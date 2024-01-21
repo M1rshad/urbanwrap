@@ -1,11 +1,19 @@
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
-from home.models import Product
+from home.models import Product, Category
 from .models import Cart, CartItem
 
 # Create your views here.
-def shop(request):
-    products = Product.objects.all().filter(is_available=True)
-    product_count = products.count()
+def shop(request, category_slug=None):
+    categories = None
+    products = None
+    
+    if category_slug != None:
+        categories = get_object_or_404(Category, slug=category_slug, is_active=True)
+        products = Product.objects.filter(category=categories, is_available=True)
+        product_count = products.count()
+    else:
+        products = Product.objects.all().filter(is_available=True)
+        product_count = products.count()
     context = {
         'products' : products,
         'product_count' : product_count      
@@ -13,9 +21,9 @@ def shop(request):
     return render(request, 'shop/shop.html', context)
 
 
-def product_detail(request, product_slug):
+def product_detail(request, category_slug, product_slug):
     try:
-        single_product = Product.objects.get(slug=product_slug)
+        single_product = Product.objects.get(category__slug=category_slug, slug=product_slug)
         in_cart =  CartItem.objects.filter(cart__cart_id=_cart_id(request), product = single_product).exists()
     except Exception as e:
         raise e

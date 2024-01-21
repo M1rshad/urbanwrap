@@ -23,6 +23,8 @@ class AddCategoryForm(forms.ModelForm):
         fields = ('category_name', 'slug', 'description', 'cat_image')
 
 
+
+
 class AddProductForm(forms.ModelForm):
 
     class Meta:

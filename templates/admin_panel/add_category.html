@@ -27,10 +27,10 @@
                                   <div class="row gy-3 overflow-hidden">
                                     <div class="col-12">
                                       <div class="form-floating mb-3">
-                                        <label for="category_name" class="form-label">Category name</label>
+                                        <label for="categoryName" class="form-label">Category name</label>
                                         <input type="{{ form.category_name.field.widget.input_type }}"
-                                        name="{{ form.category_name.name }}"
-                                        id="{{ form.category_name.id_for_label }}"
+                                        name="categoryName"
+                                        id="categoryName"
                                         class="form-control text-light" required>
                                       </div>
                                     </div>
@@ -38,8 +38,8 @@
                                       <div class="form-floating mb-3">
                                         <label for="slug" class="form-label">Slug</label>
                                         <input type="{{ form.slug.field.widget.input_type }}"
-                                        name="{{ form.slug.name }}"
-                                        id="{{ form.slug.id_for_label }}"
+                                        name="slug"
+                                        id="slug"
                                         class="form-control text-light"  required>
                                       </div>
                                     </div>
@@ -84,5 +84,19 @@
       </div>
   </div>
 </div>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+  $(document).ready(function() {
+      function generateSlug(categoryName) {
+          return categoryName.trim().toLowerCase().replace(/\s+/g, '-');
+      }
+
+      $('#categoryName').on('input', function() {
+          var categoryName = $(this).val();
+          var slug = generateSlug(categoryName);
+          $('#slug').val(slug);
+      });
+  });
+</script>
 {% endblock content %}
     
