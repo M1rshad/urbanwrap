@@ -3,6 +3,7 @@ from home.models import Product, Category, Variation
 from .models import Cart, CartItem
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Q 
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 def shop(request, category_slug=None):
     categories = None
@@ -164,6 +165,26 @@ def search(request):
     return render(request, 'shop/shop.html', context)
 
 
-def checkout(request):
-    return render(request, 'shop/checkout.html')
+@login_required(login_url='log_in')
+def checkout(request, total=0, quantity=0, cart_items=None):
+    try:
+        tax = 0 
+        grand_total = 0
+        cart = Cart.objects.get(cart_id=_cart_id(request))
+        cart_items = CartItem.objects.filter(cart=cart, is_active=True)
+        for cart_item in cart_items:
+            total += (cart_item.product.price * cart_item.quantity)
+            quantity += cart_item.quantity
+        tax =  0.02 * total
+        grand_total = total + tax
+    except Cart.DoesNotExist:
+        pass
+    context = {
+        'total':total,
+        'quantity':quantity,
+        'cart_items' : cart_items,
+        'tax' : tax,
+        'grand_total':grand_total,
+    }
+    return render(request, 'shop/checkout.html', context)
 
