@@ -163,3 +163,7 @@ def search(request):
     }
     return render(request, 'shop/shop.html', context)
 
+
+def checkout(request):
+    return render(request, 'shop/checkout.html')
+
