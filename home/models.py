@@ -1,5 +1,6 @@
 from django.db import models
 from django.urls import reverse
+from PIL import Image
 
 # Create your models here.
 class Category(models.Model):
@@ -41,6 +42,17 @@ class ProductImages(models.Model):
     product= models.ForeignKey(Product, on_delete=models.CASCADE, related_name='product_img', default=1)
     image=models.ImageField(upload_to='images/products')
     
+    def save(self, *args, **kwargs):
+        super(ProductImages, self).save(*args, **kwargs)
+
+        if self.image:
+            img = Image.open(self.image.path)
+            if img.width > 500 or img.height > 500:
+                output_size = (500, 500) 
+                img.thumbnail(output_size)
+                img.save(self.image.path)
+
+
     def __str__(self):
         return f"{self.product.product_name} - Image"
 

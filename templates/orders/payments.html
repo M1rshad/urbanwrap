@@ -1,0 +1,139 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+
+{% block menu %}
+<div class="header-center mr-auto">
+    <nav class="main-nav">
+        <ul class="menu sf-arrows">
+            <li>
+                <a href="{% url 'home' %}" class="">Home</a>
+            </li>
+            <li>
+                <a href="{% url 'shop' %}" class="">Shop</a>
+                
+            </li>
+            <li>
+                <a href="#" class="">About</a>
+            </li>
+            <li>
+                <a href="blog.html" class="">Contact Us</a>
+            </li>
+        </ul><!-- End .menu -->
+    </nav><!-- End .main-nav -->
+</div><!-- End .header-left -->
+{% endblock menu %}
+
+{% block content %}
+<main class="main">
+    <div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
+        <div class="container">
+            <h3 class="page-title">Review Your Order</h3>
+        </div><!-- End .container -->
+    </div><!-- End .page-header -->
+    
+    
+    
+    <div class="page-content">
+        <div class="cart">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-9">
+                        <div class="card">
+                            <div class="card-body mt-3">
+                              <h5 class="card-title"><u>Billing address</u></h5>
+                              <p class="card-text mt-2">{{order.full_name}}</p>
+                              <p class="card-text ">{{order.full_address}}</p>
+                              <p class="card-text ">{{order.city | capfirst}}, {{order.state | capfirst}}, {{order.country | capfirst}}.</p>
+                              <p class="card-text ">{{order.email}}</p>
+                              <p class="card-text ">{{order.phone}}</p>
+                            </div>
+                          </div>
+                          <div class="card">
+                            <div class="card-body mt-3">
+                              <h5 class="card-title">Payment method</h5>
+                              <p class="card-text mt-2">PayPal</p>
+                            </div>
+                          </div>
+                          <div class="card">
+                            <div class="card-body mt-3">
+                              <h5 class="card-title">Review products</h5>
+                              <table class="table table-summary mt-2">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Quantity</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    
+                                    {% for item in cart_items %}
+                                    <tr>
+                                        <td><a href="{{item.product.get_url}}">{{item.product.product_name}}</a>
+                                        <p>{% if item.variations.all %}
+                                            {% for i in item.variations.all %}
+                                                {{i.variation_category| capfirst}} - {{i.variation_value | capfirst}}
+                                            {% endfor %}
+                                            {% endif %}</p></td>
+                                        <td>{{item.quantity}}</td>
+                                        <td>Rs {{total}}</td>
+                                    </tr>
+                                    {% endfor %}
+                                   
+                                </tbody>
+                            </table><!-- End .table table-summary -->
+                            </div>
+                          </div>
+                        
+                    </div><!-- End .col-lg-9 -->
+                    <aside class="col-lg-3">
+                        <div class="summary summary-cart">
+                            <h3 class="summary-title">Cart Total</h3><!-- End .summary-title -->
+                            
+                            <table class="table table-summary">
+                                <tbody>
+                                    <tr class="summary-subtotal">
+                                        <td>Subtotal:</td>
+                                        <td>₹ {{total}}</td>
+                                    </tr><!-- End .summary-subtotal -->
+                                    <tr class="summary-shipping">
+                                        <td>Tax:</td>
+                                        <td>&nbsp;</td>
+                                    </tr>
+                                    
+                                    <tr class="summary-shipping-row">
+                                        <td>
+                                            <div class="">
+                                                <label class="custom-control-label" for="tax">Total tax</label>
+                                            </div><!-- End .custom-control -->
+                                        </td>
+                                        <td>₹ {{tax}}</td>
+                                    </tr><!-- End .summary-shipping-row -->
+                                    
+
+                                    <tr class="summary-shipping-estimate">
+                                        <td>Estimate for Your Country<br> <a href="dashboard.html">Change address</a></td>
+                                        <td>&nbsp;</td>
+                                    </tr><!-- End .summary-shipping-estimate -->
+                                    <tr class="summary-total">
+                                        <td>Total:</td>
+                                        <td>Rs {{grand_total}}</td>
+                                    </tr><!-- End .summary-total -->
+                                </tbody>
+                            </table><!-- End .table table-summary -->
+                            {% comment %} <div id="paypal-button-container"></div>
+                            <p id="result-message"></p> {% endcomment %}
+                        </div><!-- End .summary -->
+                        
+                        
+                    </aside><!-- End .col-lg-3 -->
+                </div><!-- End .row -->
+            </div><!-- End .container -->
+        </div><!-- End .cart -->
+    </div><!-- End .page-content -->
+</main><!-- End .main -->
+
+{% include 'partials/footer.html' %}
+
+{% endblock content %}
