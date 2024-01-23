@@ -3,10 +3,12 @@ from django.shortcuts import render,redirect
 from .forms import SignupForm
 from django.contrib.auth import login,logout,authenticate
 from .models import User
+from shop.models import Cart, CartItem
 from django.contrib import messages
 from datetime import datetime,timedelta
 from django.contrib.auth.hashers import make_password
 from home.views import index
+from shop.views import _cart_id
 from django.core.mail import send_mail
 from .utils import send_otp
 import pyotp
@@ -38,6 +40,23 @@ def log_in(request):
             if user.is_block: 
                 messages.error(request, 'Your account is blocked. Please contact support.')
             elif not user.is_block: 
+                try:
+                    print('entering try block')
+                    cart = Cart.objects.get(cart_id=_cart_id(request))
+                    is_cart_item_exists = CartItem.objects.filter(cart=cart).exists()
+                    print(is_cart_item_exists)
+                    if is_cart_item_exists:
+                        cart_items = CartItem.objects.filter(cart=cart)
+                        print(cart_items)
+
+                        for item in cart_items:
+                            item.user = user
+                            item.save()
+                        print(item.user)
+                        
+                except:
+                    print('entering except block')
+                    pass
                 login(request, user)
                 return redirect('home')
             else:
