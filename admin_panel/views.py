@@ -71,6 +71,10 @@ def user_search(request):
 
 @user_passes_test(is_user_admin, login_url='admin_login')
 def edit_user(request, pk):
+    error_username = None
+    error_email = None
+    error_first_name = None
+    error_last_name = None
     instance = User.objects.get(pk=pk)
     if request.POST:
         form = EditUserForm(request.POST, instance=instance)
@@ -82,7 +86,6 @@ def edit_user(request, pk):
             error_email = form['email'].errors
             error_first_name = form['first_name'].errors
             error_last_name = form['last_name'].errors
-            print(error_email)
     form = EditUserForm(instance=instance)
     context = {'form': form,
                'error_username': error_username,
@@ -159,14 +162,28 @@ def add_category(request):
 
 @user_passes_test(is_user_admin, login_url='admin_login')
 def edit_category(request, pk):
+    error_category_name = None
+    error_slug = None
+    error_description = None
+    error_cat_image = None
     instance = Category.objects.get(pk=pk)
     if request.POST:
         form = AddCategoryForm(request.POST, request.FILES, instance=instance)
         if form.is_valid():
             form.save()
             return redirect(category_management)
+        else:
+            error_category_name = form['category_name'].errors
+            error_slug = form['slug'].errors
+            error_description = form['description'].errors
+            error_cat_image = form['cat_image'].errors
     form = AddCategoryForm(instance=instance)
-    context = {'form': form}
+    context = {'form': form, 
+               'error_category_name':error_category_name,
+               'error_slug':error_slug,
+               'error_description':error_description,
+               'error_cat_image': error_cat_image,
+               }
     return render(request, 'admin_panel/edit_category.html',context)
 
 
