@@ -12,6 +12,8 @@ from shop.views import _cart_id
 from django.core.mail import send_mail
 from .utils import send_otp
 import pyotp
+import requests
+
 
 # Create your views here.
 
@@ -39,6 +41,7 @@ def log_in(request):
         if user is not None:
             if user.is_block: 
                 messages.error(request, 'Your account is blocked. Please contact support.')
+                return redirect('log_in')
             elif not user.is_block: 
                 try:
                     cart = Cart.objects.get(cart_id=_cart_id(request))
@@ -77,11 +80,21 @@ def log_in(request):
                 except:
                     pass
                 login(request, user)
-                return redirect('home')
+                url = request.META.get('HTTP_REFERER')
+                try:
+                    query = requests.utils.urlparse(url).query
+                    params= dict(x.split('=') for x in query.split('&'))
+                    if 'next' in params:
+                        next_page = params['next']
+                        return redirect(next_page)
+                except:
+                    return redirect('home')
             else:
                 messages.error(request, 'Invalid username or password')
+                return redirect('log_in')
         else:
             messages.error(request, 'Invalid username or password')
+            return redirect('log_in')
         
 
     return render(request, 'user_auth/user_login.html')

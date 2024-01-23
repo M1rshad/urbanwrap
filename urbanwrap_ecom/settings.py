@@ -42,7 +42,6 @@ INSTALLED_APPS = [
     'user_auth',
     'shop',
     'admin_panel',
-    'user_profile',
 
 ]
 
