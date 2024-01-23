@@ -3,6 +3,10 @@ from shop.models import CartItem
 from .models import Order
 from .forms import OrderForm
 import datetime
+from django.urls import reverse
+from django.conf import settings
+from django.views.decorators.csrf import csrf_exempt
+from paypal.standard.forms import PayPalPaymentsForm
 # Create your views here.
 
 
@@ -60,14 +64,34 @@ def place_order(request, total=0, quantity=0):
             data.save()
 
             order = Order.objects.get(user=current_user, is_ordered=False, order_number=order_number)
+            host = request.get_host()
+            paypal_dict ={
+                'business':settings.PAYPAL_RECEIVER_EMAIL,
+                'amount': grand_total,
+                'item_name': 'order_item_no23',
+                'invoice' : 'INV_122',
+                'currency_code': 'USD',
+                'notify_url' : 'http://{}{}'.format(host, reverse('paypal-ipn')),
+                'return_url' : 'http://{}{}'.format(host, reverse('payment_completed')),
+                'cancel_url' : 'http://{}{}'.format(host, reverse('payment_failed'))
+            }
+            paypal_payment_button = PayPalPaymentsForm(initial=paypal_dict)
             context= {
                 'order':order, 
                 'cart_items':cart_items,
                 'total':total, 
                 'tax':tax,
-                'grand_total':grand_total
+                'grand_total':grand_total,
+                'paypal_payment_button':paypal_payment_button,
             }
             return render(request, 'orders/payments.html', context)
         else:
             return redirect('checkout')
         
+
+def payment_completed(request):
+    return render(request, 'orders/payment_completed.html')
+
+
+def payment_failed(request):
+    return render(request, 'orders/payment_failed.html')

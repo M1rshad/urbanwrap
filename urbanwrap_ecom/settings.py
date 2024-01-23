@@ -44,6 +44,9 @@ INSTALLED_APPS = [
     'admin_panel',
     'orders',
 
+    #PayPal app
+    'paypal.standard.ipn'
+
 ]
 
 MIDDLEWARE = [
@@ -147,3 +150,6 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER='abdullamirshadcl@gmail.com'
 EMAIL_HOST_PASSWORD='uarv vvtv tjml dnsl'
+
+PAYPAL_RECEIVER_EMAIL = 'urbanwrap.business@gmail.com'
+PAYPAL_TEST = True
