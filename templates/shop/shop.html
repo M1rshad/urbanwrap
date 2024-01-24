@@ -30,19 +30,19 @@
 
 
 <main class="main">
-    <div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
+    <div class="page-header text-center" style="background-color:#faf9f9">
         <div class="container">
             {% if 'search' in request.path %}
             <h1 class="page-title">Search result</h1>
             {% else %}
-            <h1 class="page-title">All Products<span>Shop</span></h1>
+            <h1 class="page-title">All Products<span class="text-dark">Shop</span></h1>
             {% endif %}
         </div><!-- End .container -->
     </div><!-- End .page-header -->
     <nav aria-label="breadcrumb" class="breadcrumb-nav mb-2">
         <div class="container">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
                 <li class="breadcrumb-item"><a href="#">Shop</a></li>
             </ol>
         </div><!-- End .container -->
