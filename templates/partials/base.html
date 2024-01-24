@@ -38,13 +38,13 @@
     <header class="header">
         <div class="header-top">
             <div class="container">
-                <div class="header-left">
-                    <a><i class="icon-phone"></i>+91-8157900733</a>
-                </div><!-- End .header-left -->
         
-                <div class="header-right ml-auto">
+                <div class="header-right ml-auto mt-0">
                     {% if not user.is_authenticated %}
-                    <a href="{% url 'log_in' %}" class="link-secondary text-decoration-none text-primary">Sign in / Sign up</a>
+                    {% comment %}
+                    <a href="{% url 'log_in' %}"><img src={% static 'home/assets/images/logo/login.png' %} height="30" width="50"></a>
+                    {% endcomment %}
+                    <a href="{% url 'log_in' %}">SIGNUP | SIGNIN</a>
                     {% else %}
                     <button><a href={% url 'log_out' %}>logout</a></button>
                 {% endif %}
@@ -61,7 +61,7 @@
                     </button>
                     
                     <a href="{% url 'home' %}" class="logo">
-                        <img src={% static 'home/assets/images/logo/urbanwrap-logo.png' %} alt="UrbanWrap Logo" width="110" height="40">
+                        <img src={% static 'home/assets/images/logo/urbanwrap-logo.png' %} alt="UrbanWrap Logo" width="170" height="40">
                     </a>
                 </div>
                 
@@ -83,6 +83,9 @@
                             </li>
                             <li>
                                 <a href="blog.html" class="">Contact Us</a>
+                            </li>
+                            <li>
+                                <a href="blog.html" class="">FAQ</a>
                             </li>
                         </ul><!-- End .menu -->
                     </nav><!-- End .main-nav -->

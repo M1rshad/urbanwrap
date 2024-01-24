@@ -39,7 +39,7 @@ def product_detail(request, category_slug, product_slug):
         'single_product' : single_product,
         'in_cart' : in_cart,
         }
-    return render(request, 'shop/product_detail.html', context)
+    return render(request, 'shop/product_page.html', context)
 
 def _cart_id(request):
     cart = request.session.session_key
