@@ -51,6 +51,8 @@ class ProductImages(models.Model):
                 output_size = (500, 500) 
                 img.thumbnail(output_size)
                 img.save(self.image.path)
+    
+    
 
 
     def __str__(self):

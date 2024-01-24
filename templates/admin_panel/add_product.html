@@ -29,7 +29,7 @@
                                       <div class="form-floating mb-3">
                                         <label for="productName" class="form-label">Product name</label>
                                         <input type="{{ form.product_name.field.widget.input_type }}"
-                                        name="productName"
+                                        name="{{ form.product_name.name }}"
                                         id="productName"
                                         class="form-control text-light" required>
                                       </div>
@@ -38,7 +38,7 @@
                                       <div class="form-floating mb-3">
                                         <label for="slug" class="form-label">Slug</label>
                                         <input type="{{ form.slug.field.widget.input_type }}"
-                                        name="slug"
+                                        name="{{ form.slug.name }}"
                                         id="slug"
                                         class="form-control text-light"  required>
                                       </div>
@@ -101,9 +101,12 @@
                                     </div>
                                   </div>
                                 </form>
-                                {% for message in messages %}
-                                  <p class="text-danger">{{message}}</p>
-                                  {% endfor %}
+                                {% if form.errors %}
+                                  <p class="text-danger">{{form.errors}}</p>
+                                {% endif %}
+                                {% if image_form.errors %}
+                                <p class="text-danger">{{image_form.errors}}</p>
+                              {% endif %}
                                 </div>
                               </div>
                             </div>

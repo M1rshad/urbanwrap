@@ -67,12 +67,17 @@
                                     </div>
                                     <div class="col-12">
                                       <div class="form-floating mb-3">
-                                        <label for="product_image" class="form-label">Product Image</label>
+                                        <label for="product_images" class="form-label">Product Images</label>
+                                        
+                                        
+                                        {% for existing_image  in existing_images %}
                                         <input type="{{ image_form.image.field.widget.input_type }}"
                                         name="{{ image_form.image.name }}"
                                         id="formFile "multiple
                                         class="form-control text-light" required>
-                                        <label for="product_image" >{{image_form.image.value.url}}</label>
+                                        <label for="product_image" class="form-label">{{existing_image.image.url}}</label>
+                                        {% endfor %}
+                                          
                                           
                                       </div>
                                     </div>
@@ -132,5 +137,6 @@
       });
   });
 </script>
+
 {% endblock content %}
     

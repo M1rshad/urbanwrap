@@ -218,18 +218,21 @@ def delete_product(request, pk):
 
 @user_passes_test(is_user_admin, login_url='admin_login')
 def add_product(request):
-    form = AddProductForm()
-    image_form = ProductImageForm()
     if request.POST:
         form = AddProductForm(request.POST)
         image_form = ProductImageForm(request.POST, request.FILES)
         if form.is_valid() and image_form.is_valid():
             product = form.save()
-            image = image_form.save(commit=False)
-            image.product = product
-            image.save()
+            for img in request.FILES.getlist('image'):
+                image = ProductImages(image=img, product=product)
+                image.save()
 
             return redirect(product_management)
+        else:
+            print(form.errors)
+            print(image_form.errors)
+    form = AddProductForm()
+    image_form = ProductImageForm()
     context = {
         'form' : form,
         'image_form' : image_form
@@ -245,15 +248,17 @@ def edit_product(request, pk):
         image_form = ProductImageForm(request.POST, request.FILES, instance=instance)
         if form.is_valid() and image_form.is_valid():
             product = form.save()
-            image = image_form.save(commit=False)
-            image.product = product
-            image.save()
+            for img in request.FILES.getlist('image'):
+                image = ProductImages(image=img, product=product)
+                image.save()
             return redirect(product_management)
     form = AddProductForm(instance=instance)
     image_form = ProductImageForm(instance=instance)
+    existing_images = instance.product_img.all()
     context = {
         'form': form,
-        'image_form': image_form
+        'image_form': image_form,
+        'existing_images':existing_images
         }
     return render(request, 'admin_panel/edit_product.html',context)
 
