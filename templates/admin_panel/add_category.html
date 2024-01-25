@@ -29,7 +29,7 @@
                                       <div class="form-floating mb-3">
                                         <label for="categoryName" class="form-label">Category name</label>
                                         <input type="{{ form.category_name.field.widget.input_type }}"
-                                        name="categoryName"
+                                        name="{{ form.category_name.name }}"
                                         id="categoryName"
                                         class="form-control text-light" required>
                                       </div>
@@ -38,7 +38,7 @@
                                       <div class="form-floating mb-3">
                                         <label for="slug" class="form-label">Slug</label>
                                         <input type="{{ form.slug.field.widget.input_type }}"
-                                        name="slug"
+                                        name="{{ form.slug.name }}"
                                         id="slug"
                                         class="form-control text-light"  required>
                                       </div>
