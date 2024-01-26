@@ -68,8 +68,8 @@ def place_order(request, total=0, quantity=0):
             paypal_dict ={
                 'business':settings.PAYPAL_RECEIVER_EMAIL,
                 'amount': grand_total,
-                'item_name': 'order_item_no23',
-                'invoice' : 'INV_122',
+                'item_name': 'order_item_no234',
+                'invoice' : 'INV_1225',
                 'currency_code': 'USD',
                 'notify_url' : 'http://{}{}'.format(host, reverse('paypal-ipn')),
                 'return_url' : 'http://{}{}'.format(host, reverse('payment_completed')),

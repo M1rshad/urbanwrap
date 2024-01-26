@@ -21,10 +21,14 @@
                     <div class="intro-slide" style="background-image: url({% static 'home/assets/images/overshirt-banner-desktop.webp' %}) ; ">
                         <div class="container intro-content text-center">
                             <h1 class="text-center text-white">365 Overshirt</h1><!-- End .intro-title -->
-                            <a href="category.html" class="btn">
+                            {% for category in cat_filter %}
+                            {% if category.category_name == 'Overshirt' %}
+                            <a href="{{category.get_url}}" class="btn">
                                 <span>SHOP NOW</span>
                                 <i class="icon-long-arrow-right"></i>
                             </a>
+                            {% endif %}
+                            {% endfor %}
                         </div><!-- End .intro-content -->
                         <img class="position-right" src={% static '' %}>
                     </div><!-- End .intro-slide -->
@@ -42,14 +46,14 @@
                                 <div class="banner banner-overlay">
                                     {% for category in cat_filter %}
                                     {% if category.category_name == 'Shirt' %}
-                                    <a href="#">
+                                    <a href="{{category.get_url}}">
                                         <img src={{category.cat_image.url}} alt="Banner" height="376" width="470">
                                     </a>
                                     
                                     <div class="banner-content">
-                                        <h4 class="banner-subtitle"><a href="#">Final reduction</a></h4><!-- End .banner-subtitle -->
-                                        <h3 class="banner-title"><a href="#"><strong>{{category.category_name}}</strong> <br>up to 60% off</a></h3><!-- End .banner-title -->
-                                        <a href="#" class="btn btn-outline-white banner-link">Shop Now <i class="icon-long-arrow-right"></i></a>
+                                        <h4 class="banner-subtitle"><a href="{{category.get_url}}">Final reduction</a></h4><!-- End .banner-subtitle -->
+                                        <h3 class="banner-title"><a href="{{category.get_url}}"><strong>{{category.category_name}}</strong> <br>up to 60% off</a></h3><!-- End .banner-title -->
+                                        <a href="{{category.get_url}}" class="btn btn-outline-white banner-link">Shop Now <i class="icon-long-arrow-right"></i></a>
                                         {% endif %}
                                         {% endfor %}
                                     </div><!-- End .banner-content -->
@@ -60,14 +64,14 @@
                                 <div class="banner banner-overlay">
                                     {% for category in cat_filter %}
                                     {% if category.category_name == 'Pants' %}
-                                    <a href="#">
+                                    <a href="{{category.get_url}}">
                                         <img src={{category.cat_image.url}} alt="Banner" height="376" width="470">
                                     </a>
                                     
                                     <div class="banner-content">
-                                        <h4 class="banner-subtitle"><a href="#">Limited time only.</a></h4><!-- End .banner-subtitle -->
-                                        <h3 class="banner-title"><a href="#"><strong>{{category.category_name}}</strong> <br>40 -70% off</a></h3><!-- End .banner-title -->
-                                        <a href="#" class="btn btn-outline-white banner-link">Shop Now <i class="icon-long-arrow-right"></i></a>
+                                        <h4 class="banner-subtitle"><a href="{{category.get_url}}">Limited time only.</a></h4><!-- End .banner-subtitle -->
+                                        <h3 class="banner-title"><a href="{{category.get_url}}"><strong>{{category.category_name}}</strong> <br>40 -70% off</a></h3><!-- End .banner-title -->
+                                        <a href="{{category.get_url}}" class="btn btn-outline-white banner-link">Shop Now <i class="icon-long-arrow-right"></i></a>
                                     </div><!-- End .banner-content -->
                                     {% endif %}
                                     {% endfor %}
@@ -78,14 +82,14 @@
                                 <div class="banner banner-overlay">
                                     {% for category in cat_filter %}
                                     {% if category.category_name == 'Hoodies' %}
-                                    <a href="#">
+                                    <a href="{{category.get_url}}">
                                         <img src={{category.cat_image.url}} alt="Banner" height="376" width="470">
                                     </a>
                                     
                                     <div class="banner-content">
-                                        <h4 class="banner-subtitle"><a href="#">This week we love...</a></h4><!-- End .banner-subtitle -->
-                                        <h3 class="banner-title"><a href="#"><strong>{{category.category_name}} </strong> <br>from $6.99</a></h3><!-- End .banner-title -->
-                                        <a href="#" class="btn btn-outline-white banner-link">Shop Now <i class="icon-long-arrow-right"></i></a>
+                                        <h4 class="banner-subtitle"><a href="{{category.get_url}}">This week we love...</a></h4><!-- End .banner-subtitle -->
+                                        <h3 class="banner-title"><a href="{{category.get_url}}"><strong>{{category.category_name}} </strong> <br>from $6.99</a></h3><!-- End .banner-title -->
+                                        <a href="{{category.get_url}}" class="btn btn-outline-white banner-link">Shop Now <i class="icon-long-arrow-right"></i></a>
                                         {% endif %}
                                         {% endfor %}
                                     </div><!-- End .banner-content -->

@@ -62,19 +62,19 @@
                                 <figure class="product-main-image">
                                     {% for image in single_product.product_img.all %}
                                     {% if forloop.first %}
-                                    <img id="product-zoom" src="{{image.image.url}}" data-zoom-image="{{image.image.url}}" alt="product image">
-                                    {% endif %}
-                                    {% endfor %} 
-
+                                    <img id="product-zoom" src="{{image.image.url}}" data-zoom-image="{{image.image.url}}" alt="product image" style="width: 457.2px; height: 457.2px; object-fit:contain">
+                                    
                                     <a href="#" id="btn-product-gallery" class="btn-product-gallery">
                                         <i class="icon-arrows"></i>
                                     </a>
                                 </figure><!-- End .product-main-image -->
-
+                                
                                 <div id="product-zoom-gallery" class="product-image-gallery">
-                                    <a class="product-gallery-item active" href="#" data-image="{% static 'home/assets/images/products/single/centered/1.jpg' %}" data-zoom-image="assets/images/products/single/centered/1-big.jpg">
-                                        <img src="{% static 'home/assets/images/products/single/centered/1-small.jpg' %}" alt="product side">
+                                    <a class="product-gallery-item active" href="#" data-image="{{image.image.url}}" data-zoom-image="{{image.image.url}}">
+                                        <img src="{{image.image.url}}" alt="product side" style="width: 107px; height: 107px; object-fit:contain">
                                     </a>
+                                    {% endif %}
+                                    {% endfor %} 
                                     
                                     <a class="product-gallery-item" href="#" data-image="{% static 'home/assets/images/products/single/centered/2.jpg' %}" data-zoom-image="assets/images/products/single/centered/2-big.jpg">
                                         <img src="{% static 'home/assets/images/products/single/centered/2-small.jpg' %}" alt="product cross">
@@ -130,7 +130,7 @@
                             <div class="product-details-action">
                                 <div class="details-action-col">
                                     <div class="product-details-quantity">
-                                        <input type="number" id="qty" class="form-control" value="1" min="1" max="10" step="1" data-decimals="0" required>
+                                        <input type="number" id="qty"   class="form-control" value="1" min="1" max="10" step="1" data-decimals="0" required>
                                     </div><!-- End .product-details-quantity -->
                                     
                                     {% if single_product.stock <= 0 %}

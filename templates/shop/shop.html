@@ -32,11 +32,16 @@
 <main class="main">
     <div class="page-header text-center" style="background-color:#faf9f9">
         <div class="container">
+            
             {% if 'search' in request.path %}
-            <h1 class="page-title">Search result</h1>
+                <h1 class="page-title">Search result</h1>
             {% else %}
-            <h1 class="page-title">All Products<span class="text-dark">Shop</span></h1>
+                {% if not cat_present %}
+                    <h1 class="page-title">All Products<span class="text-dark">Shop</span></h1>
+                {% endif %}
             {% endif %}
+            
+
         </div><!-- End .container -->
     </div><!-- End .page-header -->
     <nav aria-label="breadcrumb" class="breadcrumb-nav mb-2">
