@@ -60,9 +60,11 @@
                         <div class="product-gallery product-gallery-vertical">
                             <div class="row">
                                 <figure class="product-main-image">
-                                    {% for image in single_product.product_img.all %}
-                                    {% if forloop.first %}
-                                    <img id="product-zoom" src="{{image.image.url}}" data-zoom-image="{{image.image.url}}" alt="product image" style="width: 457.2px; height: 457.2px; object-fit:contain">
+                                    {% if single_product.product_img.all %}
+                                    {% with first_image=single_product.product_img.all|first %}
+                                    <img id="product-zoom" src="{{first_image.image.url}}" data-zoom-image="{{firtst_image.image.url}}" alt="product image" style="width: 457.2px; height: 457.2px; object-fit:contain">
+                                    {% endwith %}
+                                    {% endif %}
                                     
                                     <a href="#" id="btn-product-gallery" class="btn-product-gallery">
                                         <i class="icon-arrows"></i>
@@ -70,15 +72,21 @@
                                 </figure><!-- End .product-main-image -->
                                 
                                 <div id="product-zoom-gallery" class="product-image-gallery">
-                                    <a class="product-gallery-item active" href="#" data-image="{{image.image.url}}" data-zoom-image="{{image.image.url}}">
-                                        <img src="{{image.image.url}}" alt="product side" style="width: 107px; height: 107px; object-fit:contain">
+                                    {% if single_product.product_img.all %}
+                                    {% with first_image=single_product.product_img.all|first %}
+                                    <a class="product-gallery-item active" href="#" data-image="{{first_image.image.url}}" data-zoom-image="{{first_image.image.url}}">
+                                        <img src="{{first_image.image.url}}" alt="product side" style="width: 107px; height: 107px; object-fit:contain">
                                     </a>
+                                    {% endwith %}
                                     {% endif %}
-                                    {% endfor %} 
-                                    
-                                    <a class="product-gallery-item" href="#" data-image="{% static 'home/assets/images/products/single/centered/2.jpg' %}" data-zoom-image="assets/images/products/single/centered/2-big.jpg">
-                                        <img src="{% static 'home/assets/images/products/single/centered/2-small.jpg' %}" alt="product cross">
+
+                                    {% if product.product_img.all|length >= 2 %}
+                                    {% with second_image=product.product_img.all.1 %}
+                                    <a class="product-gallery-item" href="#" data-image="{{second_image.image.url}}" data-zoom-image="{{second_image.image.url}}">
+                                        <img src="{{second_image.image.url}}" alt="product cross" style="width: 107px; height: 107px; object-fit:contain">
                                     </a>
+                                    {% endwith %}
+                                    {% endif %}
 
                                     <a class="product-gallery-item" href="#" data-image="{% static 'home/assets/images/products/single/centered/3.jpg' %}" data-zoom-image="assets/images/products/single/centered/3-big.jpg">
                                         <img src="{% static 'home/assets/images/products/single/centered/3-small.jpg' %}" alt="product with model">
