@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 from home.models import Product, Category, Variation
+from orders.models import Coupon
 from .models import Cart, CartItem
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Q 
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 # Create your views here.
 def shop(request, category_slug=None):
@@ -203,16 +205,50 @@ def cart(request, total=0, quantity=0, cart_items=None):
             quantity += cart_item.quantity
         tax =  0.02 * total
         grand_total = total + tax
+        if request.POST:
+            coupon = request.POST['coupon']
+            coupon_obj = Coupon.objects.filter(coupon_code = coupon)
+            if not coupon_obj.exists():
+                messages.error(request, 'Invalid Coupon.')
+                return redirect('cart')
+            if cart.coupon:
+                messages.error(request, 'Coupon already exists.')
+                return redirect('cart')
+            
+            if grand_total >= coupon_obj[0].minimum_amount:
+                messages.error(request, f'Total amount should be above {coupon_obj.minimum_amount}')
+                return redirect('cart')
+            
+            if coupon_obj[0].is_expired:
+                messages.error(request, 'Coupon expired.')
+                return redirect('cart')
+
+            cart.coupon = coupon_obj[0]
+            cart.save()
+            messages.success(request, 'Coupon applied.')
+            grand_total -= coupon_obj[0].discounted_price
+            return redirect('cart')
+
     except Cart.DoesNotExist:
         pass
+
     context = {
         'total':total,
         'quantity':quantity,
         'cart_items' : cart_items,
         'tax' : tax,
         'grand_total':grand_total,
+        'cart':cart,
     }
     return render(request, 'shop/cart.html', context)
+    
+
+def remove_coupon(request, cart_id):
+    cart = Cart.objects.get(cart_id=cart_id)
+    cart.coupon = None
+    cart.save()
+    messages.success(request, 'Coupon removed.')
+    return redirect('cart')
 
 
 def search(request):

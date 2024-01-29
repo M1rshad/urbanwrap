@@ -1,10 +1,12 @@
 from django.db import models
 from home.models import Product, Variation
+from orders.models import Coupon
 from user_auth.models import User
 
 # Create your models here.
 class Cart(models.Model):
     cart_id = models.CharField(max_length=250, blank=True)
+    coupon = models.ForeignKey(Coupon, on_delete=models.SET_NULL, null=True, blank=True)
     date_added = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -19,7 +21,7 @@ class CartItem(models.Model):
     is_active = models.BooleanField(default=True)
 
     def sub_total(self):
-        return self.product.price * self.quantity
+        return self.product.price * self.quantity 
 
     def __unicaode__(self):
         return self.product

@@ -7,7 +7,12 @@ from django.urls import reverse
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from paypal.standard.forms import PayPalPaymentsForm
+from paypal.standard.models import ST_PP_COMPLETED
+from paypal.standard.ipn.signals import valid_ipn_received
+from django.dispatch import receiver
+import uuid
 # Create your views here.
+
 
 
 def payments(request):
@@ -68,8 +73,8 @@ def place_order(request, total=0, quantity=0):
             paypal_dict ={
                 'business':settings.PAYPAL_RECEIVER_EMAIL,
                 'amount': grand_total,
-                'item_name': 'order_item_no234',
-                'invoice' : 'INV_1225',
+                'item_name': order_number,
+                'invoice' : uuid.uuid4(),
                 'currency_code': 'USD',
                 'notify_url' : 'http://{}{}'.format(host, reverse('paypal-ipn')),
                 'return_url' : 'http://{}{}'.format(host, reverse('payment_completed')),
@@ -95,3 +100,30 @@ def payment_completed(request):
 
 def payment_failed(request):
     return render(request, 'orders/payment_failed.html')
+
+@receiver(valid_ipn_received)
+def paypal_payment_received(sender, **kwargs):
+    try:
+        print('Signal received')
+        ipn_obj = sender
+        print('IPN Object:', ipn_obj)
+
+        if ipn_obj.payment_status == ST_PP_COMPLETED:
+            print('Payment completed')
+            order_number = ipn_obj.item_name
+            print('Order number:', order_number)
+            
+            # ... rest of your code ...
+
+    except Exception as e:
+        print('Error processing IPN:', str(e))
+#     print('signal recieved')
+#     ipn_obj = sender
+#     if ipn_obj.payment_status == ST_PP_COMPLETED:
+#         print('payment completed')
+#         order_number = ipn_obj.item_name
+#         print(order_number)
+#         order = Order.objects.get(order_number=order_number)
+#         order.is_ordered =True
+#         order.save()
+
