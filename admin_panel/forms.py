@@ -1,6 +1,7 @@
 from django import forms 
 from user_auth.models import User
 from home.models import Category, Product, Variation, ProductImages
+from orders.models import Coupon
 from django.core.validators import FileExtensionValidator
 
 
@@ -46,3 +47,8 @@ class ProductImageForm(forms.ModelForm):
         fields =('image',)
 
    
+class AddCouponForm(forms.ModelForm):
+
+    class Meta:
+        model = Coupon
+        fields = ('coupon_code', 'discounted_price', 'minimum_amount', 'is_expired')

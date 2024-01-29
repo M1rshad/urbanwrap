@@ -1,0 +1,51 @@
+{% extends 'partials/base_admin.html' %}
+
+{% block content %}
+<div class="main-panel">
+    <div class="content-wrapper">
+      <div class="row">
+          <div class="col-lg-12 grid-margin stretch-card">
+              <div class="card">
+                  <div class="card-body">
+                      <h4 class="card-title">Coupon Management</h4>
+                      <div class="table-responsive">
+                          <div class="search-bar">
+                          <div class="container mt-4">
+                            <div class="d-flex justify-content-end">
+                                <button class="btn btn-inverse-info ms-auto "><a href="{% url 'add_coupon' %}" class="text-decoration-none" style="color: #8a59cc;">Add Coupon</a></button>
+                            </div>
+                          </div>
+                          </div>
+                          <table class="table">
+                              <thead>
+                                  <tr>
+                                      <th>Coupon code</th>
+                                      <th>Discounted price</th>
+                                      <th>Minimum amount</th>
+                                      <th>Is expired</th>
+                                      <th>Edit</th>
+                                      <th>Delete</th>
+                                  </tr>
+                              </thead>
+                              <tbody>
+                                  {% for i in coupon_obj %}
+                                  <tr>
+                                      <td>{{i.coupon_code}}</td>
+                                      <td>{{i.discounted_price}}</td>
+                                      <td>{{i.minimum_amount}}</td>
+                                      <td>{{i.is_expired}}</td>
+                                      <td><button class="btn btn-light"><a href={% url 'edit_coupon' i.id %}>Edit</a></button></td>
+                                      <td><button class="btn btn-light"><a href={% url 'delete_coupon' i.id%}>Delete</a></button></td>
+                                  </tr>
+                                  {% endfor %}
+                              </tbody>
+                          </table>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+{% endblock content %}
+    

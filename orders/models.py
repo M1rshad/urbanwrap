@@ -84,7 +84,18 @@ class Coupon(models.Model):
     minimum_amount = models.IntegerField(default=100)
 
 
+    def __str__(self):
+        return self.coupon_code
+    
 
+
+class Wallet(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    card_id = models.CharField(max_length=12, unique=True)
+    balance = models.PositiveIntegerField(default=0)
+
+    def __str__(self):
+        return f"{self.user.username}'s Wallet"
     
 
 

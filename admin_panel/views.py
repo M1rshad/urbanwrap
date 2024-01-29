@@ -5,11 +5,12 @@ from django.shortcuts import render,redirect
 from django.contrib.auth import login, logout, authenticate
 from user_auth.models import User
 from home.models import Category, Product, Variation , ProductImages
+from orders.models import Coupon
 from django.contrib import messages
 from django.views.decorators.cache import never_cache
 from django.contrib.postgres.search import SearchVector
 from user_auth.forms import SignupForm
-from .forms import EditUserForm, AddCategoryForm, AddProductForm, AddVariantForm, ProductImageForm
+from .forms import EditUserForm, AddCategoryForm, AddProductForm, AddVariantForm, ProductImageForm, AddCouponForm
 from django.contrib.auth.decorators import login_required, user_passes_test
 
 
@@ -329,3 +330,42 @@ def variant_search(request):
         return render(request, 'admin_panel/variant_management.html',context)
     else:
         return redirect(variant_management)
+    
+
+@user_passes_test(is_user_admin, login_url='admin_login')
+def coupon_management(request):
+    coupon_obj = Coupon.objects.all().order_by('id')
+    context = {'coupon_obj' : coupon_obj}
+    return render(request, 'admin_panel/coupon_management.html',context)
+
+
+@user_passes_test(is_user_admin, login_url='admin_login')
+def add_coupon(request):
+    form = AddCouponForm()
+    if request.POST:
+        form = AddCouponForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(coupon_management)
+    context = {'form' : form}
+    return render(request, 'admin_panel/add_coupon.html',context)
+
+
+@user_passes_test(is_user_admin, login_url='admin_login')
+def delete_coupon(request, pk):
+    instance = Coupon.objects.get(pk=pk)
+    instance.delete()
+    return redirect('coupon_management')
+
+
+@user_passes_test(is_user_admin, login_url='admin_login')
+def edit_coupon(request, pk):
+    instance = Coupon.objects.get(pk=pk)
+    if request.POST:
+        form = AddCouponForm(request.POST,instance=instance)
+        if form.is_valid():
+            form.save()
+            return redirect(coupon_management)
+    form = AddCouponForm(instance=instance)
+    context = {'form': form}
+    return render(request, 'admin_panel/edit_coupon.html',context)

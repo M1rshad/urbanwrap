@@ -215,7 +215,7 @@ def cart(request, total=0, quantity=0, cart_items=None):
                 messages.error(request, 'Coupon already exists.')
                 return redirect('cart')
             
-            if grand_total >= coupon_obj[0].minimum_amount:
+            if grand_total <= coupon_obj[0].minimum_amount:
                 messages.error(request, f'Total amount should be above {coupon_obj.minimum_amount}')
                 return redirect('cart')
             
@@ -227,10 +227,10 @@ def cart(request, total=0, quantity=0, cart_items=None):
             cart.save()
             messages.success(request, 'Coupon applied.')
             grand_total -= coupon_obj[0].discounted_price
-            return redirect('cart')
 
     except Cart.DoesNotExist:
         pass
+    
 
     context = {
         'total':total,
@@ -238,7 +238,8 @@ def cart(request, total=0, quantity=0, cart_items=None):
         'cart_items' : cart_items,
         'tax' : tax,
         'grand_total':grand_total,
-        'cart':cart,
+        #'cart':cart,
+        
     }
     return render(request, 'shop/cart.html', context)
     
