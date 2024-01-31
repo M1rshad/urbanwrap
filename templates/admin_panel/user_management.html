@@ -15,20 +15,16 @@
                               <input type="text" name="search_input" class="form-control mb-1 text-light" placeholder="Search User">
                               <button type="submit" class="btn-inverse-info mb-1 ">Search</button>
                           </form>
-                          <div class="container mt-4">
-                            <div class="d-flex justify-content-end">
-                                <button class="btn btn-inverse-info ms-auto "><a href="{% url 'add_user' %}" class="text-decoration-none" style="color: #8a59cc;">Add User</a></button>
-                            </div>
+                          
                           </div>
-                          </div>
-                          <table class="table">
+                          <table class="table mt-4">
                               <thead>
                                   <tr>
                                       <th>Username</th>
                                       <th>First Name</th>
                                       <th>Last Name</th>
                                       <th>Email</th>
-                                      <th>Edit</th>
+                                      <th>Created on</th>
                                       <th>Status</th>
                                   </tr>
                               </thead>
@@ -39,7 +35,7 @@
                                       <td>{{i.first_name}}</td>
                                       <td>{{i.last_name}}</td>
                                       <td>{{i.email}}</td>
-                                      <td><button class="btn btn-light"><a href={% url 'edit_user' i.id %}>Edit</a></button></td>
+                                      <td>{{i.date_joined}}</td>
                                       {% if not i.is_superuser%}
                                       {% if i.is_block == False %}
                                       <td><button class="btn btn-light"><a href={% url 'block_user' i.id %}>Block</a></button>

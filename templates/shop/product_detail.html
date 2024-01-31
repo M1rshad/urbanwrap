@@ -79,22 +79,29 @@
                                     </a>
                                     {% endwith %}
                                     {% endif %}
-
-                                    {% if product.product_img.all|length >= 2 %}
-                                    {% with second_image=product.product_img.all.1 %}
-                                    <a class="product-gallery-item" href="#" data-image="{{second_image.image.url}}" data-zoom-image="{{second_image.image.url}}">
-                                        <img src="{{second_image.image.url}}" alt="product cross" style="width: 107px; height: 107px; object-fit:contain">
+                                    {% if single_product.product_img.all %}
+                                    {% if single_product.product_img.count >= 2 %}
+                                    <a class="product-gallery-item" href="#" data-image="{{single_product.product_img.all.1.image.url }}" data-zoom-image="{{single_product.product_img.all.1.image.url }}">
+                                        <img src="{{single_product.product_img.all.1.image.url }}" alt="product cross" style="width: 107px; height: 107px; object-fit:contain">
                                     </a>
-                                    {% endwith %}
+                                    {% endif %}
                                     {% endif %}
 
-                                    <a class="product-gallery-item" href="#" data-image="{% static 'home/assets/images/products/single/centered/3.jpg' %}" data-zoom-image="assets/images/products/single/centered/3-big.jpg">
-                                        <img src="{% static 'home/assets/images/products/single/centered/3-small.jpg' %}" alt="product with model">
+                                    {% if single_product.product_img.all %}
+                                    {% if single_product.product_img.count >= 3 %}
+                                    <a class="product-gallery-item" href="#" data-image="{{single_product.product_img.all.2.image.url }}" data-zoom-image="{{single_product.product_img.all.2.image.url }}">
+                                        <img src="{{single_product.product_img.all.2.image.url }}" alt="product cross" style="width: 107px; height: 107px; object-fit:contain">
                                     </a>
+                                    {% endif %}
+                                    {% endif %}
 
-                                    <a class="product-gallery-item" href="#" data-image="{% static 'home/assets/images/products/single/centered/4.jpg' %}" data-zoom-image="assets/images/products/single/centered/4-big.jpg">
-                                        <img src="{% static 'home/assets/images/products/single/centered/4-small.jpg' %}" alt="product back">
+                                    {% if single_product.product_img.all %}
+                                    {% if single_product.product_img.count >= 4 %}
+                                    <a class="product-gallery-item" href="#" data-image="{{single_product.product_img.all.3.image.url }}" data-zoom-image="{{single_product.product_img.all.3.image.url }}">
+                                        <img src="{{single_product.product_img.all.3.image.url }}" alt="product cross" style="width: 107px; height: 107px; object-fit:contain">
                                     </a>
+                                    {% endif %}
+                                    {% endif %}
                                 </div><!-- End .product-image-gallery -->
                             </div><!-- End .row -->
                         </div><!-- End .product-gallery -->
@@ -112,7 +119,7 @@
                             </div><!-- End .rating-container -->
 
                             <div class="product-price">
-                                Rs {{single_product.price}}
+                                $ {{single_product.price}}
                             </div><!-- End .product-price -->
 
                             <div class="product-content">

@@ -71,45 +71,6 @@ def user_search(request):
 
 
 @user_passes_test(is_user_admin, login_url='admin_login')
-def edit_user(request, pk):
-    error_username = None
-    error_email = None
-    error_first_name = None
-    error_last_name = None
-    instance = User.objects.get(pk=pk)
-    if request.POST:
-        form = EditUserForm(request.POST, instance=instance)
-        if form.is_valid():
-            form.save()
-            return redirect(user_management)
-        else: 
-            error_username = form['username'].errors
-            error_email = form['email'].errors
-            error_first_name = form['first_name'].errors
-            error_last_name = form['last_name'].errors
-    form = EditUserForm(instance=instance)
-    context = {'form': form,
-               'error_username': error_username,
-               'error_email': error_email,
-               'error_first_name':error_first_name,
-               'error_last_name' : error_last_name
-               }
-    return render(request, 'admin_panel/edit_user.html',context)
-
-
-@user_passes_test(is_user_admin, login_url='admin_login')
-def add_user(request):
-    form = SignupForm()
-    if request.POST:
-        form = SignupForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect(user_management)
-    context = {'form' : form}
-    return render(request, 'admin_panel/add_user.html',context)
-
-
-@user_passes_test(is_user_admin, login_url='admin_login')
 def block_user(request,pk):
     instance = User.objects.get(pk=pk)
     instance.is_block = True
@@ -134,7 +95,7 @@ def category_management(request):
 
 
 @user_passes_test(is_user_admin, login_url='admin_login')
-def delist_category(request, pk):
+def unlist_category(request, pk):
     instance = Category.objects.get(pk=pk)
     instance.is_active = False
     instance.save()
