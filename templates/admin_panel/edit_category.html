@@ -81,7 +81,7 @@
                                         id="{{ form.cat_image.id_for_label }}"
                                         class="form-control text-light" >
                                         {% if form.cat_image.value %}
-                                          <label for="cat_image" class="form-label">{{ form.cat_image.value.url }}</label>
+                                          <img src={{ form.cat_image.value.url }} height=200px>
                                         {% endif %}
                                         {% if error_category_name != None %}
                                         {{ error_cat_image }}
