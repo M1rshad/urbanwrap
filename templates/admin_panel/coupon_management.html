@@ -35,7 +35,12 @@
                                       <td>{{i.minimum_amount}}</td>
                                       <td>{{i.is_expired}}</td>
                                       <td><button class="btn btn-light"><a href={% url 'edit_coupon' i.id %}>Edit</a></button></td>
-                                      <td><button class="btn btn-light"><a href={% url 'delete_coupon' i.id%}>Delete</a></button></td>
+
+                                      {% if i.is_active%}
+                                      <td><button class="btn btn-light"><a href={% url 'unlist_coupon' i.id%}>Unlist</a></button></td>
+                                      {% else %}
+                                      <td><button class="btn btn-light"><a href={% url 'list_coupon' i.id%}>List</a></button></td>
+                                      {% endif %}
                                   </tr>
                                   {% endfor %}
                               </tbody>

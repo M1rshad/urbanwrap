@@ -322,9 +322,18 @@ def add_coupon(request):
 
 
 @user_passes_test(is_user_admin, login_url='admin_login')
-def delete_coupon(request, pk):
+def unlist_coupon(request, pk):
     instance = Coupon.objects.get(pk=pk)
-    instance.delete()
+    instance.is_active=False
+    instance.save()
+    return redirect('coupon_management')
+
+
+@user_passes_test(is_user_admin, login_url='admin_login')
+def list_coupon(request, pk):
+    instance = Coupon.objects.get(pk=pk)
+    instance.is_active=True
+    instance.save()
     return redirect('coupon_management')
 
 
