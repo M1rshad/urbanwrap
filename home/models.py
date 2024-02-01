@@ -1,3 +1,4 @@
+from email.policy import default
 from django.db import models
 from django.urls import reverse
 from PIL import Image
@@ -24,7 +25,6 @@ class Product(models.Model):
     slug = models.SlugField(max_length=100, unique=True)
     description = models.TextField(max_length=255, blank=True)
     price = models.PositiveIntegerField()
-    stock = models.PositiveIntegerField()
     is_available = models.BooleanField(default=True)
     is_active = models.BooleanField(default=True)
     priority =  models.IntegerField(default=0, blank=True)
@@ -70,6 +70,7 @@ class Variation(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     variation_category = models.CharField(max_length=100, choices=variation_category_choices)
     variation_value=models.CharField(max_length=100)
+    stock = models.PositiveIntegerField()
     is_active = models.BooleanField(default=True)
     created_date = models.DateTimeField(auto_now_add=True)
 

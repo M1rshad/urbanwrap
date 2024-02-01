@@ -30,7 +30,7 @@ class AddProductForm(forms.ModelForm):
 
     class Meta:
         model = Product
-        fields = ('product_name', 'slug', 'description', 'price', 'stock', 'is_available', 'category')
+        fields = ('product_name', 'slug', 'description', 'price', 'is_available', 'category')
 
 
 class AddVariantForm(forms.ModelForm):
