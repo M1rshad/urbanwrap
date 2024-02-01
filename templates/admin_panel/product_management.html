@@ -44,7 +44,12 @@
                                       <td>{{i.modified_date}}</td>
                                       <td>{{i.is_available}}</td>
                                       <td><button class="btn btn-light"><a href={% url 'edit_product' i.id %}>Edit</a></button></td>
-                                      <td><button class="btn btn-light"><a href={% url 'delete_product' i.id%}>Delete</a></button></td>
+
+                                      {% if i.is_active%}
+                                      <td><button class="btn btn-light"><a href={% url 'unlist_product' i.id%}>Unlist</a></button></td>
+                                      {% else %}
+                                      <td><button class="btn btn-light"><a href={% url 'list_product' i.id%}>List</a></button></td>
+                                      {% endif %}
                                   </tr>
                                   {% endfor %}
                               </tbody>

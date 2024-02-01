@@ -172,9 +172,18 @@ def product_management(request):
 
 
 @user_passes_test(is_user_admin, login_url='admin_login')
-def delete_product(request, pk):
+def unlist_product(request, pk):
     instance = Product.objects.get(pk=pk)
-    instance.delete()
+    instance.is_active=False
+    instance.save()
+    return redirect('product_management')
+
+
+@user_passes_test(is_user_admin, login_url='admin_login')
+def list_product(request, pk):
+    instance = Product.objects.get(pk=pk)
+    instance.is_active=True
+    instance.save()
     return redirect('product_management')
 
 
