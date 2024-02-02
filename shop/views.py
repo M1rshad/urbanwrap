@@ -85,7 +85,8 @@ def add_cart(request, product_id):
                 index = ex_var_list.index(product_variation)
                 item_id = id[index]
                 item = CartItem.objects.get(product=product, id=item_id)
-                item.quantity +=1
+               
+               
                 item.save()
             else:
                 item = CartItem.objects.create(product=product, quantity=1, user=current_user)  
@@ -290,4 +291,8 @@ def checkout(request, total=0, quantity=0, cart_items=None):
         'grand_total':grand_total,
     }
     return render(request, 'shop/checkout.html', context)
+
+
+def wishlist(request):
+    return render(request, 'shop/wishlist.html')
 
