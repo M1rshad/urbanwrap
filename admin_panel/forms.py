@@ -42,9 +42,10 @@ class AddVariantForm(forms.ModelForm):
 
 class ProductImageForm(forms.ModelForm):
     image = forms.ImageField(validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png', 'webp'])], )
+    delete_image = forms.BooleanField(required=False, initial=False, widget=forms.CheckboxInput(attrs={'class': 'delete-checkbox'}))
     class Meta:
         model = ProductImages
-        fields =('image',)
+        fields =('image','delete_image')
 
    
 class AddCouponForm(forms.ModelForm):

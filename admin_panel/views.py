@@ -217,11 +217,25 @@ def edit_product(request, pk):
     if request.POST:
         form = AddProductForm(request.POST, instance=instance)
         image_form = ProductImageForm(request.POST, request.FILES, instance=instance)
+        print(form.errors)
+
         if form.is_valid() and image_form.is_valid():
             product = form.save()
+            print(form.errors)
+
+            #delete option for image
+            for existing_image in product.product_img.all():
+                checkbox_name = f'delete_image_{existing_image.id}'
+                if checkbox_name in request.POST and request.POST.get(checkbox_name) == 'on':
+                    existing_image.delete()
+                    print(form.errors)
+
             for img in request.FILES.getlist('image'):
                 image = ProductImages(image=img, product=product)
                 image.save()
+            print(form.errors)
+
+            print(form.errors)
             return redirect(product_management)
     form = AddProductForm(instance=instance)
     image_form = ProductImageForm(instance=instance)
