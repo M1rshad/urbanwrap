@@ -6,6 +6,7 @@ from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Q 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from .forms import ProductFilterForm
 # Create your views here.
 def shop(request, category_slug=None):
     categories = None
@@ -20,13 +21,30 @@ def shop(request, category_slug=None):
         product_count = products.count()
     else:
         products = Product.objects.all().filter(is_available=True, is_active=True).order_by('id')
+        form = ProductFilterForm(request.GET)
+        if form.is_valid():
+            category = form.cleaned_data.get('category')
+            size = form.cleaned_data.get('size')
+            min_price = form.cleaned_data.get('min_price')
+            max_price = form.cleaned_data.get('max_price')
+            if category:
+                products = products.filter(category__category_name=category,is_available=True, is_active=True).order_by('id')
+            if size:
+                products = products.filter(variant__variation_value=size,is_available=True, is_active=True).order_by('id')
+            if min_price:
+                products = products.filter(price__gte=min_price,is_available=True, is_active=True).order_by('id')
+            if max_price:
+                products = products.filter(price__lte=max_price,is_available=True, is_active=True).order_by('id')
+
+
         paginator = Paginator(products, 12)
         page = request.GET.get('page')
         paged_product = paginator.get_page(page)
         product_count = products.count()
     context = {
         'products' : paged_product,
-        'product_count' : product_count      
+        'product_count' : product_count,
+        'form': form,   
         }
     return render(request, 'shop/shop.html', context)
 

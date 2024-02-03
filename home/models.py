@@ -67,7 +67,7 @@ variation_category_choices={
 }
 
 class Variation(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='variant')
     variation_category = models.CharField(max_length=100, choices=variation_category_choices)
     variation_value=models.CharField(max_length=100)
     stock = models.PositiveIntegerField()
