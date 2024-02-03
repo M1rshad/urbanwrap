@@ -15,7 +15,7 @@ import uuid
 def payments(request):
     return render(request, 'orders/payments.html')
 
-
+@csrf_exempt
 def place_order(request, total=0, quantity=0):
     current_user = request.user
     
@@ -73,7 +73,7 @@ def place_order(request, total=0, quantity=0):
                 'item_name': order_number,
                 'invoice' : uuid.uuid4(),
                 'currency_code': 'USD',
-                'notify_url' : 'http://{}{}'.format(host, reverse('paypal-ipn')),
+                'notify_url' : 'https://{}{}'.format(host, reverse('paypal-ipn')),
                 'return_url' : 'http://{}{}'.format(host, reverse('payment_completed')),
                 'cancel_url' : 'http://{}{}'.format(host, reverse('payment_failed'))
             }

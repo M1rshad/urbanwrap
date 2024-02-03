@@ -26,7 +26,7 @@ urlpatterns = [
     path('', include('user_auth.urls')),
     path('', include('shop.urls')),
     path('orders/', include('orders.urls')),
-    path('paypal/', include('paypal.standard.ipn.urls')),
+    path('', include('paypal.standard.ipn.urls')),
     
 ]
 
