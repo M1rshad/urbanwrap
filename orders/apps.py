@@ -6,5 +6,4 @@ class OrdersConfig(AppConfig):
     name = 'orders'
 
     def ready(self):
-        print('ready is working')
         import orders.signals
