@@ -106,7 +106,7 @@
                                 </a>
                                 
                                 <div class="product-action-vertical">
-                                    <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
+                                    <a href="{% url 'add_wishlist' product.id%}" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
                                 </div><!-- End .product-action -->
                                 
                                 <div class="product-action action-icon-top">
@@ -287,6 +287,7 @@
                             </div><!-- End .widget-body -->
                         </div><!-- End .collapse -->
                     </div><!-- End .widget -->
+                    {{form.as_p }}
                         <button type="submit">Filter</button>
                     </form>
                 </div><!-- End .sidebar-filter-wrapper -->

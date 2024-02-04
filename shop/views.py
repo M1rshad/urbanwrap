@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 from home.models import Product, Category, Variation
 from orders.models import Coupon
-from .models import Cart, CartItem
+from .models import Cart, CartItem, Wishlist, WishlistItem
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Q 
 from django.contrib import messages
@@ -11,6 +11,7 @@ from .forms import ProductFilterForm
 def shop(request, category_slug=None):
     categories = None
     products = None
+    form = None
     
     if category_slug != None:
         categories = get_object_or_404(Category, slug=category_slug, is_active=True)
@@ -36,7 +37,6 @@ def shop(request, category_slug=None):
             if max_price:
                 products = products.filter(price__lte=max_price,is_available=True, is_active=True).order_by('id')
 
-
         paginator = Paginator(products, 12)
         page = request.GET.get('page')
         paged_product = paginator.get_page(page)
@@ -44,7 +44,7 @@ def shop(request, category_slug=None):
     context = {
         'products' : paged_product,
         'product_count' : product_count,
-        'form': form,   
+        'form': form,
         }
     return render(request, 'shop/shop.html', context)
 
@@ -311,6 +311,68 @@ def checkout(request, total=0, quantity=0, cart_items=None):
     return render(request, 'shop/checkout.html', context)
 
 
-def wishlist(request):
+def _wishlist_id(request):
+    wishlist = request.session.session_key
+    if not wishlist:
+        wishlist = request.session.create()
+    return wishlist
+
+def add_wishlist(request, product_id):
+    current_user = request.user
+    product = Product.objects.get(id=product_id) 
+
+    #if user is authenticated
+    if current_user.is_authenticated:
+
+        is_wishlist_item_exists = WishlistItem.objects.filter(product=product, user=current_user).exists()
+        if is_wishlist_item_exists:
+            wishlist_item = WishlistItem.objects.filter(product=product, user=current_user)
+
+        else:
+            wishlist_item = WishlistItem.objects.create(
+                product = product,
+                user = current_user
+            )
+        return redirect('wishlist')
+
+    else:
+
+        try:
+            wishlist = Wishlist.objects.get(wishlist_id=_wishlist_id(request))
+        except Wishlist.DoesNotExist:
+            wishlist = Wishlist.objects.create(
+                wishlist_id = _wishlist_id(request)
+            )
+            wishlist.save()
+
+        is_wishlist_item_exists = WishlistItem.objects.filter(product=product, wishlist=wishlist).exists()
+        if is_wishlist_item_exists:
+            wishlist_item = WishlistItem.objects.filter(product=product, wishlist=wishlist)
+
+
+        else:
+            wishlist_item = WishlistItem.objects.create(
+                product = product,
+                wishlist = wishlist
+            )
+        return redirect('wishlist')
+    
+
+def wishlist(request, wishlist_items=None):
+    try:
+        if request.user.is_authenticated:
+            wishlist_items = WishlistItem.objects.filter(user=request.user, is_active=True).order_by('id')
+        else:
+            wishlist = Wishlist.objects.get(wishlist_id=_wishlist_id(request))
+            wishlist_items = WishlistItem.objects.filter(wishlist=wishlist, is_active=True).order_by('id')
+
+    except Wishlist.DoesNotExist:
+        pass
+    
+
+    context = {
+        'wishlist_items' : wishlist_items,
+        #'cart':cart,
+    }
     return render(request, 'shop/wishlist.html')
 
