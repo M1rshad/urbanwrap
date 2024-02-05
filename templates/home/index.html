@@ -148,7 +148,7 @@
                                 
                             <div class="product product-2">
                                 <figure class="product-media">
-                                    <a href="product.html"> 
+                                    <a href="{{product.get_url}}"> 
                                         {% if product.product_img.all %}
                                         {% with first_image=product.product_img.all|first %}
                                         <img src="{{ first_image.image.url }}" alt="First Image">
@@ -427,7 +427,7 @@
                                 <div class="col-6 col-md-4 col-lg-3">
                                     <div class="product product-2 text-center">
                                         <figure class="product-media">
-                                            <a href="product.html">
+                                            <a href="{{product.get_url}}">
                                                 {% if product.product_img.all %}
                                                 {% with first_image=product.product_img.all|first %}
                                                 <img src={{ first_image.image.url }} alt="Product image" class="product-image">
@@ -476,7 +476,7 @@
                                 <div class="col-6 col-md-4 col-lg-3">
                                     <div class="product product-2 text-center">
                                         <figure class="product-media">
-                                            <a href="product.html">
+                                            <a href="{{product.get_url}}">
                                                 {% if product.product_img.all %}
                                                 {% with first_image=product.product_img.all|first %}
                                                 <img src={{ first_image.image.url }} alt="Product image" class="product-image">
@@ -525,7 +525,7 @@
                                 <div class="col-6 col-md-4 col-lg-3">
                                     <div class="product product-2 text-center">
                                         <figure class="product-media">
-                                            <a href="product.html">
+                                            <a href="{{product.get_url}}">
                                                 {% if product.product_img.all %}
                                                 {% with first_image=product.product_img.all|first %}
                                                 <img src={{ first_image.image.url }} alt="Product image" class="product-image">
@@ -574,7 +574,7 @@
                                 <div class="col-6 col-md-4 col-lg-3">
                                     <div class="product product-2 text-center">
                                         <figure class="product-media">
-                                            <a href="product.html">
+                                            <a href="{{product.get_url}}">
                                                 {% if product.product_img.all %}
                                                 {% with first_image=product.product_img.all|first %}
                                                 <img src={{ first_image.image.url }} alt="Product image" class="product-image">
