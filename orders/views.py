@@ -1,6 +1,7 @@
-from django.shortcuts import render, redirect, HttpResponse
+from codecs import oem_decode
+from django.shortcuts import get_object_or_404, render, redirect, HttpResponse
 from shop.models import CartItem
-from .models import Order
+from .models import Order,Payment
 from .forms import OrderForm
 import datetime
 from django.urls import reverse
@@ -70,11 +71,10 @@ def place_order(request, total=0, quantity=0):
             paypal_dict ={
                 'business':settings.PAYPAL_RECEIVER_EMAIL,
                 'amount': grand_total,
-                'item_name': order_number,
                 'invoice' : uuid.uuid4(),
                 'currency_code': 'USD',
                 'notify_url' : 'https://{}{}'.format(host, reverse('paypal-ipn')),
-                'return_url' : 'http://{}{}'.format(host, reverse('payment_completed')),
+                'return_url' : 'http://{}{}'.format(host, reverse('payment_completed', kwargs={'order_id': order.id})),
                 'cancel_url' : 'http://{}{}'.format(host, reverse('payment_failed'))
             }
             paypal_payment_button = PayPalPaymentsForm(initial=paypal_dict)
@@ -91,7 +91,25 @@ def place_order(request, total=0, quantity=0):
             return redirect('checkout')
         
 
-def payment_completed(request):
+def payment_completed(request, order_id):
+    current_user = request.user
+
+    order = get_object_or_404(Order,id=order_id, user=current_user, is_ordered=False)
+    order.status = 'Accepted'
+    order.is_ordered = True
+    order.save()
+
+    payment_id = uuid.uuid4().hex
+    payment = Payment.objects.create(
+        user=current_user,
+        payment_id=payment_id,
+        amount_paid=order.order_total,
+        status='Completed'
+    )
+
+    order.payment = payment
+    order.save()
+
     return render(request, 'orders/payment_completed.html')
 
 
