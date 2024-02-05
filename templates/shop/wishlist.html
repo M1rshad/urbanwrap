@@ -59,7 +59,7 @@
                 </thead>
 
                 <tbody>
-                    
+                                            
                     {% for item in wishlist_items %}
                     <tr>
                         
@@ -70,13 +70,13 @@
                                         <img src="" alt="Product image">
                                     </a>
                                 </figure>
-
+                                
                                 <h3 class="product-title">
                                     <a href="#">{{item.product.product_name}}</a>
                                 </h3><!-- End .product-title -->
                             </div><!-- End .product -->
                         </td>
-                        <td class="price-col">{{item.product.price}}</td>
+                        <td class="price-col">${{item.product.price}}</td>
                             
                         <td class="stock-col"><span class="in-stock">In stock</span></td>
                         <td class="action-col">

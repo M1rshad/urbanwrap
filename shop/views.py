@@ -374,5 +374,5 @@ def wishlist(request, wishlist_items=None):
         'wishlist_items' : wishlist_items,
         #'cart':cart,
     }
-    return render(request, 'shop/wishlist.html')
+    return render(request, 'shop/wishlist.html', context)
 
