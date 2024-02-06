@@ -150,23 +150,14 @@
                                         </tr><!-- End .summary-total -->
                                     </tbody>
                                 </table><!-- End .table table-summary -->
-
-                                <div class="accordion-summary" id="accordion-payment">
-
-                                    <div class="card">
-                                        <div class="card-header" id="heading-4">
-                                            <h2 class="card-title">
-                                                <a class="collapsed" role="button" data-toggle="collapse" href="#collapse-4" aria-expanded="false" aria-controls="collapse-4">
-                                                    PayPal <small class="float-right paypal-link">What is PayPal?</small>
-                                                </a>
-                                            </h2>
-                                        </div><!-- End .card-header -->
-                                        <div id="collapse-4" class="collapse" aria-labelledby="heading-4" data-parent="#accordion-payment">
-                                            <div class="card-body">
-                                                PayPal is a payment platform that allows individuals and businesses to send and receive money securely. It can be accessed through a website or a phone app.
-                                            </div><!-- End .card-body -->
-                                        </div><!-- End .collapse -->
-                                    </div><!-- End .card -->
+                                <div>
+                                    <h3 class="summary-title mt-3">Payment method</h6>
+                                </div>
+                                <input type="radio" name="payment_method" value="paypal" required>
+                                <label for="paypal">PayPal</label>
+                                <br>
+                                <input type="radio" name="payment_method" value="cod">
+                                <label for="cod">Cash On Delivery</label>
 
 
                                 <button type="submit" class="btn btn-outline-primary-2 btn-order btn-block">

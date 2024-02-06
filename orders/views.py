@@ -1,7 +1,8 @@
 from codecs import oem_decode
 from django.shortcuts import get_object_or_404, render, redirect, HttpResponse
 from shop.models import CartItem
-from .models import Order,Payment
+from home.models import Product
+from .models import Order, OrderProduct,Payment
 from .forms import OrderForm
 import datetime
 from django.urls import reverse
@@ -52,11 +53,11 @@ def place_order(request, total=0, quantity=0):
             data.city = form.cleaned_data['city']
             data.pin_code = form.cleaned_data['pin_code']
             data.order_note = form.cleaned_data['order_note']
+            data.payment_method= form.cleaned_data['payment_method']
             data.order_total = grand_total
             data.tax = tax
             data.ip = request.META.get('REMOTE_ADDR')
             data.save()
-
             yr = int(datetime.date.today().strftime("%Y"))
             dt = int(datetime.date.today().strftime("%d"))
             mt = int(datetime.date.today().strftime("%m"))
@@ -67,17 +68,24 @@ def place_order(request, total=0, quantity=0):
             data.save()
 
             order = Order.objects.get(user=current_user, is_ordered=False, order_number=order_number)
-            host = request.get_host()
-            paypal_dict ={
-                'business':settings.PAYPAL_RECEIVER_EMAIL,
-                'amount': grand_total,
-                'invoice' : uuid.uuid4(),
-                'currency_code': 'USD',
-                'notify_url' : 'https://{}{}'.format(host, reverse('paypal-ipn')),
-                'return_url' : 'http://{}{}'.format(host, reverse('payment_completed', kwargs={'order_id': order.id})),
-                'cancel_url' : 'http://{}{}'.format(host, reverse('payment_failed'))
-            }
-            paypal_payment_button = PayPalPaymentsForm(initial=paypal_dict)
+            paypal_payment_button=None
+            if order.payment_method=='cod':
+                pass
+
+            if order.payment_method=='paypal':
+                host = request.get_host()
+                paypal_dict ={
+                    'business':settings.PAYPAL_RECEIVER_EMAIL,
+                    'amount': order.order_total,
+                    'invoice' : uuid.uuid4(),
+                    'currency_code': 'USD',
+                    'notify_url' : 'https://{}{}'.format(host, reverse('paypal-ipn')),
+                    'return_url' : 'http://{}{}'.format(host, reverse('payment_completed', kwargs={'order_id': order.id})),
+                    'cancel_url' : 'http://{}{}'.format(host, reverse('payment_failed', kwargs={'order_id': order.id}))
+                }
+                paypal_payment_button = PayPalPaymentsForm(initial=paypal_dict)
+
+        
             context= {
                 'order':order, 
                 'cart_items':cart_items,
@@ -87,6 +95,7 @@ def place_order(request, total=0, quantity=0):
                 'paypal_payment_button':paypal_payment_button,
             }
             return render(request, 'orders/payments.html', context)
+        
         else:
             return redirect('checkout')
         
@@ -103,12 +112,42 @@ def payment_completed(request, order_id):
     payment = Payment.objects.create(
         user=current_user,
         payment_id=payment_id,
+        payment_method='PayPal',
         amount_paid=order.order_total,
         status='Completed'
     )
 
     order.payment = payment
     order.save()
+
+    cart_items = CartItem.objects.filter(user=request.user)
+    for item in cart_items:
+        orderproduct = OrderProduct()
+        orderproduct.order_id = order.id
+        orderproduct.payment = payment
+        orderproduct.user_id = request.user.id
+        orderproduct.product_id = item.product.id
+        orderproduct.quantity = item.quantity
+        orderproduct.product_price = item.product.price
+        orderproduct.is_ordered = True
+        orderproduct.save()
+
+        cart_item = CartItem.objects.get(id=item.product_id)
+        product_variation = cart_item.variations.all()
+        orderproduct = OrderProduct.objects.get(id=orderproduct.id)
+        orderproduct.variation.set(product_variation)
+        orderproduct.save()
+
+        #Reduce the stock
+        product = Product.objects.get(id=item.id)
+        product_variation = product.variations.all()
+        quantity = orderproduct.quantity
+        for variation in product_variation:
+            variation.stock -= quantity
+            variation.save()
+
+    #clear cart after placing order
+    CartItem.objects.filter(user=request.user).delete()
 
     return render(request, 'orders/payment_completed.html')
 

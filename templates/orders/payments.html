@@ -51,7 +51,7 @@
                           <div class="card">
                             <div class="card-body mt-3">
                               <h5 class="card-title">Payment method</h5>
-                              <p class="card-text mt-2">PayPal</p>
+                              <p class="card-text mt-2">{{order.payment_method | upper}}</p>
                             </div>
                           </div>
                           <div class="card">
@@ -122,9 +122,14 @@
                                     </tr><!-- End .summary-total -->
                                 </tbody>
                             </table><!-- End .table table-summary -->
-                            {% comment %} <div id="paypal-button-container"></div>
-                            <p id="result-message"></p> {% endcomment %}
+                            
+                            {% if order.payment_method == 'cod' %}
+                            <button>Confirm Order</button>
+                            {% else %}
                             {{paypal_payment_button.render}}
+                            {% endif %}
+                                
+                            
                         </div><!-- End .summary -->
                         
                         
