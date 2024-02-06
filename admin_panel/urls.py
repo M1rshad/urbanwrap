@@ -30,6 +30,6 @@ urlpatterns = [
     path('coupon-management/unlist-coupon/<pk>', views.unlist_coupon, name='unlist_coupon'),
     path('coupon-management/list-coupon/<pk>', views.list_coupon, name='list_coupon'),
     path('coupon-management/edit-coupon/<pk>', views.edit_coupon, name='edit_coupon'),
-
+    path('order-management/', views.order_management, name='order_management'),
 
 ]

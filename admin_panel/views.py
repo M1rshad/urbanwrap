@@ -5,7 +5,7 @@ from django.shortcuts import render,redirect
 from django.contrib.auth import login, logout, authenticate
 from user_auth.models import User
 from home.models import Category, Product, Variation , ProductImages
-from orders.models import Coupon
+from orders.models import Coupon, Order
 from django.contrib import messages
 from django.views.decorators.cache import never_cache
 from django.contrib.postgres.search import SearchVector
@@ -362,3 +362,10 @@ def edit_coupon(request, pk):
     form = AddCouponForm(instance=instance)
     context = {'form': form}
     return render(request, 'admin_panel/edit_coupon.html',context)
+
+
+@user_passes_test(is_user_admin, login_url='admin_login')
+def order_management(request):
+    order_obj = Order.objects.all().order_by('id')
+    context = {'order_obj' : order_obj}
+    return render(request, 'admin_panel/order_management.html',context)
