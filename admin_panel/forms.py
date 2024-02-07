@@ -1,7 +1,7 @@
 from django import forms 
 from user_auth.models import User
 from home.models import Category, Product, Variation, ProductImages
-from orders.models import Coupon
+from orders.models import Coupon, Order
 from django.core.validators import FileExtensionValidator
 
 
@@ -53,3 +53,10 @@ class AddCouponForm(forms.ModelForm):
     class Meta:
         model = Coupon
         fields = ('coupon_code', 'discounted_price', 'minimum_amount', 'is_expired')
+
+
+class UpdateOrderForm(forms.ModelForm):
+
+    class Meta:
+        model = Order
+        fields = ('status',)

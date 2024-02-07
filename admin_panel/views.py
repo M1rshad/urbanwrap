@@ -366,6 +366,15 @@ def edit_coupon(request, pk):
 
 @user_passes_test(is_user_admin, login_url='admin_login')
 def order_management(request):
-    order_obj = Order.objects.all().order_by('id')
+    order_obj = Order.objects.all().filter(is_ordered=True).order_by('-id')
+    form = 
     context = {'order_obj' : order_obj}
     return render(request, 'admin_panel/order_management.html',context)
+
+
+@user_passes_test(is_user_admin, login_url='admin_login')
+def cancel_order(request, order_id):
+    order_obj = Order.objects.get(id=order_id)
+    order_obj.status = 'Cancelled'
+    order_obj.save()
+    return redirect('order_management')

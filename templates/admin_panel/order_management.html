@@ -23,6 +23,7 @@
                                       <th>Order number</th>
                                       <th>User</th>
                                       <th>Payment details</th>
+                                      <th>Payment method</th>
                                       <th>Order status</th>
                                       <th>Cancel Order</th>
 
@@ -34,10 +35,11 @@
                                       <td>{{i.order_number}}</td>
                                       <td>{{i.user}}</td>
                                       <td>{{i.payment}}</td>
+                                      <td>{{i.payment_method | capfirst}}</td>
                                       <td>{{i.status}}</td>
                                       
-                                      {% if i.is_ordered %}
-                                      <td><button class="btn btn-light"><a href=#>Cancel Order</a></button></td>
+                                      {% if i.status != 'Cancelled' %}
+                                      <td><button class="btn btn-light"><a href={% url 'cancel_order' i.id %}>Cancel Order</a></button></td>
                                       {% endif %}
                                         
                                   </tr>
