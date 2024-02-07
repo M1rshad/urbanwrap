@@ -100,6 +100,54 @@ def place_order(request, total=0, quantity=0):
             return redirect('checkout')
         
 def cod_completed(request, order_id):
+    current_user = request.user
+
+    order = get_object_or_404(Order,id=order_id, user=current_user, is_ordered=False)
+    order.status = 'Accepted'
+    order.is_ordered = True
+    order.save()
+
+    payment_id = uuid.uuid4().hex
+    payment = Payment.objects.create(
+        user=current_user,
+        payment_id=payment_id,
+        payment_method='Cash On Delivery',
+        amount_paid=order.order_total,
+        status='Pending'
+    )
+
+    order.payment = payment
+    order.save()
+
+    cart_items = CartItem.objects.filter(user=request.user)
+    for item in cart_items:
+        orderproduct = OrderProduct()
+        orderproduct.order_id = order.id
+        orderproduct.payment = payment
+        orderproduct.user_id = request.user.id
+        orderproduct.product_id = item.product.id
+        orderproduct.quantity = item.quantity
+        orderproduct.product_price = item.product.price
+        orderproduct.is_ordered = True
+        orderproduct.save()
+
+        cart_item = CartItem.objects.get(id=item.id)
+        product_variation = cart_item.variations.all()
+        orderproduct = OrderProduct.objects.get(id=orderproduct.id)
+        orderproduct.variation.set(product_variation)
+        orderproduct.save()
+
+        #Reduce the stock
+        product = Product.objects.get(id=item.product_id)
+        product_variations = product.variant.all()
+        quantity = orderproduct.quantity
+        for variation in product_variations:
+            for i in product_variation:
+                if i==variation:
+                    variation.stock -= quantity
+                    variation.save()
+
+
     return render(request, 'orders/order_completed.html')
 
 
@@ -123,6 +171,7 @@ def paypal_payment_completed(request, order_id):
     order.payment = payment
     order.save()
 
+    
     cart_items = CartItem.objects.filter(user=request.user)
     for item in cart_items:
         orderproduct = OrderProduct()
@@ -135,19 +184,21 @@ def paypal_payment_completed(request, order_id):
         orderproduct.is_ordered = True
         orderproduct.save()
 
-        cart_item = CartItem.objects.get(id=item.product_id)
+        cart_item = CartItem.objects.get(id=item.id)
         product_variation = cart_item.variations.all()
         orderproduct = OrderProduct.objects.get(id=orderproduct.id)
         orderproduct.variation.set(product_variation)
         orderproduct.save()
 
         #Reduce the stock
-        product = Product.objects.get(id=item.id)
-        product_variation = product.variations.all()
+        product = Product.objects.get(id=item.product_id)
+        product_variations = product.variant.all()
         quantity = orderproduct.quantity
-        for variation in product_variation:
-            variation.stock -= quantity
-            variation.save()
+        for variation in product_variations:
+            for i in product_variation:
+                if i==variation:
+                    variation.stock -= quantity
+                    variation.save()
 
     #clear cart after placing order
     CartItem.objects.filter(user=request.user).delete()

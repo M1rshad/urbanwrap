@@ -52,12 +52,14 @@ def shop(request, category_slug=None):
 def product_detail(request, category_slug, product_slug):
     try:
         single_product = Product.objects.get(category__slug=category_slug, slug=product_slug)
+        variation = single_product.variant.all().order_by('id')
         in_cart =  CartItem.objects.filter(cart__cart_id=_cart_id(request), product = single_product).exists()
     except Exception as e:
         raise e
     context = {
         'single_product' : single_product,
         'in_cart' : in_cart,
+        'variation':variation
         }
     return render(request, 'shop/product_detail.html', context)
 

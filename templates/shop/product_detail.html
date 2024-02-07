@@ -133,7 +133,7 @@
                                     <select name="size" id="size" class="form-control" required>
                                         <option disabled>Select size</option>
                                         
-                                        {% for i in single_product.variant.all %}
+                                        {% for i in variation %}
                                         <option value="{{i.variation_value}}">{{i.variation_value}}</option> 
                                         {% endfor %}
                                     </select>

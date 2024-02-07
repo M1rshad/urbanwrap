@@ -124,7 +124,7 @@
                             </table><!-- End .table table-summary -->
                             
                             {% if order.payment_method == 'cod' %}
-                            <button>Confirm Order</button>
+                            <a href="{% url 'cod_completed' order.id %}"><button>Confirm Order</button></a>
                             {% else %}
                             {{paypal_payment_button.render}}
                             {% endif %}
