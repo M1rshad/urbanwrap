@@ -86,7 +86,9 @@
                         <td class="action-col">
                             <a href="{{item.product.get_url}}"><button class="btn btn-block btn-outline-primary-2"><i class="icon-cart-plus"></i>View Product</button></a>
                         </td>
-                        <td class="remove-col"><button class="btn-remove"><i class="icon-close"></i></button></td>
+                        <td class="remove-col">
+                            <a href="{% url 'remove_wishlist_item' item.product.id item.id %}"><button class="btn-remove"><i class="icon-close"></i></button></a>
+                        </td>
                     </tr>
                     {% endfor %}
                     

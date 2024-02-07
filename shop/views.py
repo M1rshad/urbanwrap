@@ -378,3 +378,13 @@ def wishlist(request, wishlist_items=None):
     }
     return render(request, 'shop/wishlist.html', context)
 
+def remove_wishlist_item(request, product_id, wishlist_item_id):
+    product = get_object_or_404(Product, id=product_id)
+    if request.user.is_authenticated:
+        wishlist_item = WishlistItem.objects.get(user=request.user, product=product, id=wishlist_item_id)
+    else:
+        wishlist = Wishlist.objects.get(wishlist_id=_wishlist_id(request))
+        wishlist_item = WishlistItem.objects.get(wishlist=wishlist, product=product, id=wishlist_item_id)
+    wishlist_item.delete()
+    return redirect('wishlist')
+
