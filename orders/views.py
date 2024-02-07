@@ -69,8 +69,8 @@ def place_order(request, total=0, quantity=0):
 
             order = Order.objects.get(user=current_user, is_ordered=False, order_number=order_number)
             paypal_payment_button=None
+
             if order.payment_method=='cod':
-                pass
 
             if order.payment_method=='paypal':
                 host = request.get_host()
@@ -99,8 +99,11 @@ def place_order(request, total=0, quantity=0):
         else:
             return redirect('checkout')
         
+def cod_completed(request, order_id):
+    return render(request, 'orders/order_completed.html')
 
-def payment_completed(request, order_id):
+
+def paypal_payment_completed(request, order_id):
     current_user = request.user
 
     order = get_object_or_404(Order,id=order_id, user=current_user, is_ordered=False)
@@ -152,7 +155,7 @@ def payment_completed(request, order_id):
     return render(request, 'orders/payment_completed.html')
 
 
-def payment_failed(request):
+def paypal_payment_failed(request):
     return render(request, 'orders/payment_failed.html')
 
 
