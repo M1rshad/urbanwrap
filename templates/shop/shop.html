@@ -208,9 +208,8 @@
                                     {% for category in cat_filter %}
                                     
                                     <div class="filter-item">
-                                        <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" id="cat-1">
-                                            <label class="custom-control-label" for="cat-1">{{category.category_name}}</label>
+                                        <div class="">
+                                            <label class=""><a href="{{category.get_url}}">{{category.category_name}}</a></label>
                                         </div><!-- End .custom-checkbox -->
                                         <span class="item-count">{{category.product_set.all.count}}</span>
                                     </div><!-- End .filter-item -->
@@ -234,28 +233,28 @@
 
                                     <div class="filter-item">
                                         <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" id="size-2">
+                                            <input type="checkbox" class="custom-control-input" id="size-2" value="S">
                                             <label class="custom-control-label" for="size-2">S</label>
                                         </div><!-- End .custom-checkbox -->
                                     </div><!-- End .filter-item -->
 
                                     <div class="filter-item">
                                         <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" checked id="size-3">
+                                            <input type="checkbox" class="custom-control-input" checked id="size-3" value="M">
                                             <label class="custom-control-label" for="size-3">M</label>
                                         </div><!-- End .custom-checkbox -->
                                     </div><!-- End .filter-item -->
 
                                     <div class="filter-item">
                                         <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" checked id="size-4">
+                                            <input type="checkbox" class="custom-control-input" checked id="size-4" value="L">
                                             <label class="custom-control-label" for="size-4">L</label>
                                         </div><!-- End .custom-checkbox -->
                                     </div><!-- End .filter-item -->
 
                                     <div class="filter-item">
                                         <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" id="size-5">
+                                            <input type="checkbox" class="custom-control-input" id="size-5" value="XL">
                                             <label class="custom-control-label" for="size-5">XL</label>
                                         </div><!-- End .custom-checkbox -->
                                     </div><!-- End .filter-item -->
@@ -278,7 +277,13 @@
                             <div class="widget-body">
                                 <div class="filter-price">
                                     <div class="filter-price-text">
-                                        Price Range:
+                                        <br>
+                                        <label for="">{{form.min_price.label}}</label>
+                                        {{form.min_price }}
+                                        <br>
+                                        <label for="" class="mt-2">{{form.max_price.label}}</label>
+                                        {{form.max_price }}
+                                        <button type="submit" class="btn btn-dark">Filter</button>
                                         <span id="filter-price-range"></span>
                                     </div><!-- End .filter-price-text -->
 
@@ -287,8 +292,6 @@
                             </div><!-- End .widget-body -->
                         </div><!-- End .collapse -->
                     </div><!-- End .widget -->
-                    {{form.as_p }}
-                        <button type="submit">Filter</button>
                     </form>
                 </div><!-- End .sidebar-filter-wrapper -->
             </aside><!-- End .sidebar-filter -->
