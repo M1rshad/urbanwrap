@@ -147,7 +147,11 @@ def cod_completed(request, order_id):
                     variation.stock -= quantity
                     variation.save()
 
-
+    #clear cart after placing order
+    CartItem.objects.filter(user=request.user).delete()
+    context={
+        'order':order,
+    }
     return render(request, 'orders/order_completed.html')
 
 

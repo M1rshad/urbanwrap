@@ -2,139 +2,115 @@
 
 
 {% block content %}
-<div class="container">
-    <div class="row">
-            <div class="col-lg-12">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="invoice-title">
-                            <h4 class="float-end font-size-15">Invoice #DS0204 <span class="badge bg-success font-size-12 ms-2">Paid</span></h4>
-                            <div class="mb-4">
-                               <h2 class="mb-1 text-muted">Bootdey.com</h2>
-                            </div>
-                            <div class="text-muted">
-                                <p class="mb-1">3184 Spruce Drive Pittsburgh, PA 15201</p>
-                                <p class="mb-1"><i class="uil uil-envelope-alt me-1"></i> xyz@987.com</p>
-                                <p><i class="uil uil-phone me-1"></i> 012-345-6789</p>
+<div class="text-center m-5">
+    <div class="container bootdey">
+        <div class="row invoice row-printable">
+        <div class="col-md-10">
+            <!-- col-lg-12 start here -->
+            <div class="panel panel-default plain" id="dash_0">
+                <!-- Start .panel -->
+                <div class="panel-body p30">
+                    <div class="row">
+                        <!-- Start .row -->
+                        <div class="col-lg-6">
+                            <!-- col-lg-6 start here -->
+                            <div class="invoice-logo"><img width="100" src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Invoice logo"></div>
+                        </div>
+                        <!-- col-lg-6 end here -->
+                        <div class="col-lg-6">
+                            <!-- col-lg-6 start here -->
+                            <div class="invoice-from">
+                                <ul class="list-unstyled text-right">
+                                    <li>Dash LLC</li>
+                                    <li>2500 Ridgepoint Dr, Suite 105-C</li>
+                                    <li>Austin TX 78754</li>
+                                    <li>VAT Number EU826113958</li>
+                                </ul>
                             </div>
                         </div>
-    
-                        <hr class="my-4">
-    
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <div class="text-muted">
-                                    <h5 class="font-size-16 mb-3">Billed To:</h5>
-                                    <h5 class="font-size-15 mb-2">Preston Miller</h5>
-                                    <p class="mb-1">4068 Post Avenue Newfolden, MN 56738</p>
-                                    <p class="mb-1">PrestonMiller@armyspy.com</p>
-                                    <p>001-234-5678</p>
+                        <!-- col-lg-6 end here -->
+                        <div class="col-lg-12">
+                            <!-- col-lg-12 start here -->
+                            <div class="invoice-details mt25">
+                                <div class="well">
+                                    <ul class="list-unstyled mb0">
+                                        <li><strong>Invoice</strong> #936988</li>
+                                        <li><strong>Invoice Date:</strong> Monday, October 10th, 2015</li>
+                                        <li><strong>Due Date:</strong> Thursday, December 1th, 2015</li>
+                                        <li><strong>Status:</strong> <span class="label label-danger">UNPAID</span></li>
+                                    </ul>
                                 </div>
                             </div>
-                            <!-- end col -->
-                            <div class="col-sm-6">
-                                <div class="text-muted text-sm-end">
-                                    <div>
-                                        <h5 class="font-size-15 mb-1">Invoice No:</h5>
-                                        <p>#DZ0112</p>
-                                    </div>
-                                    <div class="mt-4">
-                                        <h5 class="font-size-15 mb-1">Invoice Date:</h5>
-                                        <p>12 Oct, 2020</p>
-                                    </div>
-                                    <div class="mt-4">
-                                        <h5 class="font-size-15 mb-1">Order No:</h5>
-                                        <p>#1123456</p>
-                                    </div>
+                            <div class="invoice-to mt25">
+                                <ul class="list-unstyled">
+                                    <li><strong>Invoiced To</strong></li>
+                                    <li>Jakob Smith</li>
+                                    <li>Roupark 37</li>
+                                    <li>New York, NY, 2014</li>
+                                    <li>USA</li>
+                                </ul>
+                            </div>
+                            <div class="invoice-items">
+                                <div class="table-responsive" style="overflow: hidden; outline: none;" tabindex="0">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th class="per70 text-center">Description</th>
+                                                <th class="per5 text-center">Qty</th>
+                                                <th class="per25 text-center">Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>1024MB Cloud 2.0 Server - elisium.dynamic.com (12/04/2014 - 01/03/2015)</td>
+                                                <td class="text-center">1</td>
+                                                <td class="text-center">$25.00 USD</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Logo design</td>
+                                                <td class="text-center">1</td>
+                                                <td class="text-center">$200.00 USD</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Backup - 1024MB Cloud 2.0 Server - elisium.dynamic.com</td>
+                                                <td class="text-center">12</td>
+                                                <td class="text-center">$12.00 USD</td>
+                                            </tr>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th colspan="2" class="text-right">Sub Total:</th>
+                                                <th class="text-center">$237.00 USD</th>
+                                            </tr>
+                                            <tr>
+                                                <th colspan="2" class="text-right">20% VAT:</th>
+                                                <th class="text-center">$47.40 USD</th>
+                                            </tr>
+                                            <tr>
+                                                <th colspan="2" class="text-right">Credit:</th>
+                                                <th class="text-center">$00.00 USD</th>
+                                            </tr>
+                                            <tr>
+                                                <th colspan="2" class="text-right">Total:</th>
+                                                <th class="text-center">$284.4.40 USD</th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
                                 </div>
                             </div>
-                            <!-- end col -->
-                        </div>
-                        <!-- end row -->
-                        
-                        <div class="py-2">
-                            <h5 class="font-size-15">Order Summary</h5>
-    
-                            <div class="table-responsive">
-                                <table class="table align-middle table-nowrap table-centered mb-0">
-                                    <thead>
-                                        <tr>
-                                            <th style="width: 70px;">No.</th>
-                                            <th>Item</th>
-                                            <th>Price</th>
-                                            <th>Quantity</th>
-                                            <th class="text-end" style="width: 120px;">Total</th>
-                                        </tr>
-                                    </thead><!-- end thead -->
-                                    <tbody>
-                                        <tr>
-                                            <th scope="row">01</th>
-                                            <td>
-                                                <div>
-                                                    <h5 class="text-truncate font-size-14 mb-1">Black Strap A012</h5>
-                                                    <p class="text-muted mb-0">Watch, Black</p>
-                                                </div>
-                                            </td>
-                                            <td>$ 245.50</td>
-                                            <td>1</td>
-                                            <td class="text-end">$ 245.50</td>
-                                        </tr>
-                                        <!-- end tr -->
-                                        <tr>
-                                            <th scope="row">02</th>
-                                            <td>
-                                                <div>
-                                                    <h5 class="text-truncate font-size-14 mb-1">Stainless Steel S010</h5>
-                                                    <p class="text-muted mb-0">Watch, Gold</p>
-                                                </div>
-                                            </td>
-                                            <td>$ 245.50</td>
-                                            <td>2</td>
-                                            <td class="text-end">$491.00</td>
-                                        </tr>
-                                        <!-- end tr -->
-                                        <tr>
-                                            <th scope="row" colspan="4" class="text-end">Sub Total</th>
-                                            <td class="text-end">$732.50</td>
-                                        </tr>
-                                        <!-- end tr -->
-                                        <tr>
-                                            <th scope="row" colspan="4" class="border-0 text-end">
-                                                Discount :</th>
-                                            <td class="border-0 text-end">- $25.50</td>
-                                        </tr>
-                                        <!-- end tr -->
-                                        <tr>
-                                            <th scope="row" colspan="4" class="border-0 text-end">
-                                                Shipping Charge :</th>
-                                            <td class="border-0 text-end">$20.00</td>
-                                        </tr>
-                                        <!-- end tr -->
-                                        <tr>
-                                            <th scope="row" colspan="4" class="border-0 text-end">
-                                                Tax</th>
-                                            <td class="border-0 text-end">$12.00</td>
-                                        </tr>
-                                        <!-- end tr -->
-                                        <tr>
-                                            <th scope="row" colspan="4" class="border-0 text-end">Total</th>
-                                            <td class="border-0 text-end"><h4 class="m-0 fw-semibold">$739.00</h4></td>
-                                        </tr>
-                                        <!-- end tr -->
-                                    </tbody><!-- end tbody -->
-                                </table><!-- end table -->
-                            </div><!-- end table responsive -->
-                            <div class="d-print-none mt-4">
-                                <div class="float-end">
-                                    <a href="javascript:window.print()" class="btn btn-success me-1"><i class="fa fa-print"></i></a>
-                                    <a href="#" class="btn btn-primary w-md">Send</a>
-                                </div>
+                            <div class="invoice-footer mt25">
+                                <p class="text-center">Generated on Monday, October 08th, 2015 <a href="#" class="btn btn-default ml15"><i class="fa fa-print mr5"></i> Print</a></p>
                             </div>
                         </div>
+                        <!-- col-lg-12 end here -->
                     </div>
+                    <!-- End .row -->
                 </div>
-            </div><!-- end col -->
+            </div>
+            <!-- End .panel -->
         </div>
+        <!-- col-lg-12 end here -->
     </div>
+    </div>
+</div>
 {% endblock content %}
-    

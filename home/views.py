@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from .models import Product, Category
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 def index(request):
     featured = Product.objects.all().filter(is_active=True).order_by('-priority','id')[:4] 
@@ -20,5 +21,7 @@ def index(request):
     }
     return render(request, 'home/index.html', context)
 
+
+@login_required(login_url='log_in')
 def dashboard(request):
     return render(request, 'home/dashboard.html')
