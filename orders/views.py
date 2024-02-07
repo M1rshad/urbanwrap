@@ -71,7 +71,7 @@ def place_order(request, total=0, quantity=0):
             paypal_payment_button=None
 
             if order.payment_method=='cod':
-
+                pass
             if order.payment_method=='paypal':
                 host = request.get_host()
                 paypal_dict ={
