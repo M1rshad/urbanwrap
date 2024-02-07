@@ -149,10 +149,14 @@ def cod_completed(request, order_id):
 
     #clear cart after placing order
     CartItem.objects.filter(user=request.user).delete()
+
+    order = Order.objects.get(id=order_id, user=current_user)
+    order_subtotal = order.order_total - order.tax
     context={
         'order':order,
+        'order_subtotal':order_subtotal
     }
-    return render(request, 'orders/order_completed.html')
+    return render(request, 'orders/order_completed.html', context)
 
 
 def paypal_payment_completed(request, order_id):
@@ -206,8 +210,14 @@ def paypal_payment_completed(request, order_id):
 
     #clear cart after placing order
     CartItem.objects.filter(user=request.user).delete()
+    order = Order.objects.get(id=order_id, user=current_user)
+    order_subtotal = order.order_total - order.tax
+    context={
+        'order':order,
+        'order_subtotal':order_subtotal
+    }
 
-    return render(request, 'orders/payment_completed.html')
+    return render(request, 'orders/payment_completed.html', context)
 
 
 def paypal_payment_failed(request):
