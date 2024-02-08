@@ -1,6 +1,10 @@
+from email import message
 from django.shortcuts import render
 from .models import Product, Category
+from user_auth.models import User
+from orders.models import Order
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 # Create your views here.
 def index(request):
     featured = Product.objects.all().filter(is_active=True).order_by('-priority','id')[:4] 
@@ -24,4 +28,30 @@ def index(request):
 
 @login_required(login_url='log_in')
 def dashboard(request):
-    return render(request, 'home/dashboard.html')
+    orders = Order.objects.all().filter(user=request.user, is_ordered=True).order_by('-id')
+    order_count = orders.count()
+
+    #change password
+    if request.POST:
+        current_password = request.POST['current_password']
+        new_password = request.POST['new_password']
+        confirm_password = request.POST['confirm_password']
+
+        user = User.objects.get(email__exact=request.user.email)
+        if new_password == confirm_password:
+            success = user.check_password(current_password)
+            if success:
+                user.set_password(new_password)
+                user.save()
+                messages.success(request, 'Password has been updated')
+            else:
+                messages.error(request, 'Passwords does not match')
+        else:
+            messages.error(request, 'Current password is incorrect! Enter a valid password.')
+
+
+    context={
+        'orders':orders,
+        'order_count':order_count,
+    }
+    return render(request, 'home/dashboard.html', context)
