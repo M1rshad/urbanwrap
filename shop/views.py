@@ -216,6 +216,7 @@ def cart(request, total=0, quantity=0, cart_items=None):
     try:
         tax = 0 
         grand_total = 0
+        cart = None
         if request.user.is_authenticated:
             cart_items = CartItem.objects.filter(user=request.user, is_active=True).order_by('id')
         else:
@@ -226,28 +227,33 @@ def cart(request, total=0, quantity=0, cart_items=None):
             quantity += cart_item.quantity
         tax =  0.02 * total
         grand_total = total + tax
-        if request.POST:
-            coupon = request.POST['coupon']
-            coupon_obj = Coupon.objects.filter(coupon_code = coupon)
-            if not coupon_obj.exists():
-                messages.error(request, 'Invalid Coupon.')
-                return redirect('cart')
-            if cart.coupon:
-                messages.error(request, 'Coupon already exists.')
-                return redirect('cart')
-            
-            if grand_total <= coupon_obj[0].minimum_amount:
-                messages.error(request, f'Total amount should be above {coupon_obj.minimum_amount}')
-                return redirect('cart')
-            
-            if coupon_obj[0].is_expired:
-                messages.error(request, 'Coupon expired.')
-                return redirect('cart')
 
-            cart.coupon = coupon_obj[0]
-            cart.save()
-            messages.success(request, 'Coupon applied.')
-            grand_total -= coupon_obj[0].discounted_price
+        #Coupon functionality
+        if request.POST:
+            if request.user.is_authenticated:
+                pass
+            else:
+                coupon = request.POST['coupon']
+                coupon_obj = Coupon.objects.filter(coupon_code = coupon)
+                if not coupon_obj.exists():
+                    messages.error(request, 'Invalid Coupon.')
+                    return redirect('cart')
+                if cart.coupon:
+                    messages.error(request, 'Coupon already exists.')
+                    return redirect('cart')
+                
+                if grand_total <= coupon_obj[0].minimum_amount:
+                    messages.error(request, f'Total amount should be above ${coupon_obj[0].minimum_amount}')
+                    return redirect('cart')
+                
+                if coupon_obj[0].is_expired:
+                    messages.error(request, 'Coupon expired.')
+                    return redirect('cart')
+
+                cart.coupon = coupon_obj[0]
+                cart.save()
+                messages.success(request, 'Coupon applied.')
+                grand_total -= coupon_obj[0].discounted_price
 
     except Cart.DoesNotExist:
         pass
@@ -259,7 +265,7 @@ def cart(request, total=0, quantity=0, cart_items=None):
         'cart_items' : cart_items,
         'tax' : tax,
         'grand_total':grand_total,
-        #'cart':cart,
+        'cart':cart,
         
     }
     return render(request, 'shop/cart.html', context)

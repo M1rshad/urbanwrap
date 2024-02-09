@@ -2,7 +2,7 @@ from email import message
 from django.shortcuts import render
 from .models import Product, Category
 from user_auth.models import User
-from orders.models import Order
+from orders.models import Order,Wallet
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 # Create your views here.
@@ -49,7 +49,8 @@ def dashboard(request):
         else:
             messages.error(request, 'Current password is incorrect! Enter a valid password.')
 
-
+    #wallet
+    
     context={
         'orders':orders,
         'order_count':order_count,
