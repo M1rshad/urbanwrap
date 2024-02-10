@@ -5,6 +5,7 @@ from user_auth.models import User
 from orders.models import Order,Wallet
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+import uuid
 # Create your views here.
 def index(request):
     featured = Product.objects.all().filter(is_active=True).order_by('-priority','id')[:4] 
@@ -50,9 +51,19 @@ def dashboard(request):
             messages.error(request, 'Current password is incorrect! Enter a valid password.')
 
     #wallet
-    
+    try:
+        wallet = None
+        wallet = Wallet.objects.get(user=request.user)
+        if not wallet:
+            wallet = Wallet.objects.create(
+                user=request.user,
+                card_id=str(uuid.uuid4().int)[:12],
+            )
+    except:
+        pass
     context={
         'orders':orders,
         'order_count':order_count,
+        'wallet':wallet,
     }
     return render(request, 'home/dashboard.html', context)
