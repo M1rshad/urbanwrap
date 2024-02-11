@@ -1,0 +1,93 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+
+{% block menu %}
+      <div class="header-center mr-auto">
+        <nav class="main-nav">
+            <ul class="menu sf-arrows">
+                <li>
+                    <a href="{% url 'home' %}" class="">Home</a>
+                </li>
+                <li>
+                    <a href="{% url 'shop' %}" class="">Shop</a>
+                    
+                </li>
+                <li>
+                    <a href="#" class="">About</a>
+                </li>
+                <li>
+                    <a href="blog.html" class="">Contact Us</a>
+                </li>
+                <li>
+                    <a href="blog.html" class="">FAQ</a>
+                </li>
+            </ul><!-- End .menu -->
+        </nav><!-- End .main-nav -->
+      </div><!-- End .header-left -->               
+{% endblock menu %}
+{% block content %}
+
+<main class="main">
+    <div class="page-header text-center" style="background-color:#faf9f9">
+        <div class="container">
+            <h1 class="page-title">My Account<span class="text-dark">Dashboard</span></h1>
+        </div><!-- End .container -->
+    </div><!-- End .page-header -->
+    <nav aria-label="breadcrumb" class="breadcrumb-nav mb-3">
+        <div class="container">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">Shop</a></li>
+                <li class="breadcrumb-item active" aria-current="page">My Account</li>
+            </ol>
+        </div><!-- End .container -->
+    </nav><!-- End .breadcrumb-nav -->
+
+    <div class="page-content">
+        <div class="dashboard">
+            <div class="container">
+                <div class="row">
+                    {% include 'partials/dashboard_sidebar.html' %}
+
+                    <div class="col-md-8 col-lg-9">
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active" id="tab-dashboard" role="tabpanel" aria-labelledby="tab-dashboard-link"></h4>
+                                <h4 class="m-5">My orders</h4>
+                                    <div class="table-responsive">
+                                    <table class="table m-3">
+                                        <thead>
+                                          <tr>
+                                            <th scope="col">Order number</th>
+                                            <th scope="col">Billing name</th>
+                                            <th scope="col">Phone</th>
+                                            <th scope="col">Order total</th>
+                                            <th scope="col">Date</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                            
+                                            {% for order in orders %}
+                                            <tr>
+                                                <td>{{order.order_number}}</td>
+                                                <td>{{order.full_name}}</td>
+                                                <td>{{order.phone}}</td>
+                                                <td>{{order.order_total}}</td>
+                                                <td>{{order.created_at}}</td>
+                                            </tr>
+                                            {% endfor %}
+                                          
+                                        </tbody>
+                                      </table>
+                                    </div>
+                            </div><!-- .End .tab-pane -->
+                        </div>
+                    </div><!-- End .col-lg-9 -->
+                </div><!-- End .row -->
+            </div><!-- End .container -->
+        </div><!-- End .dashboard -->
+    </div><!-- End .page-content -->
+</main><!-- End .main -->
+
+{% include 'partials/footer.html' %}
+{% endblock content %}
+    

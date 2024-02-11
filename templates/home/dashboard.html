@@ -28,7 +28,7 @@
 {% block content %}
 
 <main class="main">
-    <div class="page-header text-center" style="background-color:#faf9f9"">
+    <div class="page-header text-center" style="background-color:#faf9f9">
         <div class="container">
             <h1 class="page-title">My Account<span class="text-dark">Dashboard</span></h1>
         </div><!-- End .container -->
@@ -47,33 +47,13 @@
         <div class="dashboard">
             <div class="container">
                 <div class="row">
-                    <aside class="col-md-4 col-lg-3">
-                        <ul class="nav nav-dashboard flex-column mb-3 mb-md-0" role="tablist">
-                            <li class="nav-item">
-                                <a class="nav-link active" id="tab-status-link" data-toggle="tab" href="#tab-dashboard" role="tab" aria-controls="tab-dashboard" aria-selected="true">Dashboard</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" id="tab-orders-link" data-toggle="tab" href="#tab-orders" role="tab" aria-controls="tab-orders" aria-selected="false">Orders</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" id="tab-address-link" data-toggle="tab" href="#tab-address" role="tab" aria-controls="tab-address" aria-selected="false">Adresses</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" id="tab-account-link" data-toggle="tab" href="#tab-account" role="tab" aria-controls="tab-account" aria-selected="false">Account Details</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" id="tab-downloads-link" data-toggle="tab" href="#tab-downloads" role="tab" aria-controls="tab-downloads" aria-selected="false">Change password</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'log_out' %}">Sign Out</a>
-                            </li>
-                        </ul>
-                    </aside><!-- End .col-lg-3 -->
+                    {% include 'partials/dashboard_sidebar.html' %}
 
                     <div class="col-md-8 col-lg-9">
                         <div class="tab-content">
                             <div class="tab-pane fade show active" id="tab-dashboard" role="tabpanel" aria-labelledby="tab-dashboard-link"></h4>
-                                <h4>Hello <span class="font-weight-normal text-dark">{{request.user.username}}</span> 
+                                <h4>Hello <span class="font-weight-normal text-dark">{{request.user.username}}!
+                                </span></h4>
                                 <hr>
                                 <div class="card col-md-6" style="width: 36rem; float: left">
                                 <div class="card-body text-center">
@@ -82,131 +62,19 @@
                                 </div>
                                 </div>
                                 <div class="card col-md-6 ml-3" style="width: 36rem;">
-                                    <div class="card-body text-center">
+                                    <div class="card-body text-center pb-0">
+                                        
+                                        {% if user_profile.dp %}
+                                        <img class="mx-auto d-block" src="{{user_profile.dp.url}}" alt="" height="50px" width="50px">
+                                        {% else %}
                                         <img class="mx-auto d-block" src="data:image/png;base64,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" alt="" height="50px" width="50px">
-                                        <p class="pt-2">{{request.user.username}}</p>
-                                        <p class="mt-2 ">{{request.user.email}}</p>
+                                        {% endif %}
+                                        <p class="pt-1">{{request.user.username}}</p>
+                                        <p class="mt-1 ">{{request.user.email}}</p>
                                     </div>
                                     </div>
                                 <hr>
                                 <p>From your account dashboard you can view your <a href="#tab-orders" class="tab-trigger-link link-underline">recent orders</a>, manage your <a href="#tab-address" class="tab-trigger-link">shipping and billing addresses</a>, and <a href="#tab-account" class="tab-trigger-link">edit your password and account details</a>.</p>
-                            </div><!-- .End .tab-pane -->
-
-                            <div class="tab-pane fade" id="tab-orders" role="tabpanel" aria-labelledby="tab-orders-link">
-                                    <h4 class="m-5">My orders</h4>
-                                    <div class="table-responsive">
-                                    <table class="table m-3">
-                                        <thead>
-                                          <tr>
-                                            <th scope="col">Order number</th>
-                                            <th scope="col">Billing name</th>
-                                            <th scope="col">Phone</th>
-                                            <th scope="col">Order total</th>
-                                            <th scope="col">Date</th>
-                                          </tr>
-                                        </thead>
-                                        <tbody>
-                                            
-                                            {% for order in orders %}
-                                            <tr>
-                                                <td>{{order.order_number}}</td>
-                                                <td>{{order.full_name}}</td>
-                                                <td>{{order.phone}}</td>
-                                                <td>{{order.order_total}}</td>
-                                                <td>{{order.created_at}}</td>
-                                            </tr>
-                                            {% endfor %}
-                                          
-                                        </tbody>
-                                      </table>
-                                    </div>
-                            </div><!-- .End .tab-pane -->
-
-                            <div class="tab-pane fade" id="tab-address" role="tabpanel" aria-labelledby="tab-address-link">
-                                <p>The following addresses will be used on the checkout page by default.</p>
-
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="card card-dashboard">
-                                            <div class="card-body">
-                                                <h3 class="card-title">Billing Address</h3><!-- End .card-title -->
-
-                                                <p>User Name<br>
-                                                User Company<br>
-                                                John str<br>
-                                                New York, NY 10001<br>
-                                                1-234-987-6543<br>
-                                                yourmail@mail.com<br>
-                                                <a href="#">Edit <i class="icon-edit"></i></a></p>
-                                            </div><!-- End .card-body -->
-                                        </div><!-- End .card-dashboard -->
-                                    </div><!-- End .col-lg-6 -->
-
-                                    <div class="col-lg-6">
-                                        <div class="card card-dashboard">
-                                            <div class="card-body">
-                                                <h3 class="card-title">Shipping Address</h3><!-- End .card-title -->
-
-                                                <p>You have not set up this type of address yet.<br>
-                                                <a href="#">Edit <i class="icon-edit"></i></a></p>
-                                            </div><!-- End .card-body -->
-                                        </div><!-- End .card-dashboard -->
-                                    </div><!-- End .col-lg-6 -->
-                                </div><!-- End .row -->
-                            </div><!-- .End .tab-pane -->
-
-                            <div class="tab-pane fade" id="tab-account" role="tabpanel" aria-labelledby="tab-account-link">
-                                <form action="#" method="post">
-                                    {% csrf_token %}
-                                    <div class="row">
-                                        <div class="col-sm-6">
-                                            <label>First Name</label>
-                                            <input type="text" class="form-control" value="{{user_form.first_name.value}}" required>
-                                        </div><!-- End .col-sm-6 -->
-
-                                        <div class="col-sm-6">
-                                            <label>Last Name</label>
-                                            <input type="text" class="form-control" value="{{user_form.last_name.value}}" required>
-                                        </div><!-- End .col-sm-6 -->
-                                    </div><!-- End .row -->
-                                    <div class="col-sm-6">
-                                        <label>Profile picture</label>
-                                        <input type="file" class="form-control">
-                                    </div><!-- End .col-sm-6 -->
-
-                                    <label>Bio</label>
-                                    <textarea id="bio" name="bio" class="form-control" rows="4" cols="50">
-                                    </textarea>
-
-                                    <button type="submit" class="btn btn-outline-primary-2">
-                                        <span>SAVE CHANGES</span>
-                                        <i class="icon-long-arrow-right"></i>
-                                    </button>
-                                </form>
-                            </div><!-- .End .tab-pane -->
-                            <div class="tab-pane fade" id="tab-downloads" role="tabpanel" aria-labelledby="tab-downloads-link">
-                                <form action="#" method="post">
-                                    {% csrf_token %}
-                                    <div class="row">
-                                    <label>Current password</label>
-                                    <input type="password" class="form-control" name="current_password">
-
-                                    <label>New password</label>
-                                    <input type="password" class="form-control" name="new_password">
-
-                                    <label>Confirm new password</label>
-                                    <input type="password" class="form-control mb-2" name="confirm_password">
-
-                                    <button type="submit" class="btn btn-outline-primary-2">
-                                        <span>SAVE CHANGES</span>
-                                        <i class="icon-long-arrow-right"></i>
-                                    </button>
-                                    
-                                    {% for message in messages %}
-                                        <p class="text-center">{{message}}</p>
-                                    {% endfor %}
-                                        
-                                </form>
                             </div><!-- .End .tab-pane -->
                         </div>
                     </div><!-- End .col-lg-9 -->

@@ -4,6 +4,7 @@ from PIL import Image
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from home.models import Product
+import uuid
 
 # Create your models here.
 
@@ -24,6 +25,14 @@ class User(AbstractUser):
 
         if created:
             UserProfile.objects.create(user=self)
+            from orders.models import Wallet
+            Wallet.objects.create(user=self, card_id=self.generate_card_id(), balance=0)
+
+    def generate_card_id(self):
+        # Generate a random 12-digit card ID using uuid
+        card_id = str(uuid.uuid4().int)[:12]
+        return card_id
+    
 
     def __str__(self):
         return self.username
@@ -46,15 +55,18 @@ class UserProfile(models.Model):
     
 class ShippingAddress(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
-    full_name = models.CharField(max_length=255)
-    address_lines = models.TextField(null=True, blank=True)
+    first_name = models.CharField(max_length=50) 
+    last_name = models.CharField(max_length=50) 
+    phone = models.CharField(max_length=15) 
+    email = models.EmailField(max_length=50) 
+    address_line_1 = models.CharField(max_length=50) 
+    address_line_2 = models.CharField(max_length=50)
+    country = models.CharField(max_length=255, null=True, blank=True)
     city = models.CharField(max_length=255, null=True, blank=True)
     state = models.CharField(max_length=255, null=True, blank=True)
     pin_code = models.CharField(max_length=10, null=True, blank=True)
-    country = models.CharField(max_length=255, null=True, blank=True)
-    mobile = models.CharField(max_length=15)
     status = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.full_name
+        return self.first_name
 

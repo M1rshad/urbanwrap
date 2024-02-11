@@ -33,10 +33,24 @@ def index(request):
 def dashboard(request):
     orders = Order.objects.all().filter(user=request.user, is_ordered=True).order_by('-id')
     order_count = orders.count()
-    user_form = None
-    profile_form = None
+    user_profile = UserProfile.objects.get(user=request.user)
+ 
+    context={
+        'orders':orders,
+        'order_count':order_count,
+        'user_profile':user_profile,
+    }
+    return render(request, 'home/dashboard.html', context)
 
-    #edit profile
+def my_orders(request):
+    orders = Order.objects.all().filter(user=request.user, is_ordered=True).order_by('-id')
+    context={
+        'orders':orders,
+    }
+    return render(request, 'home/my_orders.html', context)
+
+
+def update_account_details(request):
     user_profile = UserProfile.objects.get(user=request.user)
     if request.POST:
         user_form = EditUserForm(request.POST, instance=request.user)
@@ -44,13 +58,21 @@ def dashboard(request):
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
             profile_form.save()
-            message.success(request, 'The profile has been updated')
+            messages.success(request, 'The profile has been updated')
             redirect('dashboard')
-        else:
-            user_form = EditUserForm(instance=request.user)
-            profile_form = EditUserForm(instance=user_profile)
+    else:
+        user_form = EditUserForm(instance=request.user)
+        profile_form = UserProfileForm(instance=user_profile)
+        
+    context={
+        'user_form':user_form,
+        'profile_form':profile_form,
+        'user_profile': user_profile,
+    }
+    return render(request, 'home/account_details.html', context)
 
-    #change password
+
+def change_password(request):
     if request.POST:
         current_password = request.POST['current_password']
         new_password = request.POST['new_password']
@@ -68,22 +90,14 @@ def dashboard(request):
         else:
             messages.error(request, 'Current password is incorrect! Enter a valid password.')
 
-    #wallet
-    try:
-        wallet = None
-        wallet = Wallet.objects.get(user=request.user)
-        if not wallet:
-            wallet = Wallet.objects.create(
-                user=request.user,
-                card_id=str(uuid.uuid4().int)[:12],
-            )
-    except:
-        pass
-    context={
-        'orders':orders,
-        'order_count':order_count,
-        'wallet':wallet,
-        'user_form':user_form,
-        'profile_form':profile_form,
+    return render(request, 'home/change_password.html')
+
+
+def wallet(request):
+    wallet = Wallet.objects.get(user=request.user)
+        
+
+    context = {
+        'wallet': wallet,
     }
-    return render(request, 'home/dashboard.html', context)
+    return render(request, 'home/wallet.html', context)
