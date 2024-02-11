@@ -9,7 +9,7 @@ from home.models import Product
 
 class User(AbstractUser):
     email = models.EmailField(unique=True)
-    username = models.CharField(max_length=20)
+    username = models.CharField(max_length=20, unique=True)
     first_name = models.CharField(max_length=20)
     last_name = models.CharField(max_length=20)
     is_block = models.BooleanField(default=False)
@@ -18,6 +18,12 @@ class User(AbstractUser):
     REQUIRED_FIELDS = ['username']
 
 
+    def save(self, *args, **kwargs):
+        created = not self.pk 
+        super().save(*args, **kwargs)
+
+        if created:
+            UserProfile.objects.create(user=self)
 
     def __str__(self):
         return self.username

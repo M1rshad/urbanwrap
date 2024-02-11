@@ -1,7 +1,9 @@
 from email import message
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, redirect, render
 from .models import Product, Category
-from user_auth.models import User
+from user_auth.models import User, UserProfile
+from admin_panel.forms import EditUserForm
+from user_auth.forms import UserProfileForm
 from orders.models import Order,Wallet
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -31,6 +33,22 @@ def index(request):
 def dashboard(request):
     orders = Order.objects.all().filter(user=request.user, is_ordered=True).order_by('-id')
     order_count = orders.count()
+    user_form = None
+    profile_form = None
+
+    #edit profile
+    user_profile = UserProfile.objects.get(user=request.user)
+    if request.POST:
+        user_form = EditUserForm(request.POST, instance=request.user)
+        profile_form = UserProfileForm(request.POST, request.FILES, instance=user_profile)
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            message.success(request, 'The profile has been updated')
+            redirect('dashboard')
+        else:
+            user_form = EditUserForm(instance=request.user)
+            profile_form = EditUserForm(instance=user_profile)
 
     #change password
     if request.POST:
@@ -65,5 +83,7 @@ def dashboard(request):
         'orders':orders,
         'order_count':order_count,
         'wallet':wallet,
+        'user_form':user_form,
+        'profile_form':profile_form,
     }
     return render(request, 'home/dashboard.html', context)
