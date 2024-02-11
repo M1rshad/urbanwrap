@@ -12,6 +12,7 @@ from django.contrib.postgres.search import SearchVector
 from user_auth.forms import SignupForm
 from .forms import EditUserForm, AddCategoryForm, AddProductForm, AddVariantForm, ProductImageForm, AddCouponForm
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.core.mail import send_mail
 
 
 # Create your views here.
@@ -376,4 +377,14 @@ def cancel_order(request, order_id):
     order_obj = Order.objects.get(id=order_id)
     order_obj.status = 'Cancelled'
     order_obj.save()
+
+    #order confirmation email
+    subject = 'Order cancellation'
+    message = f"""
+    Hi {request.user.username},
+    Your order has been cancelled!
+    Order Number = {order_obj.order_number} 
+    """
+    send_mail(subject, message, "abdullamirshadcl@gmail.com", [request.user.email,], fail_silently=False)
+
     return redirect('order_management')

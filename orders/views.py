@@ -10,6 +10,7 @@ from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from paypal.standard.forms import PayPalPaymentsForm
 import uuid
+from django.core.mail import send_mail
 # Create your views here.
 
 
@@ -119,6 +120,17 @@ def cod_completed(request, order_id):
     order.payment = payment
     order.save()
 
+
+    #order confirmation email
+    subject = 'Order confirmation'
+    message = f"""
+    Hi {request.user.username},
+    Your order has been received!
+    Order Number = {order.order_number} 
+    """
+    send_mail(subject, message, "abdullamirshadcl@gmail.com", [request.user.email,], fail_silently=False)
+
+
     cart_items = CartItem.objects.filter(user=request.user)
     for item in cart_items:
         orderproduct = OrderProduct()
@@ -178,6 +190,15 @@ def paypal_payment_completed(request, order_id):
 
     order.payment = payment
     order.save()
+    
+    #order confirmation email
+    subject = 'Order confirmation'
+    message = f"""
+    Hi {request.user.username},
+    Your order has been received!
+    Order Number = {order.order_number} 
+    """
+    send_mail(subject, message, "abdullamirshadcl@gmail.com", [request.user.email,], fail_silently=False)
 
     
     cart_items = CartItem.objects.filter(user=request.user)
