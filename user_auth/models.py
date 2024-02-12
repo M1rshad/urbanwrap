@@ -62,8 +62,8 @@ class ShippingAddress(models.Model):
     address_line_1 = models.CharField(max_length=50) 
     address_line_2 = models.CharField(max_length=50)
     country = models.CharField(max_length=255, null=True, blank=True)
-    city = models.CharField(max_length=255, null=True, blank=True)
     state = models.CharField(max_length=255, null=True, blank=True)
+    city = models.CharField(max_length=255, null=True, blank=True)
     pin_code = models.CharField(max_length=10, null=True, blank=True)
     status = models.BooleanField(default=False)
 

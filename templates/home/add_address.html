@@ -1,0 +1,160 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+
+{% block menu %}
+      <div class="header-center mr-auto">
+        <nav class="main-nav">
+            <ul class="menu sf-arrows">
+                <li>
+                    <a href="{% url 'home' %}" class="">Home</a>
+                </li>
+                <li>
+                    <a href="{% url 'shop' %}" class="">Shop</a>
+                    
+                </li>
+                <li>
+                    <a href="#" class="">About</a>
+                </li>
+                <li>
+                    <a href="blog.html" class="">Contact Us</a>
+                </li>
+                <li>
+                    <a href="blog.html" class="">FAQ</a>
+                </li>
+            </ul><!-- End .menu -->
+        </nav><!-- End .main-nav -->
+      </div><!-- End .header-left -->               
+{% endblock menu %}
+{% block content %}
+
+<main class="main">
+    <div class="page-header text-center" style="background-color:#faf9f9">
+        <div class="container">
+            <h1 class="page-title">My Account<span class="text-dark">Dashboard</span></h1>
+        </div><!-- End .container -->
+    </div><!-- End .page-header -->
+    <nav aria-label="breadcrumb" class="breadcrumb-nav mb-3">
+        <div class="container">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">Shop</a></li>
+                <li class="breadcrumb-item active" aria-current="page">My Account</li>
+            </ol>
+        </div><!-- End .container -->
+    </nav><!-- End .breadcrumb-nav -->
+
+    <div class="page-content">
+        <div class="dashboard">
+            <div class="container">
+                <div class="row">
+                    {% include 'partials/dashboard_sidebar.html' %}
+
+                    <div class="col-md-8 col-lg-9">
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active" id="tab-dashboard" role="tabpanel" aria-labelledby="tab-dashboard-link"></h4>
+                                <h4>Add Address</h4>
+                                
+                                <form action="#" method="post" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <label>First Name</label>
+                                            <input class="form-control"
+                                            type="{{ form.first_name.field.widget.input_type }}"
+                                            name="{{ form.first_name.name }}"
+                                            id="{{ form.first_name.id_for_label }}" required>
+                                        </div><!-- End .col-sm-6 -->
+
+                                        <div class="col-sm-6">
+                                            <label>Last Name</label>
+                                            <input class="form-control"
+                                            type="{{ form.last_name.field.widget.input_type }}"
+                                            name="{{ form.last_name.name }}"
+                                            id="{{ form.last_name.id_for_label }}" required>
+                                        </div><!-- End .col-sm-6 -->
+                                    </div><!-- End .row -->
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <label>Phone</label>
+                                            <input class="form-control"
+                                            type="{{ form.phone.field.widget.input_type }}"
+                                            name="{{ form.phone.name }}"
+                                            id="{{ form.phone.id_for_label }}" required>
+                                        </div><!-- End .col-sm-6 -->
+
+                                        <div class="col-sm-6">
+                                            <label>Email</label>
+                                            <input class="form-control"
+                                            type="{{ form.email.field.widget.input_type }}"
+                                            name="{{ form.email.name }}"
+                                            id="{{ form.email.id_for_label }}" required>
+                                        </div><!-- End .col-sm-6 -->
+                                    </div><!-- End .row -->
+                                    
+
+                                    <label>Address line 1</label>
+                                    <input class="form-control"
+                                    type="{{ form.address_line_1.field.widget.input_type }}"
+                                    name="{{ form.address_line_1.name }}"
+                                    id="{{ form.address_line_1.id_for_label }}" class="form-control">
+
+                                    <label>Address line 2</label>
+                                    <input class="form-control"
+                                    type="{{ form.address_line_2.field.widget.input_type }}"
+                                    name="{{ form.address_line_2.name }}"
+                                    id="{{ form.address_line_2.id_for_label }}" class="form-control">
+
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <label>Country</label>
+                                            <input class="form-control"
+                                            type="{{ form.country.field.widget.input_type }}"
+                                            name="{{ form.country.name }}"
+                                            id="{{ form.country.id_for_label }}" required>
+                                        </div><!-- End .col-sm-6 -->
+
+                                        <div class="col-sm-6">
+                                            <label>State</label>
+                                            <input class="form-control"
+                                            type="{{ form.state.field.widget.input_type }}"
+                                            name="{{ form.state.name }}"
+                                            id="{{ form.state.id_for_label }}" required>
+                                        </div><!-- End .col-sm-6 -->
+                                    </div><!-- End .row -->
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <label>City</label>
+                                            <input class="form-control"
+                                            type="{{ form.city.field.widget.input_type }}"
+                                            name="{{ form.city.name }}"
+                                            id="{{ form.city.id_for_label }}" required>
+                                        </div><!-- End .col-sm-6 -->
+
+                                        <div class="col-sm-6">
+                                            <label>Pin Code</label>
+                                            <input class="form-control"
+                                            type="{{ form.pin_code.field.widget.input_type }}"
+                                            name="{{ form.pin_code.name }}"
+                                            id="{{ form.pin_code.id_for_label }}" required>
+                                        </div><!-- End .col-sm-6 -->
+                                    </div><!-- End .row -->
+
+                                    <button type="submit" class="btn btn-outline-primary-2">
+                                        <span>SAVE CHANGES</span>
+                                        <i class="icon-long-arrow-right"></i>
+                                    </button>
+                                    {{form.errors}}
+                                </form>
+                                
+                            </div><!-- .End .tab-pane -->
+                        </div>
+                    </div><!-- End .col-lg-9 -->
+                </div><!-- End .row -->
+            </div><!-- End .container -->
+        </div><!-- End .dashboard -->
+    </div><!-- End .page-content -->
+</main><!-- End .main -->
+
+{% include 'partials/footer.html' %}
+{% endblock content %}
+    

@@ -1,9 +1,10 @@
 from email import message
+from email.headerregistry import Address
 from django.shortcuts import get_object_or_404, redirect, render
 from .models import Product, Category
-from user_auth.models import User, UserProfile
+from user_auth.models import ShippingAddress, User, UserProfile
 from admin_panel.forms import EditUserForm
-from user_auth.forms import UserProfileForm
+from user_auth.forms import UserProfileForm, ShippingAddressForm
 from orders.models import Order,Wallet
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -70,6 +71,56 @@ def update_account_details(request):
         'user_profile': user_profile,
     }
     return render(request, 'home/account_details.html', context)
+
+
+def my_address(request):
+    addresses = ShippingAddress.objects.filter(user=request.user)
+    context={
+        'addresses':addresses,
+    }
+    return render(request, 'home/my_address.html',context)
+
+def add_address(request):
+    
+    max_address_allowed=5
+    existing_address_count = ShippingAddress.objects.filter(user=request.user).count()
+
+    if existing_address_count >= max_address_allowed:
+        messages.error(request, 'Address limit exceeded')
+        return redirect('my_address')
+    
+    form = ShippingAddressForm()
+    if request.POST:
+        form = ShippingAddressForm(request.POST)
+        if form.is_valid():
+            address= form.save(commit=False)
+            address.user=request.user
+            address.save()
+            return redirect('my_address')
+    else:
+        form = ShippingAddressForm()
+    context ={'form':form}
+    return render(request, 'home/add_address.html', context)
+
+
+def edit_address(request, address_id):
+    address = ShippingAddress.objects.get(id=address_id)
+    if request.POST:
+        form = ShippingAddressForm(request.POST, instance=address)
+        if form.is_valid():
+            address= form.save(commit=False)
+            address.user=request.user
+            address.save()
+            return redirect('my_address')
+    else:
+        form = ShippingAddressForm(instance=address)
+    context ={'form':form}
+    return render(request, 'home/edit_address.html', context)
+
+def delete_address(request, address_id):
+    address = ShippingAddress.objects.get(id=address_id)
+    address.delete()
+    return redirect('my_address')
 
 
 def change_password(request):

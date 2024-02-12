@@ -1,0 +1,111 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+
+{% block menu %}
+      <div class="header-center mr-auto">
+        <nav class="main-nav">
+            <ul class="menu sf-arrows">
+                <li>
+                    <a href="{% url 'home' %}" class="">Home</a>
+                </li>
+                <li>
+                    <a href="{% url 'shop' %}" class="">Shop</a>
+                    
+                </li>
+                <li>
+                    <a href="#" class="">About</a>
+                </li>
+                <li>
+                    <a href="blog.html" class="">Contact Us</a>
+                </li>
+                <li>
+                    <a href="blog.html" class="">FAQ</a>
+                </li>
+            </ul><!-- End .menu -->
+        </nav><!-- End .main-nav -->
+      </div><!-- End .header-left -->               
+{% endblock menu %}
+{% block content %}
+
+<main class="main">
+    <div class="page-header text-center" style="background-color:#faf9f9">
+        <div class="container">
+            <h1 class="page-title">My Account<span class="text-dark">Dashboard</span></h1>
+        </div><!-- End .container -->
+    </div><!-- End .page-header -->
+    <nav aria-label="breadcrumb" class="breadcrumb-nav mb-3">
+        <div class="container">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">Shop</a></li>
+                <li class="breadcrumb-item active" aria-current="page">My Account</li>
+            </ol>
+        </div><!-- End .container -->
+    </nav><!-- End .breadcrumb-nav -->
+
+    <div class="page-content">
+        <div class="dashboard">
+            <div class="container">
+                <div class="row">
+                    {% include 'partials/dashboard_sidebar.html' %}
+
+                    <div class="col-md-8 col-lg-9">
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active" id="tab-dashboard" role="tabpanel" aria-labelledby="tab-dashboard-link"></h4>
+                                <h4>My Addresses</h4>
+                                <div class="text-right">
+                                <a href={% url 'add_address' %}><button class="btn btn-dark m-3">Add address</button></a>
+                                </div>
+                                {% for message in messages %}
+                                <p class="text-danger"><strong>{{message}}</strong></p>
+                                {% endfor %}
+                                <div class="row">
+
+                                
+                                {% if addresses %}
+                                    
+                                
+                                {% for address in addresses %}
+                                
+                                
+                                <div class="col-lg-6">
+                                        <div class="card card-dashboard">
+                                            <div class="card-body">
+                                                <h3 class="card-title mb-2">Shipping Address</h3><!-- End .card-title -->
+                                                
+                                                <p><strong>{{address.first_name | capfirst}} {{address.last_name | capfirst}}</strong><br>
+                                                    {{address.address_line_1}}<br>
+                                                    {{address.address_line_2}}<br>
+                                                    {{address.city}}, {{address.state}}, {{address.country}} {{address.pin_code}}<br>
+                                                    {{address.phone}}<br>
+                                                    {{address.email}}<br>
+                                                    <div class="text-right">
+                                                        <a href="{% url 'edit_address' address.id %}" class="mr-5">Edit <i class="icon-edit"></i></a>
+                                                        <a href="{% url 'delete_address' address.id %}" onclick= "return confirm('Are you sure you want to remove this address?')" class="text-danger">Delete</a>
+                                                    </div>
+                                                </p>
+                                            </div><!-- End .card-body -->
+                                        </div><!-- End .card-dashboard -->
+                                    </div><!-- End .col-lg-6 -->
+
+                                    {% endfor %}
+                                    {% else %}
+                                    <p>There is no saved address available. Please add a new address.</p>
+                                    {% endif %}
+                                    
+                                    
+                                        
+                                </div><!-- End .row -->
+                                
+                            </div><!-- .End .tab-pane -->
+                        </div>
+                    </div><!-- End .col-lg-9 -->
+                </div><!-- End .row -->
+            </div><!-- End .container -->
+        </div><!-- End .dashboard -->
+    </div><!-- End .page-content -->
+</main><!-- End .main -->
+
+{% include 'partials/footer.html' %}
+{% endblock content %}
+    

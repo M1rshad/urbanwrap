@@ -10,7 +10,7 @@
             <a class="nav-link {% if 'dashboard/account-details/' in request.path %}active{% endif %}" href="{% url 'update_account_details' %}" role="tab"  aria-selected="false">Account Details</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#tab-address" role="tab" aria-selected="false">Adresses</a>
+            <a class="nav-link {% if 'dashboard/my-address/' in request.path %}active{% endif %}" href="{% url 'my_address' %}" role="tab" aria-selected="false">Adresses</a>
         </li>
         <li class="nav-item">
             <a class="nav-link {% if 'dashboard/change-password/' in request.path %}active{% endif %}" href="{% url 'change_password' %}" role="tab" aria-selected="false">Change password</a>
