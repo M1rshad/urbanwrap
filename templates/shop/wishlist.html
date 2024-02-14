@@ -38,8 +38,8 @@
     <nav aria-label="breadcrumb" class="breadcrumb-nav">
         <div class="container">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-                <li class="breadcrumb-item"><a href="#">Shop</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'shop' %}">Shop</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Wishlist</li>
             </ol>
         </div><!-- End .container -->
@@ -82,7 +82,12 @@
                         </td>
                         <td class="price-col">${{item.product.price}}</td>
                             
-                        <td class="stock-col"><span class="in-stock">In stock</span></td>
+                        <td class="stock-col">
+                            
+                            {% for variation in item.product.variant.all  %}
+                                <p>{{variation.variation_value}} - {% if variation.stock > 0 %}<span class="in-stock">In stock</span>{% else %}<span class="out-of-stock">Out of stock</span>{% endif %}</p>
+                            {% endfor %}
+                        </td>
                         <td class="action-col">
                             <a href="{{item.product.get_url}}"><button class="btn btn-block btn-outline-primary-2"><i class="icon-cart-plus"></i>View Product</button></a>
                         </td>
