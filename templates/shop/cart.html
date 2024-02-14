@@ -105,16 +105,16 @@
                                     <td class="price-col">$ {{item.product.price}}</td>
                                     <td class="quantity-col">
                                         <div class="input-group quantity-selector">
-                                            <button><a href={% url 'decrement_cart' item.product.id item.id %} type="button" class="" aria-describedby="inputQuantitySelector" data-bs-step="down">
+                                            <button class="text-white btn-dark"><a href={% url 'decrement_cart' item.product.id item.id %} type="button" class="text-white" aria-describedby="inputQuantitySelector" data-bs-step="down">
                                                 <span class="visually-hidden">-</span>
                                             </a></button>
-                                            <input type="number" id="inputQuantitySelector" class="" aria-live="polite"  name="quantity" title="quantity" value="{{item.quantity}}" min="0" max="10" step="1" data-bs-round="0" aria-label="Quantity selector "style="width:4rem;" readonly>
+                                            <input type="number" id="inputQuantitySelector" class="text-center" aria-live="polite"  name="quantity" title="quantity" value="{{item.quantity}}" min="0" max="10" step="1" data-bs-round="0" aria-label="Quantity selector "style="width:4rem;" readonly>
                                             <form action="{% url 'add_cart' item.product.id %}" method=post>
                                                 {% csrf_token %}
                                                 {% for item in item.variations.all %}
                                                 <input type="hidden" name="{{item.variation_category | lower}}" value="{{item.variation_value | capfirst}}">    
                                                 {% endfor %}
-                                            <button type="submit" class="" aria-describedby="inputQuantitySelector" data-bs-step="up">
+                                            <button type="submit" class="text-white btn-dark" aria-describedby="inputQuantitySelector" data-bs-step="up">
                                               <span class="visually-hidden">+</span>
                                             </button>
                                         </form>
@@ -181,10 +181,7 @@
                                     </tr><!-- End .summary-shipping-row -->
                                     
 
-                                    <tr class="summary-shipping-estimate">
-                                        <td>Estimate for Your Country<br> <a href="dashboard.html">Change address</a></td>
-                                        <td>&nbsp;</td>
-                                    </tr><!-- End .summary-shipping-estimate -->
+                            
                                     <tr class="summary-total">
                                         <td>Total:</td>
                                         <td>$ {{grand_total}}</td>
