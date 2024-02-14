@@ -2,7 +2,7 @@ from codecs import oem_decode
 from django.shortcuts import get_object_or_404, render, redirect, HttpResponse
 from shop.models import CartItem
 from home.models import Product
-from .models import Order, OrderProduct,Payment
+from .models import Order, OrderProduct,Payment, Wallet
 from .forms import OrderForm
 import datetime
 from django.urls import reverse
@@ -70,6 +70,7 @@ def place_order(request, total=0, quantity=0):
 
             order = Order.objects.get(user=current_user, is_ordered=False, order_number=order_number)
             paypal_payment_button=None
+            
 
             if order.payment_method=='cod':
                 pass
@@ -120,6 +121,80 @@ def cod_completed(request, order_id):
     order.payment = payment
     order.save()
 
+
+    #order confirmation email
+    subject = 'Order confirmation'
+    message = f"""
+    Hi {request.user.username},
+    Your order has been received!
+    Order Number = {order.order_number} 
+    """
+    send_mail(subject, message, "abdullamirshadcl@gmail.com", [request.user.email,], fail_silently=False)
+
+
+    cart_items = CartItem.objects.filter(user=request.user)
+    for item in cart_items:
+        orderproduct = OrderProduct()
+        orderproduct.order_id = order.id
+        orderproduct.payment = payment
+        orderproduct.user_id = request.user.id
+        orderproduct.product_id = item.product.id
+        orderproduct.quantity = item.quantity
+        orderproduct.product_price = item.product.price
+        orderproduct.is_ordered = True
+        orderproduct.save()
+
+        cart_item = CartItem.objects.get(id=item.id)
+        product_variation = cart_item.variations.all()
+        orderproduct = OrderProduct.objects.get(id=orderproduct.id)
+        orderproduct.variation.set(product_variation)
+        orderproduct.save()
+
+        #Reduce the stock
+        product = Product.objects.get(id=item.product_id)
+        product_variations = product.variant.all()
+        quantity = orderproduct.quantity
+        for variation in product_variations:
+            for i in product_variation:
+                if i==variation:
+                    variation.stock -= quantity
+                    variation.save()
+
+    #clear cart after placing order
+    CartItem.objects.filter(user=request.user).delete()
+
+    order = Order.objects.get(id=order_id, user=current_user)
+    order_subtotal = order.order_total - order.tax
+    context={
+        'order':order,
+        'order_subtotal':order_subtotal
+    }
+    return render(request, 'orders/order_completed.html', context)
+
+
+def wallet_completed(request, order_id):
+    current_user = request.user
+
+    order = get_object_or_404(Order,id=order_id, user=current_user, is_ordered=False)
+    order.status = 'Accepted'
+    order.is_ordered = True
+    order.save()
+
+    payment_id = uuid.uuid4().hex
+    payment = Payment.objects.create(
+        user=current_user,
+        payment_id=payment_id,
+        payment_method='Wallet',
+        amount_paid=order.order_total,
+        status='Completed'
+    )
+
+    order.payment = payment
+    order.save()
+
+    wallet = Wallet.objects.get(user=request.uset)
+    wallet.balance -= order.order_total
+    wallet.save()
 
     #order confirmation email
     subject = 'Order confirmation'

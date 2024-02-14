@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 from home.models import Product, Category, Variation
-from orders.models import Coupon
+from orders.models import Coupon, Wallet
 from .models import Cart, CartItem, Wishlist, WishlistItem
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Q 
@@ -309,12 +309,14 @@ def checkout(request, total=0, quantity=0, cart_items=None):
         grand_total = total + tax
     except Cart.DoesNotExist:
         pass
+    wallet=Wallet.objects.get(user=request.user)
     context = {
         'total':total,
         'quantity':quantity,
         'cart_items' : cart_items,
         'tax' : tax,
         'grand_total':grand_total,
+        'wallet':wallet,
     }
     return render(request, 'shop/checkout.html', context)
 

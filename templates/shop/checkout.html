@@ -132,13 +132,13 @@
                                                     {{i.variation_category| capfirst}} - {{i.variation_value | capfirst}}
                                                 {% endfor %}
                                                 {% endif %}</p></td>
-                                            <td>Rs {{item.product.price}}</td>
+                                            <td>$ {{item.product.price}}</td>
                                         </tr>
                                         {% endfor %}
                                         
                                         <tr class="summary-subtotal">
                                             <td>Subtotal:</td>
-                                            <td>Rs {{total}}</td>
+                                            <td>$ {{total}}</td>
                                         </tr><!-- End .summary-subtotal -->
                                         <tr>
                                             <td>Tax:</td>
@@ -146,7 +146,7 @@
                                         </tr>
                                         <tr class="summary-total">
                                             <td>Total:</td>
-                                            <td>Rs {{grand_total}}</td>
+                                            <td>$ {{grand_total}}</td>
                                         </tr><!-- End .summary-total -->
                                     </tbody>
                                 </table><!-- End .table table-summary -->
@@ -158,6 +158,20 @@
                                 <br>
                                 <input type="radio" name="payment_method" value="cod">
                                 <label for="cod">Cash On Delivery</label>
+                                <br>
+                                
+                                {% if wallet.balance >= grand_total %}
+                                <input type="radio" name="payment_method" value="wallet">
+                                <label for="wallet">Wallet</label><br>
+                                <label for="wallet">Wallet balance : ${{wallet.balance}}</label>
+                                {% else %}
+                                <input type="radio" name="payment_method" value="wallet" disabled>
+                                <label for="wallet">Wallet</label><br>
+                                <label for="wallet" class="text-danger">Wallet balance : ${{wallet.balance}}</label>
+                                <label for="wallet" class="text-danger">Insufficient balance</label>
+                                {% endif %}
+                                    
+
 
 
                                 <button type="submit" class="btn btn-outline-primary-2 btn-order btn-block">
