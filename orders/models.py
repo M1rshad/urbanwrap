@@ -1,6 +1,7 @@
 from django.db import models
 from user_auth.models import User
 from home.models import Product, Variation
+from datetime import timezone
 # Create your models here.
 class Payment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -102,4 +103,12 @@ class Wallet(models.Model):
         return f"{self.user.username}'s Wallet"
     
 
+class Offer(models.Model):
+    name = models.CharField(max_length=100)
+    discount_percentage = models.DecimalField(max_digits=5, decimal_places=2)
+    valid_from = models.DateTimeField(auto_now_add=True)
+    valid_to = models.DateTimeField()
+    products = models.ManyToManyField(Product)
 
+    def __str__(self):
+        return self.name

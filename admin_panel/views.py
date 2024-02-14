@@ -445,3 +445,7 @@ def cancel_order(request, order_id):
     send_mail(subject, message, "abdullamirshadcl@gmail.com", [request.user.email,], fail_silently=False)
 
     return redirect('order_management')
+
+
+def offer_management(request):
+    return render(request, 'admin_panel/offer_management.html')
