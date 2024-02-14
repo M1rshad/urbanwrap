@@ -5,7 +5,7 @@ from django.shortcuts import render,redirect
 from django.contrib.auth import login, logout, authenticate
 from user_auth.models import User
 from home.models import Category, Product, Variation , ProductImages
-from orders.models import Coupon, Order
+from orders.models import Coupon, Order, Wallet, OrderProduct
 from django.contrib import messages
 from django.views.decorators.cache import never_cache
 from django.contrib.postgres.search import SearchVector
@@ -13,6 +13,7 @@ from user_auth.forms import SignupForm
 from .forms import EditUserForm, AddCategoryForm, AddProductForm, AddVariantForm, ProductImageForm, AddCouponForm
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.mail import send_mail
+from datetime import datetime, timedelta
 
 
 # Create your views here.
@@ -40,6 +41,42 @@ def admin_login(request):
 @never_cache
 @user_passes_test(is_user_admin, login_url='admin_login')
 def admin_panel(request):
+    all_orders = Order.objects.filter(payment__status='Completed')
+    print(all_orders)
+    all_variations = Variation.objects.all()
+    print(all_variations)
+    all_order_items = OrderProduct.objects.filter(is_ordered=True)
+    print(all_order_items)
+    delivered_order_items = OrderProduct.objects.filter(is_ordered=True)
+    print(delivered_order_items)
+
+    
+    filter_type = request.GET.get('filter_type', 'all')  
+
+    if filter_type == 'day':
+        start_date = datetime.now() - timedelta(days=1)
+    elif filter_type == 'week':
+        start_date = datetime.now() - timedelta(weeks=1)
+    elif filter_type == 'month':
+        start_date = datetime.now() - timedelta(weeks=4)  
+    elif filter_type == 'year':
+        start_date = datetime.now() - timedelta(weeks=52)  
+    else:
+        start_date = None  
+    
+    if start_date:
+         all_orders = all_orders.filter(
+            date_ordered__gte=start_date,
+            is_ordered=True
+        ).distinct()
+         
+         delivered_order_items = OrderProduct.objects.filter(
+            order__in=all_orders,
+            is_ordered=True
+        )
+
+   
+
     return render(request, 'admin_panel/admin_panel.html')
 
 
@@ -377,6 +414,26 @@ def cancel_order(request, order_id):
     order_obj = Order.objects.get(id=order_id)
     order_obj.status = 'Cancelled'
     order_obj.save()
+    if order_obj.payment.status == 'Completed':
+        wallet = Wallet.objects.get(user=request.user)
+        wallet.balance += order_obj.order_total
+        wallet.save()
+    
+    order_items = order_obj.orderproduct_set.all()
+    print(order_items)
+    for item in order_items:
+        product_variation = item.variation.all()
+
+        #update the stock
+        product = Product.objects.get(id=item.product_id)
+        product_variations = product.variant.all()
+        quantity = item.quantity
+        for variation in product_variations:
+            for i in product_variation:
+                if i==variation:
+                    variation.stock += quantity
+                    variation.save()
+
 
     #order confirmation email
     subject = 'Order cancellation'

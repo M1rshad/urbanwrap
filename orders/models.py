@@ -75,6 +75,10 @@ class OrderProduct(models.Model):
         return self.product.product_name
      
 
+    def get_total(self):
+        total = self.product.price * self.quantity
+        return total
+
 class Coupon(models.Model):
 
     coupon_code = models.CharField(max_length=10)
