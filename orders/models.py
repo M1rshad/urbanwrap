@@ -1,3 +1,4 @@
+from email.policy import default
 from django.db import models
 from user_auth.models import User
 from home.models import Product, Variation
@@ -101,6 +102,24 @@ class Wallet(models.Model):
 
     def __str__(self):
         return f"{self.user.username}'s Wallet"
+    
+
+class WalletTransaction(models.Model):
+    TRANSACTION_TYPES = (
+        ('debit', 'Debit'),
+        ('credit', 'Credit'),
+    )
+
+    transaction_id = models.CharField(max_length=12, unique=True)
+    wallet = models.ForeignKey(Wallet, on_delete=models.CASCADE)
+    amount = models.PositiveIntegerField()
+    transaction_type = models.CharField(max_length=10, choices=TRANSACTION_TYPES)
+    order_reference = models.ForeignKey('Order', on_delete=models.SET_NULL, blank=True, null=True)
+    updated_balance = models.PositiveIntegerField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.wallet.user.username}'s {self.get_transaction_type_display()} transaction of {self.amount}"
     
 
 class Offer(models.Model):

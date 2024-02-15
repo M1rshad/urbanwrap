@@ -5,7 +5,7 @@ from django.shortcuts import render,redirect
 from django.contrib.auth import login, logout, authenticate
 from user_auth.models import User
 from home.models import Category, Product, Variation , ProductImages
-from orders.models import Coupon, Order, Wallet, OrderProduct
+from orders.models import Coupon, Order, Wallet, OrderProduct, WalletTransaction
 from django.contrib import messages
 from django.views.decorators.cache import never_cache
 from django.contrib.postgres.search import SearchVector
@@ -14,7 +14,7 @@ from .forms import EditUserForm, AddCategoryForm, AddProductForm, AddVariantForm
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.mail import send_mail
 from datetime import datetime, timedelta
-
+import uuid
 
 # Create your views here.
 def is_user_admin(user):
@@ -418,6 +418,14 @@ def cancel_order(request, order_id):
         wallet = Wallet.objects.get(user=request.user)
         wallet.balance += order_obj.order_total
         wallet.save()
+        wallet_transaction = WalletTransaction.objects.create(
+            transaction_id=str(uuid.uuid4().int)[:12],
+            wallet=wallet,
+            amount=order_obj.order_total,
+            transaction_type='credit',
+            order_reference=order_obj,
+            updated_balance=wallet.balance,
+        )
     
     order_items = order_obj.orderproduct_set.all()
     print(order_items)

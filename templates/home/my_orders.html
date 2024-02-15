@@ -75,7 +75,7 @@
                                                 <td>${{order.order_total}}</td>
                                                 <td>{{order.created_at}}</td>
                                                 {% if order.status != 'Cancelled' %}
-                                                <td><button class="btn btn-light"><a href={% url 'cancel_order' order.id %}>Cancel Order</a></button></td>
+                                                <td><button class="btn btn-light"><a href={% url 'cancel_orders' order.id %}>Cancel Order</a></button></td>
                                                 {% else %}
                                                 <td>{{order.status}}</td>
                                                 {% endif %}

@@ -60,12 +60,35 @@
                             </div><!-- .End .tab-pane -->
                             
                             <h5 class="mt-2">Transaction history</h5>
-                            <table>
+                            <table class="table">
                                 <thead>
-                                    <th></th>
-                                    
+                                  <tr>
+                                    <th scope="col">Transaction ID</th>
+                                    <th scope="col">Order number</th>
+                                    <th scope="col">Type</th>
+                                    <th scope="col">Amount</th>
+                                    <th scope="col">Balance</th>
+                                    <th scope="col">Transaction Date</th>
+                                  </tr>
                                 </thead>
-                            </table>
+                                <tbody>
+                                    {% for data in transaction_history %}
+                                    <tr>
+                                        <td>{{data.transaction_id}}</td>
+                                        <td>{{data.order_reference.order_number}}</td>
+                                        <td>{{data.transaction_type | capfirst}}</td>
+                                        {% if data.transaction_type == 'credit' %}
+                                        <td><p class="text-success">+${{data.amount}}</p></td>
+                                        {% else %}
+                                        <td><p class="text-danger">-${{data.amount}}</p></td>
+                                        {% endif %}
+                                        <td>${{data.updated_balance}}</td>
+                                        <td>{{data.timestamp}}</td>
+                                </tr>
+                                {% endfor %}
+                                
+                                </tbody>
+                              </table>
                         </div>
                     </div><!-- End .col-lg-9 -->
                 </div><!-- End .row -->

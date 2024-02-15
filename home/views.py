@@ -5,9 +5,10 @@ from .models import Product, Category
 from user_auth.models import ShippingAddress, User, UserProfile
 from admin_panel.forms import EditUserForm
 from user_auth.forms import UserProfileForm, ShippingAddressForm
-from orders.models import Order,Wallet
+from orders.models import Order,Wallet, WalletTransaction
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.core.mail import send_mail
 import uuid
 # Create your views here.
 def index(request):
@@ -43,6 +44,8 @@ def dashboard(request):
     }
     return render(request, 'home/dashboard.html', context)
 
+
+@login_required(login_url='log_in')
 def my_orders(request):
     orders = Order.objects.all().filter(user=request.user, is_ordered=True).order_by('-id')
     context={
@@ -50,7 +53,52 @@ def my_orders(request):
     }
     return render(request, 'home/my_orders.html', context)
 
+@login_required(login_url='log_in')
+def cancel_orders(request, order_id):
+    order_obj = Order.objects.get(id=order_id)
+    order_obj.status = 'Cancelled'
+    order_obj.save()
+    if order_obj.payment.status == 'Completed':
+        wallet = Wallet.objects.get(user=request.user)
+        wallet.balance += order_obj.order_total
+        wallet.save()
+        wallet_transaction = WalletTransaction.objects.create(
+            transaction_id=str(uuid.uuid4().int)[:12],
+            wallet=wallet,
+            amount=order_obj.order_total,
+            transaction_type='credit',
+            order_reference=order_obj,
+            updated_balance=wallet.balance,
+        )
+    
+    order_items = order_obj.orderproduct_set.all()
+    for item in order_items:
+        product_variation = item.variation.all()
 
+        #update the stock
+        product = Product.objects.get(id=item.product_id)
+        product_variations = product.variant.all()
+        quantity = item.quantity
+        for variation in product_variations:
+            for i in product_variation:
+                if i==variation:
+                    variation.stock += quantity
+                    variation.save()
+
+
+    #order confirmation email
+    subject = 'Order cancellation'
+    message = f"""
+    Hi {request.user.username},
+    Your order has been cancelled!
+    Order Number = {order_obj.order_number} 
+    """
+    send_mail(subject, message, "abdullamirshadcl@gmail.com", [request.user.email,], fail_silently=False)
+    
+    return redirect('my_orders')
+
+
+@login_required(login_url='log_in')
 def update_account_details(request):
     user_profile = UserProfile.objects.get(user=request.user)
     if request.POST:
@@ -73,6 +121,7 @@ def update_account_details(request):
     return render(request, 'home/account_details.html', context)
 
 
+@login_required(login_url='log_in')
 def my_address(request):
     addresses = ShippingAddress.objects.filter(user=request.user)
     context={
@@ -80,6 +129,7 @@ def my_address(request):
     }
     return render(request, 'home/my_address.html',context)
 
+@login_required(login_url='log_in')
 def add_address(request):
     
     max_address_allowed=5
@@ -103,6 +153,7 @@ def add_address(request):
     return render(request, 'home/add_address.html', context)
 
 
+@login_required(login_url='log_in')
 def edit_address(request, address_id):
     address = ShippingAddress.objects.get(id=address_id)
     if request.POST:
@@ -117,12 +168,15 @@ def edit_address(request, address_id):
     context ={'form':form}
     return render(request, 'home/edit_address.html', context)
 
+
+@login_required(login_url='log_in')
 def delete_address(request, address_id):
     address = ShippingAddress.objects.get(id=address_id)
     address.delete()
     return redirect('my_address')
 
 
+@login_required(login_url='log_in')
 def change_password(request):
     if request.POST:
         current_password = request.POST['current_password']
@@ -144,11 +198,12 @@ def change_password(request):
     return render(request, 'home/change_password.html')
 
 
+@login_required(login_url='log_in')
 def wallet(request):
     wallet = Wallet.objects.get(user=request.user)
-        
-
+    transaction_history = WalletTransaction.objects.filter(wallet=wallet).order_by('-id')
     context = {
         'wallet': wallet,
+        'transaction_history':transaction_history,
     }
     return render(request, 'home/wallet.html', context)

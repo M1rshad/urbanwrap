@@ -36,7 +36,11 @@
                                     <ul class="list-unstyled mb0">
                                         <li><strong>Invoice</strong> #{{order.payment}}</li>
                                         <li><strong>Invoice Date:</strong> {{order.created_at}}</li>
+                                        {% if order.payment.payment_method == 'cod' %}
                                         <li><strong>Status:</strong> <span class="label label-danger">UNPAID</span></li>
+                                        {% else %}
+                                        <li><strong>Status:</strong> <span class="label label-danger">PAID</span></li>
+                                        {% endif %}
                                     </ul>
                                 </div>
                             </div>

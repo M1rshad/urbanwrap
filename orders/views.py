@@ -2,7 +2,7 @@ from codecs import oem_decode
 from django.shortcuts import get_object_or_404, render, redirect, HttpResponse
 from shop.models import CartItem
 from home.models import Product
-from .models import Order, OrderProduct,Payment, Wallet
+from .models import Order, OrderProduct,Payment, Wallet, WalletTransaction
 from .forms import OrderForm
 import datetime
 from django.urls import reverse
@@ -192,9 +192,19 @@ def wallet_completed(request, order_id):
     order.payment = payment
     order.save()
 
-    wallet = Wallet.objects.get(user=request.uset)
+    wallet = Wallet.objects.get(user=current_user)
     wallet.balance -= order.order_total
     wallet.save()
+
+    wallet_transaction = WalletTransaction.objects.create(
+            transaction_id=str(uuid.uuid4().int)[:12],
+            wallet=wallet,
+            amount=order.order_total,
+            transaction_type='debit',
+            order_reference=order,
+            updated_balance=wallet.balance,
+
+        )
 
     #order confirmation email
     subject = 'Order confirmation'
