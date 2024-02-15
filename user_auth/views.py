@@ -7,10 +7,10 @@ from shop.models import Cart, CartItem
 from django.contrib import messages
 from datetime import datetime,timedelta
 from django.contrib.auth.hashers import make_password
-from home.views import index
+from home.views import change_password, index
 from shop.views import _cart_id
 from django.core.mail import send_mail
-from .utils import send_otp
+from .utils import send_otp, send_otp_2
 import pyotp
 import requests
 
@@ -138,21 +138,64 @@ def resend_otp(request):
     messages.info(request, 'The OTP has sent again, please check now.')
     return redirect(otp_view)
 
-def forgot_password_otp(request):
-    return render(request, 'user_auth/forgot_password_otp.html')
 
 def forgot_password(request):
     if request.POST:     
         email = request.POST['email']
+        request.session['email']=email
         is_user_exists = User.objects.all().filter(email=email).exists()
         if is_user_exists:
+            send_otp_2(request)
             return redirect(forgot_password_otp)
         else:
             messages.error(request, 'User not found')
     return render(request, 'user_auth/forgot_password.html')
             
 
+def forgot_password_otp(request):
+    if request.POST:
+        otp = request.POST['otp']
 
+        otp_secret_key = request.session['otp_secret_key']
+        otp_valid_date = request.session['otp_valid_date']
+
+        if otp_secret_key and otp_valid_date is not None:
+            valid_until = datetime.fromisoformat(otp_valid_date)
+            if valid_until > datetime.now():
+                totp = pyotp.TOTP(otp_secret_key, interval=60)
+                if totp.verify(otp):
+                    messages.success(request, 'The OTP has verified successfully.')
+                    del request.session['otp_secret_key']
+                    del request.session['otp_valid_date']
+                    return redirect(update_password)
+                else:
+                    messages.error(request, 'Incorrect OTP. Please double-check and try again.')
+            else:
+                messages.error(request, 'OTP has expired. Please request a new OTP.')
+        else:
+            messages.error(request, 'An unexpected error occurred during OTP verification. Please try again later.')
+    return render(request, 'user_auth/forgot_password_otp.html')
+
+
+def resend_otp_2(request):
+    send_otp_2(request)
+    messages.info(request, 'The OTP has sent again, please check now.')
+    return redirect(forgot_password_otp)
+
+
+def update_password(request):
+    if request.POST:
+        password1 = request.POST['password1']
+        password2 = request.POST['password2']
+        if password1 == password2:
+            user = User.objects.get(email__exact=request.session['email'])
+            user.set_password(password1)
+            user.save()
+            messages.success(request, 'The password has upated')
+            return redirect(log_in)
+        else:
+            messages.error(request, 'The password did not match')
+    return render(request, 'user_auth/update_password.html')
 def log_out(request):
     logout(request)
     return redirect(index)
