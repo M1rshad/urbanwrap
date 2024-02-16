@@ -2,6 +2,7 @@ from codecs import oem_decode
 from django.shortcuts import get_object_or_404, render, redirect, HttpResponse
 from shop.models import CartItem
 from home.models import Product
+from user_auth.models import ShippingAddress
 from .models import Order, OrderProduct,Payment, Wallet, WalletTransaction
 from .forms import OrderForm
 import datetime
@@ -11,6 +12,7 @@ from django.views.decorators.csrf import csrf_exempt
 from paypal.standard.forms import PayPalPaymentsForm
 import uuid
 from django.core.mail import send_mail
+from django.contrib import messages
 # Create your views here.
 
 
@@ -37,22 +39,29 @@ def place_order(request, total=0, quantity=0):
 
     tax =  0.02 * total
     grand_total = total + tax
-
+    shipping_address=None
+    try:
+        shipping_address = get_object_or_404(ShippingAddress,user=request.user, status=True)
+    except:
+        pass
+    if not shipping_address:
+        messages.error(request, 'Please select an address before checking out')
+        return redirect('checkout')
     if request.POST:
         form = OrderForm(request.POST)
-        if form.is_valid():
+        if form.is_valid() and shipping_address:
             data=Order()
             data.user = current_user
-            data.first_name = form.cleaned_data['first_name']
-            data.last_name = form.cleaned_data['last_name']
-            data.email = form.cleaned_data['email']
-            data.phone = form.cleaned_data['phone']
-            data.address_line_1 = form.cleaned_data['address_line_1']
-            data.address_line_2 = form.cleaned_data['address_line_2']
-            data.country = form.cleaned_data['country']
-            data.state = form.cleaned_data['state']
-            data.city = form.cleaned_data['city']
-            data.pin_code = form.cleaned_data['pin_code']
+            data.first_name = shipping_address.first_name
+            data.last_name = shipping_address.last_name
+            data.email = shipping_address.email
+            data.phone = shipping_address.phone
+            data.address_line_1 = shipping_address.address_line_1
+            data.address_line_2 = shipping_address.address_line_2
+            data.country = shipping_address.country
+            data.state = shipping_address.state
+            data.city = shipping_address.city
+            data.pin_code = shipping_address.pin_code
             data.order_note = form.cleaned_data['order_note']
             data.payment_method= form.cleaned_data['payment_method']
             data.order_total = grand_total
