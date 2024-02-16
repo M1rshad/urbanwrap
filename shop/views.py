@@ -1,12 +1,14 @@
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 from home.models import Product, Category, Variation
 from orders.models import Coupon, Wallet
+from user_auth.models import ShippingAddress
 from .models import Cart, CartItem, Wishlist, WishlistItem
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Q 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .forms import ProductFilterForm
+from user_auth.forms import ShippingAddressForm
 # Create your views here.
 def shop(request, category_slug=None):
     categories = None
@@ -294,6 +296,7 @@ def search(request):
 
 @login_required(login_url='log_in')
 def checkout(request, total=0, quantity=0, cart_items=None):
+
     try:
         tax = 0 
         grand_total = 0
@@ -309,6 +312,10 @@ def checkout(request, total=0, quantity=0, cart_items=None):
         grand_total = total + tax
     except Cart.DoesNotExist:
         pass
+
+    active_shipping_address = ShippingAddress.objects.filter(status=True)
+    inactive_shipping_address = ShippingAddress.objects.filter(status=False)
+
     wallet=Wallet.objects.get(user=request.user)
     context = {
         'total':total,
@@ -317,9 +324,38 @@ def checkout(request, total=0, quantity=0, cart_items=None):
         'tax' : tax,
         'grand_total':grand_total,
         'wallet':wallet,
+        'active_shipping_address': active_shipping_address,
+        'inactive_shipping_address':inactive_shipping_address,  
     }
     return render(request, 'shop/checkout.html', context)
 
+@login_required(login_url='log_in')
+def select_address_checkout(request, address_id):
+    shipping_address = ShippingAddress.objects.get(id=address_id)
+    shipping_address.status=True
+    shipping_address.save()
+    return redirect('checkout')
+
+@login_required(login_url='log_in')
+def delete_address_checkout(request, address_id):
+    address = ShippingAddress.objects.get(id=address_id)
+    address.delete()
+    return redirect('checkout')
+
+@login_required(login_url='log_in')
+def edit_address_checkout(request, address_id):
+    address = ShippingAddress.objects.get(id=address_id)
+    if request.POST:
+        form = ShippingAddressForm(request.POST, instance=address)
+        if form.is_valid():
+            address= form.save(commit=False)
+            address.user=request.user
+            address.save()
+            return redirect('checkout')
+    else:
+        form = ShippingAddressForm(instance=address)
+    context ={'form':form}
+    return render(request, 'home/edit_address.html', context)
 
 def _wishlist_id(request):
     wishlist = request.session.session_key

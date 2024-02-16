@@ -56,57 +56,84 @@
                     {% csrf_token %}
                     <div class="row">
                         <div class="col-lg-9">
-                            <h2 class="checkout-title">Billing Details</h2><!-- End .checkout-title -->
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <label>First Name *</label>
-                                        <input type="text" class="form-control" name="first_name" required>
-                                    </div><!-- End .col-sm-6 -->
-
-                                    <div class="col-sm-6">
-                                        <label>Last Name *</label>
-                                        <input type="text" class="form-control" name="last_name" required>
-                                    </div><!-- End .col-sm-6 -->
-                                </div><!-- End .row -->
-
-                                <label>Email address *</label>
-                                <input type="email" class="form-control" name="email" required>
-
-                                <label>Phone *</label>
-                                <input type="tel" class="form-control" name="phone" required>
-
-                                <label>Street address *</label>
-                                <input type="text" class="form-control" placeholder="House number and Street name" name="address_line_1" required>
-                                <input type="text" class="form-control" placeholder="Appartments, suite, unit etc ..." name="address_line_2" >
-
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <label>Country *</label>
-                                        <input type="text" class="form-control" name="country" required>
-                                    </div><!-- End .col-sm-6 -->
-
-                                    <div class="col-sm-6">
-                                        <label>State / County *</label>
-                                        <input type="text" class="form-control" name="state" required>
-                                    </div><!-- End .col-sm-6 -->
-                                </div><!-- End .row -->
-
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <label>Town / City *</label>
-                                        <input type="text" class="form-control" name="city" required>
-                                </div><!-- End .col-sm-6 -->
-
-                                    <div class="col-sm-6">
-                                        <label>Postcode / ZIP *</label>
-                                        <input type="text" class="form-control" name="pin_code" required>
-                                    </div><!-- End .col-sm-6 -->
-                                </div><!-- End .row -->
-                                
+                            <div class="card card-dashboard">
+                                <div class="card-body">
+                                    <h3 class="card-title mb-2">Shipping Address</h3><!-- End .card-title -->
                                     
-
+                                    {% if active_shipping_address %}
+                                        
+                                    
+                                    {% for address in active_shipping_address %}
+                                        
+                                    
+                                    <p><strong>{{address.first_name | capfirst}} {{address.last_name | capfirst}}</strong><br>
+                                        {{address.address_line_1}}<br>
+                                        {{address.address_line_2}}<br>
+                                        {{address.city}}, {{address.state}}, {{address.country}} {{address.pin_code}}<br>
+                                        {{address.phone}}<br>
+                                        {{address.email}}<br>
+                                        <div class="text-right">
+                                            
+                                            
+                                            <a href="{% url 'edit_address_checkout' address.id %}" class="mr-5">Edit <i class="icon-edit"></i></a>
+                                            <a href="{% url 'delete_address_checkout' address.id %}" onclick= "return confirm('Are you sure you want to remove this address?')" class="text-danger">Delete</a>
+                                        </div>
+                                    </p>
+                                    {% endfor %}
+                                    {% else %}
+                                    <p>There is no active address. Please select a different address or add a new address.</p>
+                                    {% endif %}
+                                </div><!-- End .card-body -->
+                            </div><!-- End .card-dashboard -->
+                            <div>
+                                <!-- Button trigger modal -->
+<!-- Button trigger modal -->
+<a class="mb-2 btn text-info" data-toggle="modal" data-target="#exampleModal">
+    Select a different address
+</a>
+  
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Select a different address</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            
+            {% for address in inactive_shipping_address %}
+                
+            
+            <div class="card card-dashboard">
+                <div class="card-body">
+                    <p><strong>{{address.first_name | capfirst}} {{address.last_name | capfirst}}</strong><br>
+                        {{address.address_line_1}}<br>
+                        {{address.address_line_2}}<br>
+                        {{address.city}}, {{address.state}}, {{address.country}} {{address.pin_code}}<br>
+                        {{address.phone}}<br>
+                        {{address.email}}<br>
+                        <div class="text-right">
+                            
+                            {% if address.status != True %}
+                            <a href="{% url 'select_address_checkout' address.id %}" class="mr-5" style="color:#87CEEB">Select this address</a>
+                            {% endif %}
+                            
+                            <a href="{% url 'edit_address_checkout' address.id %}" class="mr-5">Edit <i class="icon-edit"></i></a>
+                            <a href="{% url 'delete_address_checkout' address.id %}" onclick= "return confirm('Are you sure you want to remove this address?')" class="text-danger">Delete</a>
+                        </div>
+                    </p>
+                </div><!-- End .card-body -->
+            </div><!-- End .card-dashboard -->
+            {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
                                 
-
+                            </div>
                                 <label>Order notes (optional)</label>
                                 <textarea class="form-control" cols="30" rows="4" placeholder="Notes about your order, e.g. special notes for delivery" name="order_note"></textarea>
                         </div><!-- End .col-lg-9 -->

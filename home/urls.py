@@ -12,6 +12,7 @@ urlpatterns = [
     path('dashboard/my-address/', views.my_address, name='my_address'),
     path('dashboard/add-address/', views.add_address, name='add_address'),
     path('dashboard/edit-address/<int:address_id>', views.edit_address, name='edit_address'),
+    path('dashboard/select-address/<int:address_id>', views.select_address, name='select_address'),
     path('dashboard/delete-address/<int:address_id>', views.delete_address, name='delete_address'),
 
 ]

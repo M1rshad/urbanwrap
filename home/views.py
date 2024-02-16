@@ -132,7 +132,7 @@ def my_address(request):
 @login_required(login_url='log_in')
 def add_address(request):
     
-    max_address_allowed=5
+    max_address_allowed=3
     existing_address_count = ShippingAddress.objects.filter(user=request.user).count()
 
     if existing_address_count >= max_address_allowed:
@@ -173,6 +173,14 @@ def edit_address(request, address_id):
 def delete_address(request, address_id):
     address = ShippingAddress.objects.get(id=address_id)
     address.delete()
+    return redirect('my_address')
+
+
+@login_required(login_url='log_in')
+def select_address(request, address_id):
+    shipping_address = ShippingAddress.objects.get(id=address_id)
+    shipping_address.status=True
+    shipping_address.save()
     return redirect('my_address')
 
 

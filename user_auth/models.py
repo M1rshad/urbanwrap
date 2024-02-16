@@ -65,7 +65,13 @@ class ShippingAddress(models.Model):
     state = models.CharField(max_length=255, null=True, blank=True)
     city = models.CharField(max_length=255, null=True, blank=True)
     pin_code = models.CharField(max_length=10, null=True, blank=True)
-    status = models.BooleanField(default=False)
+    status = models.BooleanField(default=True)
+
+
+    def save(self, *args, **kwargs):
+        if self.status:
+            ShippingAddress.objects.filter(user=self.user, status=True).update(status=False)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.first_name
