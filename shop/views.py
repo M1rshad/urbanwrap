@@ -315,6 +315,7 @@ def checkout(request, total=0, quantity=0, cart_items=None):
 
     active_shipping_address = ShippingAddress.objects.filter(status=True)
     inactive_shipping_address = ShippingAddress.objects.filter(status=False)
+    existing_address_count = ShippingAddress.objects.filter(user=request.user).count()
 
     wallet=Wallet.objects.get(user=request.user)
     context = {
@@ -325,7 +326,8 @@ def checkout(request, total=0, quantity=0, cart_items=None):
         'grand_total':grand_total,
         'wallet':wallet,
         'active_shipping_address': active_shipping_address,
-        'inactive_shipping_address':inactive_shipping_address,  
+        'inactive_shipping_address':inactive_shipping_address, 
+        'existing_address_count':existing_address_count, 
     }
     return render(request, 'shop/checkout.html', context)
 
@@ -356,6 +358,22 @@ def edit_address_checkout(request, address_id):
         form = ShippingAddressForm(instance=address)
     context ={'form':form}
     return render(request, 'home/edit_address.html', context)
+
+
+@login_required(login_url='log_in')
+def add_address_checkout(request):
+    if request.POST:
+        form = ShippingAddressForm(request.POST)
+        if form.is_valid():
+            address= form.save(commit=False)
+            address.user=request.user
+            address.save()
+            return redirect('checkout')
+    else:
+        form = ShippingAddressForm()
+    context ={'form':form}
+    return render(request, 'home/add_address.html', context)
+
 
 def _wishlist_id(request):
     wishlist = request.session.session_key
@@ -402,6 +420,7 @@ def add_wishlist(request, product_id):
                 wishlist = wishlist
             )
         return redirect('wishlist')
+    
     
 
 def wishlist(request, wishlist_items=None):

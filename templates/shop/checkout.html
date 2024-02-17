@@ -104,6 +104,8 @@
         </div>
         <div class="modal-body">
             
+            {% if inactive_shipping_address %}
+          
             {% for address in inactive_shipping_address %}
                 
             
@@ -128,7 +130,15 @@
                 </div><!-- End .card-body -->
             </div><!-- End .card-dashboard -->
             {% endfor %}
-        </div>
+            {% else %}
+            <p class="m-3">There is only one address available. Please add a new address.</p>
+            {% endif %}
+            
+            {% if existing_address_count < 3 %}
+            <button class="btn btn-dark m-3"><a href="{% url 'add_address_checkout' %}" class="text-white">Add address</a></button>
+            {% endif %}
+                
+       </div>
       </div>
     </div>
   </div>
@@ -205,6 +215,11 @@
                                     <span class="btn-text">Place Order</span>
                                     <span class="btn-hover-text">Proceed to Checkout</span>
                                 </button>
+                                
+                                {% for message in messages %}
+                                    <p class="text-danger">Please select an address to proceed.</p>
+                                {% endfor %}
+                                    
                             </div><!-- End .summary -->
                         </aside><!-- End .col-lg-3 -->
                     </div><!-- End .row -->
