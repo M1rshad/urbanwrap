@@ -98,7 +98,7 @@ class Coupon(models.Model):
 class Wallet(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     card_id = models.CharField(max_length=12, unique=True)
-    balance = models.PositiveIntegerField(default=0)
+    balance = models.FloatField(default=0) 
 
     def __str__(self):
         return f"{self.user.username}'s Wallet"
@@ -112,10 +112,10 @@ class WalletTransaction(models.Model):
 
     transaction_id = models.CharField(max_length=12, unique=True)
     wallet = models.ForeignKey(Wallet, on_delete=models.CASCADE)
-    amount = models.PositiveIntegerField()
+    amount = models.FloatField()
     transaction_type = models.CharField(max_length=10, choices=TRANSACTION_TYPES)
     order_reference = models.ForeignKey('Order', on_delete=models.SET_NULL, blank=True, null=True)
-    updated_balance = models.PositiveIntegerField()
+    updated_balance = models.FloatField() 
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

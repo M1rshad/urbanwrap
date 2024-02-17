@@ -197,7 +197,6 @@ def wallet_completed(request, order_id):
         amount_paid=order.order_total,
         status='Completed'
     )
-
     order.payment = payment
     order.save()
 

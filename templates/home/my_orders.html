@@ -60,7 +60,8 @@
                                             <th scope="col">Order number</th>
                                             <th scope="col">Billing name</th>
                                             <th scope="col">Phone</th>
-                                            <th scope="col">Order total</th>
+                                            <th scope="col">Amount</th>
+                                            <th scope="col">Payment method</th>
                                             <th scope="col">Date</th>
                                             <th scope="col">Cancel order</th>
                                           </tr>
@@ -73,7 +74,8 @@
                                                 <td>{{order.full_name}}</td>
                                                 <td>{{order.phone}}</td>
                                                 <td>${{order.order_total}}</td>
-                                                <td>{{order.created_at}}</td>
+                                                <td>{{order.payment_method | capfirst}}</td>
+                                                <td>{{order.created_at | date:"d M Y"}}</td>
                                                 {% if order.status != 'Cancelled' %}
                                                 <td><button class="btn btn-light"><a href={% url 'cancel_orders' order.id %}>Cancel Order</a></button></td>
                                                 {% else %}
