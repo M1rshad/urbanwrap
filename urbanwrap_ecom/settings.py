@@ -154,3 +154,4 @@ EMAIL_HOST_PASSWORD='uarv vvtv tjml dnsl'
 
 PAYPAL_RECEIVER_EMAIL = 'urbanwrap.business@gmail.com'
 PAYPAL_TEST = True
+PAYPAL_BUY_BUTTON_IMAGE = 'https://www.paypalobjects.com/webstatic/en_US/i/buttons/checkout-logo-medium.png '
