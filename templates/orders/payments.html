@@ -112,10 +112,12 @@
                                     </tr><!-- End .summary-shipping-row -->
                                     
 
-                                    <tr class="summary-shipping-estimate">
-                                        <td>Estimate for Your Country<br> <a href="dashboard.html">Change address</a></td>
-                                        <td>&nbsp;</td>
-                                    </tr><!-- End .summary-shipping-estimate -->
+                                    <tr class="">
+                                        {% if request.user.coupon and grand_total >= request.user.coupon.minimum_amount%}
+                                        <td>Coupon discount:</td>
+                                        <td>-${{request.user.coupon.discounted_price}}</td>
+                                        {% endif %}
+                                    </tr><!-- coupon discount -->
                                     <tr class="summary-total">
                                         <td>Total:</td>
                                         <td>$ {{grand_total}}</td>

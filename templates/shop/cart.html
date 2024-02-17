@@ -143,12 +143,30 @@
                                 </form>
                                 
                                 {% for message in messages %}
+                                    
+                                    {% if message.tags == 'success' %}
+                                    <p class="text-success">{{message}}</p>
+                                    {% elif message.tags == 'error'%}
                                     <p class="text-danger">{{message}}</p>
+                                    {% elif message.tags == 'info'%}
+                                    <p class="text-dark">{{message}}</p>
+                                    {% endif %}
+                                        
                                 {% endfor %}
                                 
-                                {% if cart.coupon %}
-                                    <a href="{% url 'remove_coupon' cart.cart_id %}" class=" btn-success ml-4">{{cart.coupon.coupon_code}}</a>
+                                {% if request.user.is_authenticated %}
+                                {% if request.user.coupon %}
+                                    <button class=" btn-dark ml-4">{{request.user.coupon.coupon_code}}</button>
+                                    <a href="{% url 'remove_coupons' %}"><i class="icon-close"></i></a>
                                 {% endif %}
+                                {% else %}
+                                {% if cart.coupon %}
+                                    <button class=" btn-dark ml-4">{{cart.coupon.coupon_code}}</button>
+                                    <a href="{% url 'remove_coupon' cart.cart_id %}"><i class="icon-close"></i></a>
+                                {% endif %}
+                                {% endif %}
+                                    
+                                
                                     
                                     
                             </div><!-- End .cart-discount -->
@@ -180,9 +198,19 @@
                                         <td>$ {{tax}}</td>
                                     </tr><!-- End .summary-shipping-row -->
                                     
+                                    <tr>  
+                                    {% if cart.coupon %}
+                                    <td>Coupon discount:</td>
+                                    <td>-${{cart.coupon.discounted_price}}</td>
+                                    {% elif request.user.coupon %}
+                                    <td>Coupon discount:</td>
+                                    <td>-${{request.user.coupon.discounted_price}}</td>
+                                    {% endif %}
+                                    </tr>
 
                             
                                     <tr class="summary-total">
+                                       
                                         <td>Total:</td>
                                         <td>$ {{grand_total}}</td>
                                     </tr><!-- End .summary-total -->

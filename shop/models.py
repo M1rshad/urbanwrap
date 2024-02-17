@@ -1,7 +1,6 @@
 from django.db import models
 from home.models import Product, Variation
-from orders.models import Coupon
-from user_auth.models import User
+from user_auth.models import User, Coupon
 
 # Create your models here.
 class Cart(models.Model):

@@ -1,6 +1,6 @@
+from user_auth.models import User
 from email.policy import default
 from django.db import models
-from user_auth.models import User
 from home.models import Product, Variation
 from datetime import timezone
 # Create your models here.
@@ -80,18 +80,6 @@ class OrderProduct(models.Model):
     def get_total(self):
         total = self.product.price * self.quantity
         return total
-
-class Coupon(models.Model):
-
-    coupon_code = models.CharField(max_length=10)
-    is_expired = models.BooleanField(default=False)
-    discounted_price = models.IntegerField(default=10)
-    minimum_amount = models.IntegerField(default=100)
-    is_active = models.BooleanField(default=True)
-
-
-    def __str__(self):
-        return self.coupon_code
     
 
 

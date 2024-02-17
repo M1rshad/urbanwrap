@@ -39,6 +39,8 @@ def place_order(request, total=0, quantity=0):
 
     tax =  0.02 * total
     grand_total = total + tax
+    if current_user.coupon and grand_total >= current_user.coupon.minimum_amount:
+        grand_total -= request.user.coupon.discounted_price
     shipping_address=None
     try:
         shipping_address = get_object_or_404(ShippingAddress,user=request.user, status=True)
@@ -172,6 +174,10 @@ def cod_completed(request, order_id):
     #clear cart after placing order
     CartItem.objects.filter(user=request.user).delete()
 
+    #clear the coupon
+    current_user.coupon = None
+    current_user.save()
+
     order = Order.objects.get(id=order_id, user=current_user)
     order_subtotal = order.order_total - order.tax
     context={
@@ -255,6 +261,11 @@ def wallet_completed(request, order_id):
     #clear cart after placing order
     CartItem.objects.filter(user=request.user).delete()
 
+    #clear the coupon
+    current_user.coupon = None
+    current_user.save()
+
+
     order = Order.objects.get(id=order_id, user=current_user)
     order_subtotal = order.order_total - order.tax
     context={
@@ -324,6 +335,11 @@ def paypal_payment_completed(request, order_id):
 
     #clear cart after placing order
     CartItem.objects.filter(user=request.user).delete()
+    
+    #clear the coupon
+    current_user.coupon = None
+    current_user.save
+
     order = Order.objects.get(id=order_id, user=current_user)
     order_subtotal = order.order_total - order.tax
     context={

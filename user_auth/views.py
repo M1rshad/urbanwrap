@@ -76,6 +76,11 @@ def log_in(request):
                                 for item in cart_items:
                                     item.user = user
                                     item.save()
+
+                       
+                    if cart.coupon:
+                        user.coupon=cart.coupon
+                        user.save()
                         
                 except:
                     pass

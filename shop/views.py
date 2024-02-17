@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 from home.models import Product, Category, Variation
-from orders.models import Coupon, Wallet
-from user_auth.models import ShippingAddress
+from orders.models import Wallet
+from user_auth.models import ShippingAddress, Coupon
 from .models import Cart, CartItem, Wishlist, WishlistItem
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Q 
@@ -233,16 +233,33 @@ def cart(request, total=0, quantity=0, cart_items=None):
         #Coupon functionality
         if request.POST:
             if request.user.is_authenticated:
-                pass
+                coupon = request.POST['coupon']
+                coupon_obj = Coupon.objects.filter(coupon_code = coupon)
+                current_user = request.user
+                if not coupon_obj.exists():
+                    messages.error(request, 'Invalid Coupon.')
+                    return redirect('cart')
+                if request.user.coupon:
+                    messages.info(request, 'Coupon already exists.')
+                if grand_total <= coupon_obj[0].minimum_amount:
+                    messages.error(request, f'Total amount should be above ${coupon_obj[0].minimum_amount}')
+                    return redirect('cart')
+                if coupon_obj[0].is_expired:
+                    messages.error(request, 'Coupon expired.')
+                    return redirect('cart')
+                current_user.coupon=coupon_obj[0]
+                current_user.save()
+                messages.success(request, 'Coupon applied.')
+                grand_total -= coupon_obj[0].discounted_price
             else:
                 coupon = request.POST['coupon']
                 coupon_obj = Coupon.objects.filter(coupon_code = coupon)
                 if not coupon_obj.exists():
                     messages.error(request, 'Invalid Coupon.')
+
                     return redirect('cart')
                 if cart.coupon:
-                    messages.error(request, 'Coupon already exists.')
-                    return redirect('cart')
+                    messages.info(request, 'Coupon already exists.')
                 
                 if grand_total <= coupon_obj[0].minimum_amount:
                     messages.error(request, f'Total amount should be above ${coupon_obj[0].minimum_amount}')
@@ -256,6 +273,7 @@ def cart(request, total=0, quantity=0, cart_items=None):
                 cart.save()
                 messages.success(request, 'Coupon applied.')
                 grand_total -= coupon_obj[0].discounted_price
+
 
     except Cart.DoesNotExist:
         pass
@@ -277,7 +295,15 @@ def remove_coupon(request, cart_id):
     cart = Cart.objects.get(cart_id=cart_id)
     cart.coupon = None
     cart.save()
-    messages.success(request, 'Coupon removed.')
+    messages.info(request, 'Coupon removed.')
+    return redirect('cart')
+
+
+def remove_coupons(request):
+    user = request.user
+    user.coupon = None
+    user.save()
+    messages.info(request, 'Coupon removed.')
     return redirect('cart')
 
 
@@ -310,6 +336,11 @@ def checkout(request, total=0, quantity=0, cart_items=None):
             quantity += cart_item.quantity
         tax =  0.02 * total
         grand_total = total + tax
+        print(grand_total)
+        if request.user.coupon and grand_total >= request.user.coupon.minimum_amount:
+            print(request.user.coupon.minimum_amount)
+            grand_total -= request.user.coupon.discounted_price
+            print(grand_total)
     except Cart.DoesNotExist:
         pass
 

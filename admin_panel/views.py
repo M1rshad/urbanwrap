@@ -3,9 +3,9 @@ from django.shortcuts import render
 # Create your views here.
 from django.shortcuts import render,redirect
 from django.contrib.auth import login, logout, authenticate
-from user_auth.models import User
+from user_auth.models import User, Coupon
 from home.models import Category, Product, Variation , ProductImages
-from orders.models import Coupon, Order, Wallet, OrderProduct, WalletTransaction
+from orders.models import Order, Wallet, OrderProduct, WalletTransaction
 from django.contrib import messages
 from django.views.decorators.cache import never_cache
 from django.contrib.postgres.search import SearchVector

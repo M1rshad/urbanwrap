@@ -181,6 +181,10 @@
                                             <td>Tax:</td>
                                             <td>{{tax}}</td>
                                         </tr>
+                                        {% if request.user.coupon and grand_total >= request.user.coupon.minimum_amount %}
+                                        <td>Coupon discount:</td>
+                                        <td>-${{request.user.coupon.discounted_price}}</td>
+                                        {% endif %}
                                         <tr class="summary-total">
                                             <td>Total:</td>
                                             <td>$ {{grand_total}}</td>

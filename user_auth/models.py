@@ -7,6 +7,17 @@ from home.models import Product
 import uuid
 
 # Create your models here.
+class Coupon(models.Model):
+
+    coupon_code = models.CharField(max_length=10)
+    is_expired = models.BooleanField(default=False)
+    discounted_price = models.IntegerField(default=10)
+    minimum_amount = models.IntegerField(default=100)
+    is_active = models.BooleanField(default=True)
+
+
+    def __str__(self):
+        return self.coupon_code
 
 class User(AbstractUser):
     email = models.EmailField(unique=True)
@@ -14,7 +25,7 @@ class User(AbstractUser):
     first_name = models.CharField(max_length=20)
     last_name = models.CharField(max_length=20)
     is_block = models.BooleanField(default=False)
-
+    coupon = models.ForeignKey(Coupon, on_delete=models.SET_NULL, null=True, blank=True)
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
 

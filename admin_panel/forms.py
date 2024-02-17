@@ -1,7 +1,7 @@
 from django import forms 
-from user_auth.models import User
+from user_auth.models import User, Coupon
 from home.models import Category, Product, Variation, ProductImages
-from orders.models import Coupon, Order
+from orders.models import Order
 from django.core.validators import FileExtensionValidator
 
 
