@@ -91,12 +91,6 @@
                     <div class="col-6 col-md-4 col-lg-4 col-xl-3">
                         <div class="product">
                             <figure class="product-media">
-                                
-                                {% if product.stock <= 0 %}
-                                <span class="product-label label-out">Out of stock</span>
-                                {% else %}
-                                <span class="product-label label-new">New</span>
-                                {% endif %}    
                                 <a href="{{product.get_url}}">
                                     {% for image in product.product_img.all %}
                                     {% if forloop.first %}
