@@ -114,8 +114,8 @@ class Offer(models.Model):
     name = models.CharField(max_length=100)
     discount_percentage = models.DecimalField(max_digits=5, decimal_places=2)
     valid_from = models.DateTimeField(auto_now_add=True)
-    valid_to = models.DateTimeField()
-    products = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
+    valid_to = models.DateField()
+    products = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True, related_name='offer')
 
     def __str__(self):
         return self.name

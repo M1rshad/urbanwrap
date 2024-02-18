@@ -2,6 +2,8 @@ from email.policy import default
 from django.db import models
 from django.urls import reverse
 from PIL import Image
+from datetime import timezone
+
 
 # Create your models here.
 class Category(models.Model):
@@ -33,9 +35,22 @@ class Product(models.Model):
     modified_date = models.DateTimeField(auto_now=True)
 
 
+    def discounted_price(self):
+        from orders.models import Offer
+        active_offers = Offer.objects.filter(product=self, valid_from__lte=timezone.now(), valid_to__gte=timezone.now())
+
+        if active_offers.exists():
+            discount = max(offer.discount_percentage for offer in active_offers)
+            discounted_price = self.price * (1 - discount / 100)
+            return discounted_price
+        else:
+            return self.price
+
+
     def get_url(self):
         return reverse('product_detail',args=[self.category.slug, self.slug])
 
+        
     def __str__(self) -> str:
         return self.product_name
 
