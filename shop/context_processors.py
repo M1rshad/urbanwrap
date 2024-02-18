@@ -1,5 +1,5 @@
 from .models import Cart, CartItem, Wishlist, WishlistItem
-from home.models import Category
+from home.models import Category, Variation
 from .views import _cart_id, _wishlist_id
 
 def counter(request):

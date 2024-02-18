@@ -40,7 +40,7 @@ class Order(models.Model):
     city = models.CharField(max_length=50) 
     pin_code = models.IntegerField()
     order_note = models.CharField(max_length=100, blank=True)
-    order_total = models.FloatField()
+    order_total = models.DecimalField(max_digits=10, decimal_places=2)
     tax = models.FloatField()
     status = models.CharField(max_length=10, choices=STATUS, default='New')
     payment_method=models.CharField(max_length=15) 
@@ -68,7 +68,7 @@ class OrderProduct(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     variation = models.ManyToManyField(Variation,blank=True)
     quantity = models.IntegerField()
-    product_price = models.FloatField() 
+    product_price = models.DecimalField(max_digits=10, decimal_places=2)
     is_ordered = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)        
     updated_at = models.DateTimeField(auto_now=True)
@@ -86,7 +86,7 @@ class OrderProduct(models.Model):
 class Wallet(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     card_id = models.CharField(max_length=12, unique=True)
-    balance = models.FloatField(default=0) 
+    balance = models.DecimalField(default=0, max_digits=10, decimal_places=2)
 
     def __str__(self):
         return f"{self.user.username}'s Wallet"
@@ -100,7 +100,7 @@ class WalletTransaction(models.Model):
 
     transaction_id = models.CharField(max_length=12, unique=True)
     wallet = models.ForeignKey(Wallet, on_delete=models.CASCADE)
-    amount = models.FloatField()
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
     transaction_type = models.CharField(max_length=10, choices=TRANSACTION_TYPES)
     order_reference = models.ForeignKey('Order', on_delete=models.SET_NULL, blank=True, null=True)
     updated_balance = models.FloatField() 
@@ -115,7 +115,7 @@ class Offer(models.Model):
     discount_percentage = models.DecimalField(max_digits=5, decimal_places=2)
     valid_from = models.DateTimeField(auto_now_add=True)
     valid_to = models.DateTimeField()
-    products = models.ManyToManyField(Product)
+    products = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return self.name
