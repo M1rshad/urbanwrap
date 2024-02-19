@@ -42,14 +42,12 @@ def admin_login(request):
 @user_passes_test(is_user_admin, login_url='admin_login')
 def admin_panel(request):
     all_orders = Order.objects.filter(payment__status='Completed')
-    print(all_orders)
-    all_variations = Variation.objects.all()
-    print(all_variations)
     all_order_items = OrderProduct.objects.filter(is_ordered=True)
-    print(all_order_items)
-    delivered_order_items = OrderProduct.objects.filter(is_ordered=True)
-    print(delivered_order_items)
+    all_variants = Variation.objects.all()
 
+    total_revenue = sum(order.order_total for order in all_orders)
+    total_sales = all_order_items.count()
+    total_stock = sum(variation.stock for variation in all_variants)
     
     filter_type = request.GET.get('filter_type', 'all')  
 
@@ -75,9 +73,13 @@ def admin_panel(request):
             is_ordered=True
         )
 
-   
+    context={
+        'total_revenue':total_revenue,
+        'total_sales':total_sales,
+        'total_stock':total_stock,
+    }
 
-    return render(request, 'admin_panel/admin_panel.html')
+    return render(request, 'admin_panel/admin_panel.html', context)
 
 
 def log_out(request):

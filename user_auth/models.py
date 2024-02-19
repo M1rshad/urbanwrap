@@ -49,7 +49,7 @@ class User(AbstractUser):
         return self.username
     
 class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='user_profile')
     dp = models.ImageField(upload_to='images/dp/', blank=True, null=True)
     bio = models.CharField(max_length=200, null=True, blank=True)
     

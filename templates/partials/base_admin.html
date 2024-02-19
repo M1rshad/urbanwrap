@@ -191,15 +191,21 @@
       <!-- partial:partials/_sidebar.html -->
       <nav class="sidebar sidebar-offcanvas" id="sidebar">
         <div class="sidebar-brand-wrapper d-none d-lg-flex align-items-center justify-content-center fixed-top">
-          <!-- <a class="sidebar-brand brand-logo" href="index.html"><img src="{% static 'admin_panel/assets/images/logo.svg' %}" alt="logo" /></a> -->
-          <a class="sidebar-brand brand-logo-mini" href="index.html"><img src="{% static 'admin_panel/assets/images/logo-mini.svg' %}" alt="logo" /></a>
+          <a class="sidebar-brand brand-logo" href="index.html"><img src="{% static 'admin_panel/assets/images/logo-main.png' %}" alt="logo" /></a>
+          <a class="sidebar-brand brand-logo-mini" href="index.html"><img src="{% static 'admin_panel/assets/images/logo-mini.png' %}" alt="logo" /></a>
         </div>
         <ul class="nav">
           <li class="nav-item profile">
             <div class="profile-desc">
                 <div class="profile-pic">
                     <div class="count-indicator">
-                        <img class="img-xs rounded-circle" src="{% static 'assets/images/avatardp.jpg' %}" alt="">
+                        
+                        {% if request.user.user_profile.dp %}
+                        <img class="img-xs rounded-circle" src="{{request.user.user_profile.dp.url}}" alt="">
+                        {% else %}
+                        <img class="img-xs rounded-circle" src="{% static 'admin_panel/assets/images/avatardp.jpg' %}" alt="">
+                        {% endif %}
+                          
                         <span class="count bg-success"></span>
                     </div>
                     <div class="profile-name">
