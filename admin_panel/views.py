@@ -45,9 +45,7 @@ def admin_panel(request):
     all_order_items = OrderProduct.objects.filter(is_ordered=True)
     all_variants = Variation.objects.all()
 
-    total_revenue = sum(order.order_total for order in all_orders)
-    total_sales = all_order_items.count()
-    total_stock = sum(variation.stock for variation in all_variants)
+    
     
     filter_type = request.GET.get('filter_type', 'all')  
 
@@ -63,20 +61,46 @@ def admin_panel(request):
         start_date = None  
     
     if start_date:
-         all_orders = all_orders.filter(
-            date_ordered__gte=start_date,
+        all_orders = all_orders.filter(
+            created_at__gte=start_date,
             is_ordered=True
         ).distinct()
          
-         delivered_order_items = OrderProduct.objects.filter(
+        all_order_items = OrderProduct.objects.filter(
             order__in=all_orders,
             is_ordered=True
         )
+         
+        
+    total_revenue = sum(order.order_total for order in all_orders)
+    total_sales =sum(item.quantity for item in all_order_items) 
+    total_stock = sum(variation.stock for variation in all_variants)
 
+    cod_orders = all_orders.filter(payment_method='cod')
+    online_orders = all_orders.filter(payment_method='paypal') 
+    wallet_orders = all_orders.filter(payment_method='wallet')
+
+    cod_count = cod_orders.count()
+    online_count = online_orders.count()
+    wallet_count = wallet_orders.count()
+
+    cod_total = sum(order.order_total for order in cod_orders)
+    online_total = sum(order.order_total for order in online_orders)
+    wallet_total = sum(order.order_total for order in wallet_orders)
+    
     context={
         'total_revenue':total_revenue,
         'total_sales':total_sales,
         'total_stock':total_stock,
+        'all_orders':all_orders,
+        'all_order_items':all_order_items,
+        'cod_count': cod_count,
+        'online_count': online_count,
+        'wallet_count': wallet_count,
+        'cod_total': cod_total,
+        'online_total': online_total,
+        'wallet_total': wallet_total,
+        'filter_type': filter_type,
     }
 
     return render(request, 'admin_panel/admin_panel.html', context)
@@ -456,6 +480,33 @@ def cancel_order(request, order_id):
 
     return redirect('order_management')
 
-
+@user_passes_test(is_user_admin, login_url='admin_login')
 def offer_management(request):
     return render(request, 'admin_panel/offer_management.html')
+
+@user_passes_test(is_user_admin, login_url='admin_login')
+def sales_report(request):
+    all_orders = Order.objects.all()
+   
+    start_date_str = '1900-01-01'
+    end_date_str = '9999-12-31'
+    if request.method == 'POST':
+        start_date_str = request.POST.get('start', '1900-01-01')
+        end_date_str = request.POST.get('end', '9999-12-31')
+   
+
+    start_date = datetime.strptime(start_date_str, '%Y-%m-%d') if start_date_str else None
+    end_date = datetime.strptime(end_date_str, '%Y-%m-%d') if end_date_str else None
+
+    if start_date is not None and end_date is not None:
+        completed_order_items = OrderProduct.objects.filter(
+            payment__status='Completed',
+            order__date_ordered__gte=start_date,
+            order__date_ordered__lte=end_date
+        )
+    else:
+        completed_order_items = OrderProduct.objects.filter(
+            payment__status='Completed',
+        )
+        
+    return render(request, 'admin_panel/sales_report.html')

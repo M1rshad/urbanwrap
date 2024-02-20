@@ -104,14 +104,14 @@
               <input value="{{ wallet_count }}" id="wallet" hidden>
                  <input value="{{ online_count }}" id="online" hidden>
                   <canvas id="myChart" style="width:80%;max-width:500px;  "></canvas>    
-              {% for order in all_orders reversed %}
+                {% for order in all_orders reversed %}
                   <div class="bg-gray-dark d-flex d-md-block d-xl-flex flex-row py-3 px-4 px-md-3 px-xl-4 rounded mt-3">
                       <div class="text-md-center text-xl-left">
-                          <h6 class="mb-1">Transfer as {{ order.payment_method }}</h6>
-                          <p class="text-muted mb-0">{{ order.date_ordered|date:"j M Y, g:i A" }}</p>
+                          <h6 class="mb-1">Transfer as {{ order.payment.payment_method }}</h6>
+                          <p class="text-muted mb-0">{{ order.created_at|date:"j M Y, g:i A" }}</p>
                       </div>
                       <div class="align-self-center flex-grow text-right text-md-center text-xl-right py-md-2 py-xl-0">
-                          <h6 class="font-weight-bold mb-0"> ₹ {{order.get_cart_total}}
+                          <h6 class="font-weight-bold mb-0"> $ {{order.order_total}}
                           </h6>
                       </div>
                   </div>
@@ -138,8 +138,10 @@
                     <div class="preview-item border-bottom">
                         <div class="preview-thumbnail">
                           <div class="preview-icon bg-primary">
-                            <a href="{% url 'admin_panel:manage_order'  order_id=order_item.order.id orderitem_id=order_item.id %}">
-                                <img src="{{ order_item.product.productimage_set.first.image.url }}" alt="">
+                            {% comment %}
+                              <a href="{% url 'admin_panel:manage_order'  order_id=order_item.order.id orderitem_id=order_item.id %}">
+                            {% endcomment %}
+                                <img src="{{ order_item.product.product_img.first.image.url }}" alt="">
                             </a>
                         </div>
                         
@@ -148,11 +150,11 @@
                             <div class="flex-grow">
                                 <h6 class="preview-subject">{{ order_item.product.product_name }}</h6>
                                 <p class="text-muted mb-0">Quantity: {{ order_item.quantity }}</p>
-                                <p class="text-muted mt-1">₹ {{ order_item.get_total }}</p>
+                                <p class="text-muted mt-1">$   {{ order_item.get_total }}</p>
                             </div>
                             <div class="mr-auto text-sm-right pt-2 pt-sm-0">
-                                <p class="text-muted">{{ order_item.date_added }}</p>
-                                <p class="text-muted mb-0"> {{ order_item.order.customer.username }} <span class="mdi mdi-account-box-outline"></span></p>
+                                <p class="text-muted">{{ order_item.created_at }}</p>
+                                <p class="text-muted mb-0"> {{ order_item.order.user.username }} <span class="mdi mdi-account-box-outline"></span></p>
                             </div>
                         </div>
                     </div>
