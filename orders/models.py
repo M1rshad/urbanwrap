@@ -76,7 +76,7 @@ class OrderProduct(models.Model):
     def __str__(self):
         return self.product.product_name
      
-
+    @property
     def get_total(self):
         total = self.product.price * self.quantity
         return total

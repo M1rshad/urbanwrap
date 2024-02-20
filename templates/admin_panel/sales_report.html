@@ -33,7 +33,7 @@
                         <canvas id="barChart" style="height:230px"></canvas>
                         <div style="display: none;">
                             {% for product in most_sold_products %}
-                                <input class="product" value="{{ product.product__name }}">
+                                <input class="product" value="{{ product.product__product_name }}">
                                 <input class="count" value="{{ product.total_sold }}">
                             {% endfor %}
                         </div>
@@ -91,7 +91,7 @@
                             {% for item in sold_items %}
                                 <div class="bg-gray-dark d-flex d-md-block d-xl-flex flex-row py-3 px-4 px-md-3 px-xl-4 rounded mt-3">
                                     <div class="text-md-center text-xl-left">
-                                        <h6 class="mb-1">{{ item.product__name }}</h6>
+                                        <h6 class="mb-1">{{ item.product__product_name }}</h6>
                                         <p class="text-muted mb-0">Total Sold: {{ item.total_sold }} units</p>
                                     </div>
                                 </div>
@@ -141,12 +141,12 @@
                                         <tbody>
                                          
                                             {% for product_data in stock_items %}
-    <tr>
-        <td>{{ product_data.product_name }}</td>
-        <td>{{ product_data.total_sold }}</td>
-        <td>{{ product_data.profit }}</td>
-    </tr>
-{% endfor %}
+                                                <tr>
+                                                    <td>{{ product_data.product_product_name }}</td>
+                                                    <td>{{ product_data.total_sold }}</td>
+                                                    <td>{{ product_data.profit }}</td>
+                                                </tr>
+                                            {% endfor %}
 
                                         </tbody>
                                     </table>

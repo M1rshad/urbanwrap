@@ -15,6 +15,7 @@ from orders.forms import OrderUpdateForm, PaymentUpdateForm
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.mail import send_mail
 from datetime import datetime, timedelta
+from django.db.models import Sum
 import uuid
 
 # Create your views here.
@@ -525,12 +526,48 @@ def sales_report(request):
     if start_date is not None and end_date is not None:
         completed_order_items = OrderProduct.objects.filter(
             payment__status='Completed',
-            order__date_ordered__gte=start_date,
-            order__date_ordered__lte=end_date
+            order__created_at__gte=start_date,
+            order__created_at__lte=end_date
         )
     else:
         completed_order_items = OrderProduct.objects.filter(
             payment__status='Completed',
         )
+
+    sold_items = completed_order_items.values('product__product_name').annotate(total_sold=Sum('quantity'))
+
+    total_sales = sum(order.order_total for order in all_orders)
+    total_profit = int(sum(order_item.product.price * 0.3 for order_item in completed_order_items))
+
+    most_sold_products = (
+        completed_order_items.values('product__product_name')
+        .annotate(total_sold=Sum('quantity'))
+        .order_by('-total_sold')[:6]
+    )
+    
+
+    product_profit_data = []
+
+    for sold_stock_item in completed_order_items:
+        product_price = sold_stock_item.product.price
+        total_revenue = sold_stock_item.get_total
+        total_revenue = int(total_revenue)
+        profit = total_revenue - (total_revenue * 0.7)
+        profit = int(profit)
+        product_profit_data.append({
+            'product_product_name': sold_stock_item.product.product_name,
+            'total_sold': sold_stock_item.quantity,
+            'profit': profit,
+        })
+
+    context = {
+        'total_sales': total_sales,
+        'most_sold_products': most_sold_products,
+        'total_profit': total_profit,
+        'sold_items': sold_items,
+        'stock_items': product_profit_data,
+        'start_date': start_date.strftime('%Y-%m-%d') if start_date else None,
+        'end_date': end_date.strftime('%Y-%m-%d') if end_date else None,
+    }
         
-    return render(request, 'admin_panel/sales_report.html')
+    return render(request, 'admin_panel/sales_report.html', context)
