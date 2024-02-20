@@ -11,6 +11,7 @@ from django.views.decorators.cache import never_cache
 from django.contrib.postgres.search import SearchVector
 from user_auth.forms import SignupForm
 from .forms import EditUserForm, AddCategoryForm, AddProductForm, AddVariantForm, ProductImageForm, AddCouponForm
+from orders.forms import OrderUpdateForm, PaymentUpdateForm
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.mail import send_mail
 from datetime import datetime, timedelta
@@ -433,6 +434,29 @@ def order_management(request):
     order_obj = Order.objects.all().filter(is_ordered=True).order_by('-id')
     context = {'order_obj' : order_obj}
     return render(request, 'admin_panel/order_management.html',context)
+
+
+@user_passes_test(is_user_admin, login_url='admin_login')
+def order_details(request, order_id):
+    order = Order.objects.get(id=order_id)
+    order_subtotal = order.order_total - order.tax
+
+    order_update_form = OrderUpdateForm(instance=order)
+    payment_update_form = PaymentUpdateForm(instance=order)
+    if request.POST:
+        order_update_form = OrderUpdateForm(request.POST, instance=order)
+        if order_update_form.is_valid():
+            order_update_form.save()
+            return redirect('order_management')
+
+
+    context = {
+        'order' : order,
+        'order_subtotal' : order_subtotal,
+        'order_update_form':order_update_form,
+        'payment_update_form':payment_update_form,
+        }
+    return render(request, 'admin_panel/order_details.html',context)
 
 
 @user_passes_test(is_user_admin, login_url='admin_login')

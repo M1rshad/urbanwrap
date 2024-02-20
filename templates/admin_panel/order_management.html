@@ -12,7 +12,7 @@
                           <div class="search-bar">
                             <form action="{% url 'product_search' %}" method="post" class="nav-link mt-2 mt-md-0 col-12 d-lg-flex search">
                               {% csrf_token %}
-                              <input type="text" name="search_input" class="form-control mb-1 text-light" placeholder="Search Product">
+                              <input type="text" name="search_input" class="form-control mb-1 text-light" placeholder="Search orders">
                               <button type="submit" class="btn-inverse-info mb-1 ">Search</button>
                           </form>
                           </div>
@@ -32,13 +32,13 @@
                               <tbody>
                                   {% for i in order_obj %}
                                   <tr>
-                                      <td>{{i.order_number}}</td>
+                                      <td><a href="{% url 'order_details' i.id %}" class="">{{i.order_number}}</a></td>
                                       <td>{{i.user}}</td>
                                       <td>{{i.payment}}</td>
                                       <td>{{i.payment_method | capfirst}}</td>
                                       <td>{{i.status}}</td>
                                       
-                                      {% if i.status != 'Cancelled' %}
+                                      {% if i.status == 'Accepted'%}
                                       <td><button class="btn btn-light"><a href={% url 'cancel_order' i.id %}>Cancel Order</a></button></td>
                                       {% endif %}
                                         
