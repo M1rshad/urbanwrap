@@ -27,6 +27,7 @@ class Product(models.Model):
     slug = models.SlugField(max_length=100, unique=True)
     description = models.TextField(max_length=255, blank=True)
     price = models.PositiveIntegerField()
+    discounted_price = models.PositiveIntegerField(blank=True, null=True)
     is_available = models.BooleanField(default=True)
     is_active = models.BooleanField(default=True)
     priority =  models.IntegerField(default=0, blank=True)
@@ -35,17 +36,7 @@ class Product(models.Model):
     modified_date = models.DateTimeField(auto_now=True)
 
 
-    def discounted_price(self):
-        from orders.models import Offer
-        active_offers = Offer.objects.filter(product=self, valid_from__lte=timezone.now(), valid_to__gte=timezone.now())
-
-        if active_offers.exists():
-            discount = max(offer.discount_percentage for offer in active_offers)
-            discounted_price = self.price * (1 - discount / 100)
-            return discounted_price
-        else:
-            return self.price
-
+    
 
     def get_url(self):
         return reverse('product_detail',args=[self.category.slug, self.slug])
