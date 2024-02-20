@@ -54,6 +54,14 @@ def my_orders(request):
     return render(request, 'home/my_orders.html', context)
 
 @login_required(login_url='log_in')
+def order_detail(request, order_id):
+    order = Order.objects.get(id=order_id)
+    context={
+        'order':order,
+    }
+    return render(request, 'home/order_detail.html', context)
+
+@login_required(login_url='log_in')
 def cancel_orders(request, order_id):
     order_obj = Order.objects.get(id=order_id)
     order_obj.status = 'Cancelled'

@@ -1,0 +1,174 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+
+{% block menu %}
+      <div class="header-center mr-auto">
+        <nav class="main-nav">
+            <ul class="menu sf-arrows">
+                <li>
+                    <a href="{% url 'home' %}" class="">Home</a>
+                </li>
+                <li>
+                    <a href="{% url 'shop' %}" class="">Shop</a>
+                    
+                </li>
+                <li>
+                    <a href="#" class="">About</a>
+                </li>
+                <li>
+                    <a href="blog.html" class="">Contact Us</a>
+                </li>
+                <li>
+                    <a href="blog.html" class="">FAQ</a>
+                </li>
+            </ul><!-- End .menu -->
+        </nav><!-- End .main-nav -->
+      </div><!-- End .header-left -->               
+{% endblock menu %}
+{% block content %}
+
+<main class="main">
+    <div class="page-header text-center" style="background-color:#faf9f9">
+        <div class="container">
+            <h1 class="page-title">My Account<span class="text-dark">Dashboard</span></h1>
+        </div><!-- End .container -->
+    </div><!-- End .page-header -->
+    <nav aria-label="breadcrumb" class="breadcrumb-nav mb-3">
+        <div class="container">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'shop' %}">Shop</a></li>
+                <li class="breadcrumb-item" aria-current="page"><a href="{% url 'dashboard' %}">My Account</a></li>
+                <li class="breadcrumb-item" aria-current="page"><a href="{% url 'my_orders' %}">My Orders</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Order detail</li>
+            </ol>
+        </div><!-- End .container -->
+    </nav><!-- End .breadcrumb-nav -->
+
+    <div class="page-content">
+        <div class="dashboard">
+            <div class="container">
+                <div class="row">
+
+                    <div class="col-md-6 col-lg-9">
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active" id="tab-dashboard" role="tabpanel" aria-labelledby="tab-dashboard-link"></h4>
+                                <h4 class="m-5">Order detail</h4>
+                                <div class="text-center m-5">
+                                    <div class="container bootdey">
+                                        <div class="row invoice row-printable mx-auto">
+                                        <div class="col-md-10 m-5 p-5 border border-dark">
+                                            <!-- col-lg-12 start here -->
+                                            <div class="panel panel-default plain" id="dash_0">
+                                                <!-- Start .panel -->
+                                                <div class="panel-body p30">
+                                                    <div class="row">
+                                                        <!-- Start .row -->
+                                                        <div class="col-lg-6">
+                                                            <!-- col-lg-6 start here -->
+                                                            <div class="invoice-logo"><img width="100" src={% static 'home/assets/images/logo/urbanwrap-logo.png' %} alt="Invoice logo"></div>
+                                                        </div>
+                                                        <!-- col-lg-6 end here -->
+                                                        <div class="col-lg-6">
+                                                            <!-- col-lg-6 start here -->
+                                                            <div class="invoice-from">
+                                                                <ul class="list-unstyled text-right">
+                                                                    <li>UrbanWrap Pvt. Ltd</li>
+                                                                    <li>456 Elm Avenue,</li>
+                                                                    <li>Townsville, Province,</li>
+                                                                    <li>Country</li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                        <!-- col-lg-6 end here -->
+                                                        <div class="col-lg-12">
+                                                            <!-- col-lg-12 start here -->
+                                                            <div class="invoice-details mt25">
+                                                                <div class="well">
+                                                                    <ul class="list-unstyled mb0">
+                                                                        <li><strong>Invoice</strong> #{{order.payment}}</li>
+                                                                        <li><strong>Invoice Date:</strong> {{order.created_at}}</li>
+                                                                        {% if order.payment.payment_method == 'cod' %}
+                                                                        <li><strong>Status:</strong> <span class="label label-danger">UNPAID</span></li>
+                                                                        {% else %}
+                                                                        <li><strong>Status:</strong> <span class="label label-danger">PAID</span></li>
+                                                                        {% endif %}
+                                                                    </ul>
+                                                                </div>
+                                                            </div>
+                                                            <div class="invoice-to mt25">
+                                                                <ul class="list-unstyled">
+                                                                    <li><strong>Invoiced To</strong></li>
+                                                                    <li>{{order.full_name}}</li>
+                                                                    <li>{{order.full_address}}</li>
+                                                                    <li>{{order.city}} {{order.state}}</li>
+                                                                    <li>{{order.country}}</li>
+                                                                </ul>
+                                                            </div>
+                                                            <div class="invoice-items mt-5">
+                                                                <div class="table-responsive border border-1" style="overflow: hidden; outline: none;" tabindex="0">
+                                                                    <table class="table table-bordered">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th class="per70 text-center">Description</th>
+                                                                                <th class="per5 text-center">Qty</th>
+                                                                                <th class="per25 text-center">Total</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            
+                                                                            {% for item in order.orderproduct_set.all %}
+                                                                                
+                                                                            
+                                                                            <tr>
+                                                                                <td>{{item.product.product_name}}</td>
+                                                                                <td class="text-center">{{item.quantity}}</td>
+                                                                                <td class="text-center">${{item.product.price}}</td>
+                                                                            </tr>
+                                                                            
+                                                                            {% endfor %}
+                                                                        </tbody>
+                                                                        <tfoot>
+                                                                            <tr>
+                                                                                <th colspan="2" class="text-right">Sub Total:</th>
+                                                                                <th class="text-center">${{order_subtotal}}</th>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <th colspan="2" class="text-right">Tax:</th>
+                                                                                <th class="text-center">${{order.tax}}</th>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <th colspan="2" class="text-right">Total:</th>
+                                                                                <th class="text-center">${{order.order_total}} USD</th>
+                                                                            </tr>
+                                                                        </tfoot>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                            <div class="invoice-footer mt25">
+                                                                <p class="text-center">Generated on {{order.created_at}} <a href="#" class="btn btn-default ml15"></p>
+                                                            </div>
+                                                        </div>
+                                                        <!-- col-lg-12 end here -->
+                                                    </div>
+                                                    <!-- End .row -->
+                                                </div>
+                                            </div>
+                                            <!-- End .panel -->
+                                        </div>
+                                        <!-- col-lg-12 end here -->
+                                    </div>
+                                    </div>
+                                </div>   
+                            </div><!-- .End .tab-pane -->
+                        </div>
+                    </div><!-- End .col-lg-9 -->
+                </div><!-- End .row -->
+            </div><!-- End .container -->
+        </div><!-- End .dashboard -->
+    </div><!-- End .page-content -->
+</main><!-- End .main -->
+
+{% include 'partials/footer.html' %}
+{% endblock content %}
+    

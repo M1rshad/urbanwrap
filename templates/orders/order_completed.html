@@ -4,8 +4,8 @@
 {% block content %}
 <div class="text-center m-5">
     <div class="container bootdey">
-        <div class="row invoice row-printable">
-        <div class="col-md-10">
+        <div class="row invoice row-printable mx-auto">
+        <div class="col-md-10 m-5 p-5 border border-dark">
             <!-- col-lg-12 start here -->
             <div class="panel panel-default plain" id="dash_0">
                 <!-- Start .panel -->
@@ -54,7 +54,7 @@
                                 </ul>
                             </div>
                             <div class="invoice-items mt-5">
-                                <div class="table-responsive" style="overflow: hidden; outline: none;" tabindex="0">
+                                <div class="table-responsive border border-1" style="overflow: hidden; outline: none;" tabindex="0">
                                     <table class="table table-bordered">
                                         <thead>
                                             <tr>
@@ -96,6 +96,10 @@
                             <div class="invoice-footer mt25">
                                 <p class="text-center">Generated on {{order.created_at}} <a href="#" class="btn btn-default ml15"></p>
                             </div>
+                        </div>
+                        <div>
+                            <button class="btn btn-sm btn-dark text-white"><a href="{% url 'home' %}" class="text-white">Go to homepage</a></button>
+                            <button class="btn btn-dark text-white"><a href="{% url 'my_orders' %}" class="text-white">See my orders</a></button>
                         </div>
                         <!-- col-lg-12 end here -->
                     </div>

@@ -41,7 +41,7 @@ class Order(models.Model):
     pin_code = models.IntegerField()
     order_note = models.CharField(max_length=100, blank=True)
     order_total = models.DecimalField(max_digits=10, decimal_places=2)
-    tax = models.FloatField()
+    tax = models.DecimalField(max_digits=10, decimal_places=2)
     status = models.CharField(max_length=10, choices=STATUS, default='New')
     payment_method=models.CharField(max_length=15) 
     ip = models.CharField(max_length=20, blank=True)
@@ -103,7 +103,7 @@ class WalletTransaction(models.Model):
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     transaction_type = models.CharField(max_length=10, choices=TRANSACTION_TYPES)
     order_reference = models.ForeignKey('Order', on_delete=models.SET_NULL, blank=True, null=True)
-    updated_balance = models.FloatField() 
+    updated_balance = models.DecimalField(max_digits=10, decimal_places=2) 
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
