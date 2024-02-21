@@ -27,6 +27,7 @@ class Product(models.Model):
     slug = models.SlugField(max_length=100, unique=True)
     description = models.TextField(max_length=255, blank=True)
     price = models.PositiveIntegerField()
+    is_sale = models.BooleanField(default=False)
     discounted_price = models.PositiveIntegerField(blank=True, null=True)
     is_available = models.BooleanField(default=True)
     is_active = models.BooleanField(default=True)

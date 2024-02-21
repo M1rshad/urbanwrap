@@ -169,7 +169,11 @@
                                                     {{i.variation_category| capfirst}} - {{i.variation_value | capfirst}}
                                                 {% endfor %}
                                                 {% endif %}</p></td>
-                                            <td>$ {{item.product.price}}</td>
+                                            <td>{% if item.product.is_sale == True %}
+                                                $ {{item.product.discounted_price}}
+                                                {% else %}
+                                                $ {{item.product.price}}
+                                                {% endif %}</td>
                                         </tr>
                                         {% endfor %}
                                         

@@ -1,7 +1,7 @@
 from django import forms 
 from user_auth.models import User, Coupon
 from home.models import Category, Product, Variation, ProductImages
-from orders.models import Order
+from orders.models import Order, Offer
 from django.core.validators import FileExtensionValidator
 
 
@@ -58,3 +58,10 @@ class UpdateOrderForm(forms.ModelForm):
     class Meta:
         model = Order
         fields = ('status',)
+
+
+class AddOfferForm(forms.ModelForm):
+
+    class Meta:
+        model = Offer
+        fields = ('offer_name', 'discount_percentage', 'valid_to', 'products')

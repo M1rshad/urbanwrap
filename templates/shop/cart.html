@@ -102,7 +102,12 @@
                                         </div>
                                     </td>   
                                     </td>
-                                    <td class="price-col">$ {{item.product.price}}</td>
+                                    <td class="price-col">
+                                        {% if item.product.is_sale == True %}
+                                        $ {{item.product.discounted_price}}
+                                        {% else %}
+                                        $ {{item.product.price}}
+                                        {% endif %}</td>
                                     <td class="quantity-col">
                                         <div class="input-group quantity-selector">
                                             <button class="text-white btn-dark"><a href={% url 'decrement_cart' item.product.id item.id %} type="button" class="text-white" aria-describedby="inputQuantitySelector" data-bs-step="down">

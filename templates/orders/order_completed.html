@@ -71,7 +71,12 @@
                                             <tr>
                                                 <td>{{item.product.product_name}}</td>
                                                 <td class="text-center">{{item.quantity}}</td>
-                                                <td class="text-center">${{item.product.price}}</td>
+                                                <td class="text-center">
+                                                    {% if item.product.is_sale == True %}
+                                                    $ {{item.product.discounted_price}}
+                                                    {% else %}
+                                                    $ {{item.product.price}}
+                                                </td>
                                             </tr>
                                             
                                             {% endfor %}

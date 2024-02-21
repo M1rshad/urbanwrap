@@ -3,6 +3,9 @@ from email.policy import default
 from django.db import models
 from home.models import Product, Variation
 from datetime import timezone
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
 # Create your models here.
 class Payment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -116,6 +119,25 @@ class Offer(models.Model):
     valid_from = models.DateTimeField(auto_now_add=True)
     valid_to = models.DateField()
     products = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True, related_name='offer')
+    is_active= models.BooleanField(default=True)
 
     def __str__(self):
         return self.name
+    
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if self.products:
+            self.products.is_sale = True
+            discount_amount = self.products.price * (self.discount_percentage / 100)
+            self.products.discounted_price = self.products.price - discount_amount
+            self.products.save()
+
+@receiver(post_save, sender=Offer)
+def update_product_on_offer_creation(sender, instance, created, **kwargs):
+    if created:
+        if instance.products:
+            instance.products.is_sale = True
+            discount_amount = instance.products.price * (instance.discount_percentage / 100)
+            instance.products.discounted_price = instance.products.price - discount_amount
+            instance.products.save()

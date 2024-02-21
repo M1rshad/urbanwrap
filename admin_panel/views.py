@@ -5,12 +5,12 @@ from django.shortcuts import render,redirect
 from django.contrib.auth import login, logout, authenticate
 from user_auth.models import User, Coupon
 from home.models import Category, Product, Variation , ProductImages
-from orders.models import Order, Wallet, OrderProduct, WalletTransaction
+from orders.models import Order, Wallet, OrderProduct, WalletTransaction, Offer
 from django.contrib import messages
 from django.views.decorators.cache import never_cache
 from django.contrib.postgres.search import SearchVector
 from user_auth.forms import SignupForm
-from .forms import EditUserForm, AddCategoryForm, AddProductForm, AddVariantForm, ProductImageForm, AddCouponForm
+from .forms import EditUserForm, AddCategoryForm, AddProductForm, AddVariantForm, ProductImageForm, AddCouponForm, AddOfferForm
 from orders.forms import OrderUpdateForm, PaymentUpdateForm
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.mail import send_mail
@@ -512,7 +512,11 @@ def cancel_order(request, order_id):
 
 @user_passes_test(is_user_admin, login_url='admin_login')
 def offer_management(request):
-    return render(request, 'admin_panel/offer_management.html')
+    offers = Offer.objects.all()
+    context = {
+        'offers':offers,
+    }
+    return render(request, 'admin_panel/offer_management.html', context)
 
 @user_passes_test(is_user_admin, login_url='admin_login')
 def sales_report(request):
@@ -659,13 +663,12 @@ def sales_report_excel(request):
         for order_item in completed_order_items:
             worksheet.cell(row=row_num, column=1, value=order_item.order.id)
 
-            date_ordered_naive = order_item.order.date_ordered.astimezone(timezone.utc).replace(tzinfo=None)
+            date_ordered_naive = order_item.order.created_at.astimezone(timezone.utc).replace(tzinfo=None)
             worksheet.cell(row=row_num, column=2, value=date_ordered_naive)
             worksheet.cell(row=row_num, column=2).style = date_style
 
-            worksheet.cell(row=row_num, column=3, value=order_item.order.get_cart_total)
-
-            products_list = [f"{item.product.product_name} ({item.quantity} units) - ${item.get_total}" for item in order_item.order.orderitem_set.all()]
+            worksheet.cell(row=row_num, column=3, value=order_item.order.order_total)
+            products_list = [f"{item.product.product_name} ({item.quantity} units) - ${item.get_total}" for item in order_item]
             products_str = '\n'.join(products_list)
             worksheet.cell(row=row_num, column=4, value=products_str)
 

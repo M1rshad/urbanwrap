@@ -80,7 +80,12 @@
                                 </h3><!-- End .product-title -->
                             </div><!-- End .product -->
                         </td>
-                        <td class="price-col">${{item.product.price}}</td>
+                        <td class="price-col">
+                            {% if item.product.is_sale == True %}
+                            $ {{item.product.discounted_price}}
+                            {% else %}
+                            $ {{item.product.price}}
+                        </td>
                             
                         <td class="stock-col">
                             

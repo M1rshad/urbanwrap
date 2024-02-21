@@ -20,7 +20,10 @@ class CartItem(models.Model):
     is_active = models.BooleanField(default=True)
 
     def sub_total(self):
-        return self.product.price * self.quantity 
+        if self.product.is_sale:
+            return self.product.discounted_price * self.quantity 
+        else:
+            return self.product.price * self.quantity 
 
     def __unicaode__(self):
         return self.product

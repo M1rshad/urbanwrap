@@ -119,7 +119,11 @@
                             </div><!-- End .rating-container -->
 
                             <div class="product-price">
-                                $ {{single_product.price}}
+                                {% if single_product.is_sale == True %}
+                                    $ {{single_product.discounted_price}}
+                                    {% else %}
+                                    $ {{single_product.price}}
+                                    {% endif %}
                             </div><!-- End .product-price -->
 
                             <div class="product-content">

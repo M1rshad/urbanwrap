@@ -1,1 +1,56 @@
-offer management
+{% extends 'partials/base_admin.html' %}
+
+{% block content %}
+<div class="main-panel">
+    <div class="content-wrapper">
+      <div class="row">
+          <div class="col-lg-12 grid-margin stretch-card">
+              <div class="card">
+                  <div class="card-body">
+                      <h4 class="card-title">Offer Management</h4>
+                      <div class="table-responsive">
+                          <div class="search-bar">
+                          <div class="container mt-4">
+                            <div class="d-flex justify-content-end">
+                                <button class="btn btn-inverse-info ms-auto "><a href="{% url 'add_coupon' %}" class="text-decoration-none" style="color: #8a59cc;">Add Offer</a></button>
+                            </div>
+                          </div>
+                          </div>
+                          <table class="table">
+                              <thead>
+                                  <tr>
+                                      <th>Offer name</th>
+                                      <th>Discount percentage</th>
+                                      <th>Valid till</th>
+                                      <th>Products</th>
+                                      <th>Edit</th>
+                                      <th>Deactivate</th>
+                                  </tr>
+                              </thead>
+                              <tbody>
+                                  {% for i in offers %}
+                                  <tr>
+                                      <td>{{i.name}}</td>
+                                      <td>{{i.discount_percentage}}%</td>
+                                      <td>{{i.valid_to}}</td>
+                                      <td>{{i.products}}</td>
+                                      <td><button class="btn btn-light"><a href={% url 'edit_coupon' i.id %}>Edit</a></button></td>
+
+                                      {% if i.is_active%}
+                                      <td><button class="btn btn-light"><a href={% url 'unlist_coupon' i.id%}>Deactivate</a></button></td>
+                                      {% else %}
+                                      <td><button class="btn btn-light"><a href={% url 'list_coupon' i.id%}>Activate</a></button></td>
+                                      {% endif %}
+                                  </tr>
+                                  {% endfor %}
+                              </tbody>
+                          </table>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+{% endblock content %}
+    

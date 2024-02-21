@@ -177,7 +177,12 @@
                                     </div><!-- End .product-cat -->
                                     <h3 class="product-title"><a href="product.html">{{product.product_name}}</a></h3><!-- End .product-title -->
                                     <div class="product-price">
-                                        ${{product.price}}
+                                    {% if product.is_sale == True %}
+                                    <span class="new-price">Now $ {{product.discounted_price}}</span>
+                                    <span class="old-price">Was $ {{product.price}}</span>
+                                    {% else %}
+                                    $ {{product.price}}
+                                    {% endif %}
                                     </div><!-- End .product-price -->
                                 </div><!-- End .product-body -->
                             </div><!-- End .product -->
@@ -457,7 +462,14 @@
                                             </div><!-- End .product-cat -->
                                             <h3 class="product-title"><a href="product.html">{{product.product_name}}</a></h3><!-- End .product-title -->
                                             <div class="product-price">
-                                                <span class="new-price">${{product.price}}</span>
+                                                <span class="new-price">
+                                                    {% if product.is_sale == True %}
+                                                    <span class="new-price">Now $ {{product.discounted_price}}</span>
+                                                    <span class="old-price">Was $ {{product.price}}</span>
+                                                    {% else %}
+                                                    $ {{product.price}}
+                                                    {% endif %}
+                                                </span>
                                             </div><!-- End .product-price -->
                                         </div><!-- End .product-body -->
                                     </div><!-- End .product -->
@@ -507,7 +519,14 @@
                                             </div><!-- End .product-cat -->
                                             <h3 class="product-title"><a href="product.html">{{product.product_name}}</a></h3><!-- End .product-title -->
                                             <div class="product-price">
-                                                <span class="new-price">${{product.price}}</span>
+                                                <span class="new-price">
+                                                    {% if product.is_sale == True %}
+                                                    <span class="new-price">Now $ {{product.discounted_price}}</span>
+                                                    <span class="old-price">Was $ {{product.price}}</span>
+                                                    {% else %}
+                                                    $ {{product.price}}
+                                                    {% endif %}
+                                                </span>
                                             </div><!-- End .product-price -->
                                         </div><!-- End .product-body -->
                                     </div><!-- End .product -->
@@ -557,7 +576,14 @@
                                             </div><!-- End .product-cat -->
                                             <h3 class="product-title"><a href="product.html">{{product.product_name}}</a></h3><!-- End .product-title -->
                                             <div class="product-price">
-                                                <span class="new-price">${{product.price}}</span>
+                                                <span class="new-price">
+                                                    {% if product.is_sale == True %}
+                                                    $ {{product.discounted_price}}
+                                                    {% else %}
+                                                    <span class="new-price">Now $ {{product.discounted_price}}</span>
+                                                    <span class="old-price">Was $ {{product.price}}</span>
+                                                    {% endif %}
+                                                </span>
                                             </div><!-- End .product-price -->
                                         </div><!-- End .product-body -->
                                     </div><!-- End .product -->
@@ -607,7 +633,14 @@
                                             </div><!-- End .product-cat -->
                                             <h3 class="product-title"><a href="product.html">{{product.product_name}}</a></h3><!-- End .product-title -->
                                             <div class="product-price">
-                                                <span class="new-price">${{product.price}}</span>
+                                                <span class="new-price">
+                                                    {% if product.is_sale == True %}
+                                                    $ {{product.discounted_price}}
+                                                    {% else %}
+                                                    <span class="new-price">Now $ {{product.discounted_price}}</span>
+                                                    <span class="old-price">Was $ {{product.price}}</span>
+                                                    {% endif %}
+                                                </span>
                                             </div><!-- End .product-price -->
                                         </div><!-- End .product-body -->
                                     </div><!-- End .product -->
