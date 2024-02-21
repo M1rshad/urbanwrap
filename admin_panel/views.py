@@ -1,5 +1,5 @@
-from django.shortcuts import render, HttpResponse
-
+from django.shortcuts import render, HttpResponse 
+from django.http import JsonResponse
 # Create your views here.
 from django.shortcuts import render,redirect
 from django.contrib.auth import login, logout, authenticate
@@ -14,8 +14,9 @@ from .forms import EditUserForm, AddCategoryForm, AddProductForm, AddVariantForm
 from orders.forms import OrderUpdateForm, PaymentUpdateForm
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.mail import send_mail
+from django.db.models.functions import TruncWeek, TruncMonth, TruncDay, ExtractWeek
 from datetime import datetime, timedelta, timezone
-from django.db.models import Sum
+from django.db.models import Sum, F
 from .helpers import render_to_pdf
 import openpyxl
 import openpyxl.styles
@@ -582,6 +583,7 @@ def sales_report(request):
     return render(request, 'admin_panel/sales_report.html', context)
 
 
+@user_passes_test(is_user_admin, login_url='admin_login')
 def sales_report_pdf(request):
     
     all_orders = Order.objects.all()
@@ -632,6 +634,7 @@ def sales_report_pdf(request):
 
     return HttpResponse('Failed to generate PDF')
 
+@user_passes_test(is_user_admin, login_url='admin_login')
 def sales_report_excel(request):
     try:
         start_date_str = request.GET.get('start', '1900-01-01')
@@ -714,3 +717,42 @@ def sales_report_excel(request):
     except Exception as e:
         print(f"Error generating Excel file: {e}")
         return HttpResponse("Failed to generate Excel file", status=500)
+    
+@user_passes_test(is_user_admin, login_url='admin_login')
+def get_sales_data(request, period):
+    if period == 'week':
+        
+        start_date = timezone.now().date() - timezone.timedelta(days=6)
+        order_items = OrderProduct.objects.filter(order__created_at__gte=start_date)
+        data = (
+            order_items.annotate(day=TruncDay('order__date_ordered'))
+            .values('day')
+            .annotate(total=Sum(F('quantity') * F('product__price')))
+            .order_by('day')
+        )
+        labels = [item['day'].strftime('%A') for item in data]
+    elif period == 'month':
+        start_date = timezone.now().date() - timezone.timedelta(days=30)
+        order_items = OrderProduct.objects.filter(order__created_at__gte=start_date)
+        data = (
+        order_items.annotate(day=TruncDay('order__date_ordered'))
+        .values('day')
+        .annotate(total=Sum(F('quantity') * F('product__price')))
+        .order_by('day')
+    )
+        labels = [item['day'].strftime('%Y-%m-%d') for item in data]
+    elif period == 'year':
+        start_date = timezone.now().date() - timezone.timedelta(days=365)
+        order_items = OrderProduct.objects.filter(order__created_at__gte=start_date)
+        data = (
+            order_items.annotate(month=TruncMonth('order__date_ordered'))
+            .values('month')
+            .annotate(total=Sum(F('quantity') * F('product__price')))
+            .order_by('month')
+        )
+        labels = [f"{item['month'].strftime('%B')}" for item in data]
+    else:
+        return JsonResponse({'error': 'Invalid period'})
+    
+    sales_data = [item['total'] for item in data]
+    return JsonResponse({'labels': labels, 'data': sales_data})

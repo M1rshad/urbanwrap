@@ -64,4 +64,4 @@ class AddOfferForm(forms.ModelForm):
 
     class Meta:
         model = Offer
-        fields = ('offer_name', 'discount_percentage', 'valid_to', 'products')
+        fields = ('name', 'discount_percentage', 'valid_to', 'products')
