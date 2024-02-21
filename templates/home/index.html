@@ -148,7 +148,14 @@
                                 
                             <div class="product product-2">
                                 <figure class="product-media">
+                                    
+                                    {% if product.is_sale %}
+                                    <span class="product-label label-sale">sale</span>
+                                    {% else %}
                                     <span class="product-label label-featured">Featured</span>
+                                    {% endif %}
+                                        
+
                                     <a href="{{product.get_url}}"> 
                                         {% if product.product_img.all %}
                                         {% with first_image=product.product_img.all|first %}
@@ -435,7 +442,11 @@
                                         <figure class="product-media">
                                             <a href="{{product.get_url}}">
                                                 {% if product.product_img.all %}
+                                                {% if product.is_sale %}
+                                                <span class="product-label label-sale">sale</span>
+                                                {% else %}
                                                 <span class="product-label label-new">New</span>
+                                                {% endif %}
                                                 {% with first_image=product.product_img.all|first %}
                                                 <img src={{ first_image.image.url }} alt="Product image" class="product-image">
                                                 {% endwith %}
@@ -490,7 +501,11 @@
                                 <div class="col-6 col-md-4 col-lg-3">
                                     <div class="product product-2 text-center">
                                         <figure class="product-media">
+                                            {% if product.is_sale %}
+                                            <span class="product-label label-sale">sale</span>
+                                            {% else %}
                                             <span class="product-label label-new">New</span>
+                                            {% endif %}
                                             <a href="{{product.get_url}}">
                                                 {% if product.product_img.all %}
                                                 {% with first_image=product.product_img.all|first %}
@@ -547,7 +562,11 @@
                                 <div class="col-6 col-md-4 col-lg-3">
                                     <div class="product product-2 text-center">
                                         <figure class="product-media">
+                                            {% if product.is_sale %}
+                                            <span class="product-label label-sale">sale</span>
+                                            {% else %}
                                             <span class="product-label label-new">New</span>
+                                            {% endif %}
                                             <a href="{{product.get_url}}">
                                                 {% if product.product_img.all %}
                                                 {% with first_image=product.product_img.all|first %}
@@ -578,10 +597,10 @@
                                             <div class="product-price">
                                                 <span class="new-price">
                                                     {% if product.is_sale == True %}
-                                                    $ {{product.discounted_price}}
-                                                    {% else %}
                                                     <span class="new-price">Now $ {{product.discounted_price}}</span>
                                                     <span class="old-price">Was $ {{product.price}}</span>
+                                                    {% else %}
+                                                    $ {{product.price}}
                                                     {% endif %}
                                                 </span>
                                             </div><!-- End .product-price -->
@@ -604,7 +623,11 @@
                                 <div class="col-6 col-md-4 col-lg-3">
                                     <div class="product product-2 text-center">
                                         <figure class="product-media">
+                                            {% if product.is_sale %}
+                                            <span class="product-label label-sale">sale</span>
+                                            {% else %}
                                             <span class="product-label label-new">New</span>
+                                            {% endif %}
                                             <a href="{{product.get_url}}">
                                                 {% if product.product_img.all %}
                                                 {% with first_image=product.product_img.all|first %}
@@ -635,10 +658,10 @@
                                             <div class="product-price">
                                                 <span class="new-price">
                                                     {% if product.is_sale == True %}
-                                                    $ {{product.discounted_price}}
-                                                    {% else %}
                                                     <span class="new-price">Now $ {{product.discounted_price}}</span>
                                                     <span class="old-price">Was $ {{product.price}}</span>
+                                                    {% else %}
+                                                    $ {{product.price}}
                                                     {% endif %}
                                                 </span>
                                             </div><!-- End .product-price -->

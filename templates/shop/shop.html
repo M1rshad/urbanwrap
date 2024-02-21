@@ -91,6 +91,9 @@
                     <div class="col-6 col-md-4 col-lg-4 col-xl-3">
                         <div class="product">
                             <figure class="product-media">
+                                {% if product.is_sale %}
+                                <span class="product-label label-sale">sale</span>
+                                {% endif %}
                                 <a href="{{product.get_url}}">
                                     {% for image in product.product_img.all %}
                                     {% if forloop.first %}
@@ -116,7 +119,8 @@
                                 <div class="product-price">
                                     
                                     {% if product.is_sale == True %}
-                                    $ {{product.discounted_price}}
+                                    <span class="new-price">$ {{product.discounted_price}}</span>
+                                    <span class="old-price">$ {{product.price}}</span>
                                     {% else %}
                                     $ {{product.price}}
                                     {% endif %}
