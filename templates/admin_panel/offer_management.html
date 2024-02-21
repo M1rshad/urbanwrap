@@ -12,7 +12,7 @@
                           <div class="search-bar">
                           <div class="container mt-4">
                             <div class="d-flex justify-content-end">
-                                <button class="btn btn-inverse-info ms-auto "><a href="{% url 'add_coupon' %}" class="text-decoration-none" style="color: #8a59cc;">Add Offer</a></button>
+                                <button class="btn btn-inverse-info ms-auto "><a href="{% url 'add_offer' %}" class="text-decoration-none" style="color: #8a59cc;">Add Offer</a></button>
                             </div>
                           </div>
                           </div>
@@ -34,12 +34,12 @@
                                       <td>{{i.discount_percentage}}%</td>
                                       <td>{{i.valid_to}}</td>
                                       <td>{{i.products}}</td>
-                                      <td><button class="btn btn-light"><a href={% url 'edit_coupon' i.id %}>Edit</a></button></td>
+                                      <td><button class="btn btn-light"><a href={% url 'edit_offer' i.id %}>Edit</a></button></td>
 
                                       {% if i.is_active%}
-                                      <td><button class="btn btn-light"><a href={% url 'unlist_coupon' i.id%}>Deactivate</a></button></td>
+                                      <td><button class="btn btn-light"><a href={% url 'deactivate_offer' i.id%}>Deactivate</a></button></td>
                                       {% else %}
-                                      <td><button class="btn btn-light"><a href={% url 'list_coupon' i.id%}>Activate</a></button></td>
+                                      <td><button class="btn btn-light"><a href={% url 'activate_offer' i.id%}>Activate</a></button></td>
                                       {% endif %}
                                   </tr>
                                   {% endfor %}

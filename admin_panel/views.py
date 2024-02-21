@@ -513,11 +513,50 @@ def cancel_order(request, order_id):
 
 @user_passes_test(is_user_admin, login_url='admin_login')
 def offer_management(request):
-    offers = Offer.objects.all()
+    offers = Offer.objects.all().order_by('-id')
     context = {
         'offers':offers,
     }
     return render(request, 'admin_panel/offer_management.html', context)
+
+@user_passes_test(is_user_admin, login_url='admin_login')
+def add_offer(request):
+    form = AddOfferForm()
+    if request.POST:
+        form = AddOfferForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(offer_management)
+    context = {'form' : form}
+    return render(request, 'admin_panel/add_offer.html', context)
+
+@user_passes_test(is_user_admin, login_url='admin_login')
+def edit_offer(request, offer_id):
+    instance = Offer.objects.get(pk=offer_id)
+    if request.POST:
+        form = AddOfferForm(request.POST,instance=instance)
+        if form.is_valid():
+            form.save()
+            return redirect(offer_management)
+    form = AddOfferForm(instance=instance)
+    context = {'form': form}
+    return render(request, 'admin_panel/edit_offer.html', context)
+
+
+@user_passes_test(is_user_admin, login_url='admin_login')
+def deactivate_offer(request, pk):
+    instance = Offer.objects.get(pk=pk)
+    instance.is_active=False
+    instance.save()
+    return redirect('offer_management')
+
+
+@user_passes_test(is_user_admin, login_url='admin_login')
+def activate_offer(request, pk):
+    instance = Offer.objects.get(pk=pk)
+    instance.is_active=True
+    instance.save()
+    return redirect('offer_management')
 
 @user_passes_test(is_user_admin, login_url='admin_login')
 def sales_report(request):
