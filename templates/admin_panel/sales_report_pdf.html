@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Report</title>
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <!-- Include your custom CSS stylesheets here -->
+    <style>
+        body {
+            padding: 20px;
+            font-family: 'Helvetica', sans-serif;
+        }
+        h1 {
+            color: #007bff;
+            text-align: center;
+            font-size: 36px;
+            margin-top: 50px;
+        }
+        h2 {
+            color: #007bff;
+            font-size: 26px;
+        }
+        p, table {
+            font-size: 18px;
+        }
+        table {
+            width: 100%;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .lead {
+            margin-bottom: 15px;
+        }
+        .mt-4 {
+            margin-top: 30px;
+        }
+        .mt-5 {
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Sales Report</h1>
+
+        <p class="lead">Period: {{ start_date }} to {{ end_date }}</p>
+
+        <p class="lead">Total Sales: ${{ total_sales }}</p>
+
+        <p class="lead">Total Revenue: ${{ total_revenue }}</p>
+
+        <p class="lead">Total Profit: ${{ total_profit }}</p>
+
+        <h2 class="mt-4">Sold Products</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Total Sold Quantity</th>
+                    <th>Profit</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in sold_items %}
+                    <tr>
+                        <td>{{ item.product_name }}</td>
+                        <td>{{ item.total_sold }} units</td>
+                        <td>${{ item.profit }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <h2 class="mt-4">Order Summary</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Date Ordered</th>
+                    <th>Total Amount</th>
+                    <th>Products</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order_item in delivered_order_items %}
+                    <tr>
+                        <td>{{ order_item.order.id }}</td>
+                        <td>{{ order_item.order.date_ordered|date:"F d, Y" }}</td>
+                        <td>${{ order_item.order.order_total }}</td>
+                        <td>
+                            <ul>
+                                <li>
+                                    {{ order_item.product.name }} ({{ order_item.quantity }} units)
+                                    - ${% with total=order_item.get_total %}{{ total }}{% endwith %}
+                                </li>
+                            </ul>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+       
+    </div>
+
+    <!-- Include Bootstrap JS and other JS scripts here -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+</body>
+</html>

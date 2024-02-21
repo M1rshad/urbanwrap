@@ -118,11 +118,9 @@
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuIconButton7">
                                     <h6 class="dropdown-header">Download Report</h6>
                                     
-                                    {% comment %}
-                                        <a class="dropdown-item text-white" href="{% url 'admin_panel:sales_report_excel' %}?start={{ start_date|default:'' }}&end={{ end_date|default:'' }}" id="excelDownload">Excel File</a>
-                                        <a class="dropdown-item text-white" href="{% url 'admin_panel:sales_report_pdf' %}?start={{ start_date|default:'' }}&end={{ end_date|default:'' }}" id="pdfDownload">PDF File</a>
                                     
-                                    {% endcomment %}
+                                        <a class="dropdown-item text-white" href="{% url 'sales_report_excel' %}?start={{ start_date|default:'' }}&end={{ end_date|default:'' }}" id="excelDownload">Excel File</a>
+                                        <a class="dropdown-item text-white" href="{% url 'sales_report_pdf' %}?start={{ start_date|default:'' }}&end={{ end_date|default:'' }}" id="pdfDownload">PDF File</a>
                                         </div>
                             </div>
                             

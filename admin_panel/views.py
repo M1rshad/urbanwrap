@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, HttpResponse
 
 # Create your views here.
 from django.shortcuts import render,redirect
@@ -14,8 +14,13 @@ from .forms import EditUserForm, AddCategoryForm, AddProductForm, AddVariantForm
 from orders.forms import OrderUpdateForm, PaymentUpdateForm
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.mail import send_mail
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from django.db.models import Sum
+from .helpers import render_to_pdf
+import openpyxl
+import openpyxl.styles
+from openpyxl.utils import get_column_letter
+from openpyxl.styles import NamedStyle
 import uuid
 
 # Create your views here.
@@ -571,3 +576,138 @@ def sales_report(request):
     }
         
     return render(request, 'admin_panel/sales_report.html', context)
+
+
+def sales_report_pdf(request):
+    
+    all_orders = Order.objects.all()
+    start_date_str = request.GET.get('start', '1900-01-01')
+    end_date_str = request.GET.get('end', '9999-12-31')
+
+    start_date = datetime.strptime(start_date_str, '%Y-%m-%d') if start_date_str else None
+    end_date = datetime.strptime(end_date_str, '%Y-%m-%d') if end_date_str else None
+      
+    completed_order_items = OrderProduct.objects.filter(
+            payment__status='Completed',
+            order__created_at__gte=start_date,
+            order__created_at__lte=end_date
+        )
+    total_revenue = sum(order_item.get_total for order_item in completed_order_items)
+    total_sales = sum(order_item.quantity for order_item in completed_order_items)
+    total_profit = sum(order_item.product.price * 0.3 for order_item in completed_order_items)
+    
+    all_orders = Order.objects.filter().distinct()
+    
+    sold_items = [{
+        'product_name': item.product.product_name,
+        'total_sold': item.quantity,
+        'profit': int(item.get_total - (item.get_total * 0.7)),
+    } for item in completed_order_items]
+    sold_items = sorted(sold_items, key=lambda x: x['total_sold'], reverse=True)
+
+    context = {
+        'start_date':start_date,
+        'end_date':end_date,
+        'total_sales': total_sales,
+        'total_revenue':total_revenue,
+        'total_profit':total_profit,
+        'sold_items':sold_items,
+        'all_orders':all_orders,
+        'delivered_order_items':completed_order_items,
+        
+    }
+
+    pdf = render_to_pdf('admin_panel/sales_report_pdf.html', context)
+
+    if pdf:
+        response = HttpResponse(pdf, content_type='application/pdf')
+        filename = "Sales Report.pdf"
+        content = f'attachment; filename="{filename}"'
+        response['Content-Disposition'] = content
+        return response
+
+    return HttpResponse('Failed to generate PDF')
+
+def sales_report_excel(request):
+    try:
+        start_date_str = request.GET.get('start', '1900-01-01')
+        end_date_str = request.GET.get('end', '9999-12-31')
+        start_date = datetime.strptime(start_date_str, '%Y-%m-%d') if start_date_str else None
+        end_date = datetime.strptime(end_date_str, '%Y-%m-%d') if end_date_str else None
+        completed_order_items = OrderProduct.objects.filter(
+            payment__status='Completed',
+            order__created_at__gte=start_date,
+            order__created_at__lte=end_date
+        )
+
+        workbook = openpyxl.Workbook()
+        worksheet = workbook.active
+        worksheet['A1'] = 'Total Revenue'
+        worksheet['B1'] = sum(order_item.get_total for order_item in completed_order_items)
+        worksheet['A2'] = 'Total Sales'
+        worksheet['B2'] = sum(order_item.quantity for order_item in completed_order_items)
+        worksheet['A3'] = 'Total Profit'
+        worksheet['B3'] = sum(order_item.product.price * 0.3 for order_item in completed_order_items)
+
+        row_num = 5
+        headers = ['Order ID', 'Date Ordered', 'Total Amount', 'Products']
+        for col_num, header in enumerate(headers, 1):
+            worksheet.cell(row=row_num, column=col_num, value=header)
+
+        row_num += 1
+        date_style = NamedStyle(name='date_style', number_format='YYYY-MM-DD')
+        for order_item in completed_order_items:
+            worksheet.cell(row=row_num, column=1, value=order_item.order.id)
+
+            date_ordered_naive = order_item.order.date_ordered.astimezone(timezone.utc).replace(tzinfo=None)
+            worksheet.cell(row=row_num, column=2, value=date_ordered_naive)
+            worksheet.cell(row=row_num, column=2).style = date_style
+
+            worksheet.cell(row=row_num, column=3, value=order_item.order.get_cart_total)
+
+            products_list = [f"{item.product.product_name} ({item.quantity} units) - ${item.get_total}" for item in order_item.order.orderitem_set.all()]
+            products_str = '\n'.join(products_list)
+            worksheet.cell(row=row_num, column=4, value=products_str)
+
+            row_num += 1
+
+        for i in range(1, 4):
+            cell = worksheet.cell(row=i, column=2)
+            cell.font = openpyxl.styles.Font(bold=True)
+
+        header_font = openpyxl.styles.Font(bold=True, color='FFFFFF')
+        header_alignment = openpyxl.styles.Alignment(horizontal='center')
+        for col_num, header in enumerate(headers, 1):
+            cell = worksheet.cell(row=row_num - len(completed_order_items) - 1, column=col_num)
+            cell.font = header_font
+            cell.alignment = header_alignment
+            cell.fill = openpyxl.styles.PatternFill(start_color='007bff', end_color='007bff', fill_type='solid')
+
+        data_alignment = openpyxl.styles.Alignment(wrap_text=True)
+        for row_num in range(row_num - len(completed_order_items), row_num):
+            for col_num in range(1, 5):
+                cell = worksheet.cell(row=row_num, column=col_num)
+                cell.alignment = data_alignment
+                cell.border = openpyxl.styles.Border(bottom=openpyxl.styles.Side(style='thin'))
+                
+        for col_num, header in enumerate(headers, 1):
+            max_length = len(header)
+            for row_num in range(2, row_num):
+                cell_value = worksheet.cell(row=row_num, column=col_num).value
+                try:
+                    if len(str(cell_value)) > max_length:
+                         max_length = len(cell_value)
+                except:
+                        pass
+            adjusted_width = max_length + 2
+            worksheet.column_dimensions[get_column_letter(col_num)].width = adjusted_width
+
+        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = 'attachment; filename=Sales_Report.xlsx'
+        workbook.save(response)
+
+        return response
+
+    except Exception as e:
+        print(f"Error generating Excel file: {e}")
+        return HttpResponse("Failed to generate Excel file", status=500)
