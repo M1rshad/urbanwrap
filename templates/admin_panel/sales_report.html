@@ -45,7 +45,7 @@
             <p class="mx-auto">Filter Report :</p>
             <div class="form-group row  col-12 w-100 d-flex justify-content-between">
                 <div class="col-3 ">
-                    <h3>Total Profit : {{total_profit}}
+                    <h3>Total Profit : ${{total_profit}}
                     </h3>
                 </div>
                
@@ -142,7 +142,7 @@
                                                 <tr>
                                                     <td>{{ product_data.product_product_name }}</td>
                                                     <td>{{ product_data.total_sold }}</td>
-                                                    <td>{{ product_data.profit }}</td>
+                                                    <td>${{ product_data.profit }}</td>
                                                 </tr>
                                             {% endfor %}
 

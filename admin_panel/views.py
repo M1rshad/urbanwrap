@@ -289,25 +289,19 @@ def edit_product(request, pk):
     if request.POST:
         form = AddProductForm(request.POST, instance=instance)
         image_form = ProductImageForm(request.POST, request.FILES, instance=instance)
-        print(form.errors)
-
+        delete_images = request.POST.getlist('delete_images')
         if form.is_valid() and image_form.is_valid():
             product = form.save()
-            print(form.errors)
 
             #delete option for image
-            for existing_image in product.product_img.all():
-                checkbox_name = f'delete_image_{existing_image.id}'
-                if checkbox_name in request.POST and request.POST.get(checkbox_name) == 'on':
-                    existing_image.delete()
-                    print(form.errors)
+            for image_id in delete_images:
+                product_image = ProductImages.objects.get(id=image_id)
+                product_image.delete()
 
             for img in request.FILES.getlist('image'):
                 image = ProductImages(image=img, product=product)
                 image.save()
-            print(form.errors)
 
-            print(form.errors)
             return redirect(product_management)
     form = AddProductForm(instance=instance)
     image_form = ProductImageForm(instance=instance)
@@ -710,9 +704,9 @@ def sales_report_excel(request):
             worksheet.cell(row=row_num, column=2).style = date_style
 
             worksheet.cell(row=row_num, column=3, value=order_item.order.order_total)
-            products_list = [f"{item.product.product_name} ({item.quantity} units) - ${item.get_total}" for item in order_item]
-            products_str = '\n'.join(products_list)
-            worksheet.cell(row=row_num, column=4, value=products_str)
+            # products_list = [f"{item.product.product_name} ({item.quantity} units) - ${item.get_total}" for item in order_item]
+            # products_str = '\n'.join(products_list)
+            # worksheet.cell(row=row_num, column=4, value=products_str)
 
             row_num += 1
 

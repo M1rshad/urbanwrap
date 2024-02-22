@@ -26,9 +26,10 @@ def sign_up(request):
             request.session['username']=form.cleaned_data.get('username')
             request.session['first_name']=form.cleaned_data.get('first_name')
             request.session['last_name']=form.cleaned_data.get('last_name')
-            request.session['password']=form.cleaned_data.get('password')
-
+            password =form.cleaned_data.get('password1')
+            
             send_otp(request)
+            request.session['encrypted_password'] = make_password(password)
             return redirect(otp_view)
     context = {'form' : form}
     return render(request, 'user_auth/user_signup.html', context)
@@ -37,7 +38,7 @@ def log_in(request):
     if request.POST:
         email = request.POST.get('email')
         password = request.POST.get('password')
-        user = authenticate(email=email, password=password)
+        user = authenticate(request, email=email, password=password)
         if user is not None:
             if user.is_block: 
                 messages.error(request, 'Your account is blocked. Please contact support.')
@@ -76,8 +77,7 @@ def log_in(request):
                                 for item in cart_items:
                                     item.user = user
                                     item.save()
-
-                       
+             
                     if cart.coupon:
                         user.coupon=cart.coupon
                         user.save()
@@ -116,7 +116,7 @@ def otp_view(request):
             if valid_until > datetime.now():
                 totp = pyotp.TOTP(otp_secret_key, interval=60)
                 if totp.verify(otp):
-                    encrypted_password = make_password(request.session['password'])
+                    encrypted_password = request.session['encrypted_password']
                     user = User(
                     username=request.session['username'],
                     email=request.session['email'],

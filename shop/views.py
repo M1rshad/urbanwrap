@@ -350,8 +350,8 @@ def checkout(request, total=0, quantity=0, cart_items=None):
     except Cart.DoesNotExist:
         pass
 
-    active_shipping_address = ShippingAddress.objects.filter(status=True)
-    inactive_shipping_address = ShippingAddress.objects.filter(status=False)
+    active_shipping_address = ShippingAddress.objects.filter(status=True, user=request.user)
+    inactive_shipping_address = ShippingAddress.objects.filter(status=False, user=request.user)
     existing_address_count = ShippingAddress.objects.filter(user=request.user).count()
 
     wallet=Wallet.objects.get(user=request.user)
