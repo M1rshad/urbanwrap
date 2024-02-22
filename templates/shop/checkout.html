@@ -2,28 +2,28 @@
 {% load static %}
 
 {% block menu %}
-      <div class="header-center mr-auto">
-        <nav class="main-nav">
-            <ul class="menu sf-arrows">
-                <li>
-                    <a href="{% url 'home' %}" class="">Home</a>
-                </li>
-                <li>
-                    <a href="{% url 'shop' %}" class="">Shop</a>
-                    
-                </li>
-                <li>
-                    <a href="#" class="">About</a>
-                </li>
-                <li>
-                    <a href="blog.html" class="">Contact Us</a>
-                </li>
-                <li>
-                    <a href="blog.html" class="">FAQ</a>
-                </li>
-            </ul><!-- End .menu -->
-        </nav><!-- End .main-nav -->
-      </div><!-- End .header-left -->               
+<div class="header-center mr-auto">
+    <nav class="main-nav">
+        <ul class="menu sf-arrows">
+            <li>
+                <a href="{% url 'home' %}" class="">Home</a>
+            </li>
+            <li>
+                <a href="{% url 'shop' %}" class="">Shop</a>
+                
+            </li>
+            <li>
+                <a href="{% url 'about' %}" class="">About</a>
+            </li>
+            <li>
+                <a href="{% url 'contact_us' %}" class="">Contact Us</a>
+            </li>
+            <li>
+                <a href="{% url 'faq' %}" class="">FAQ</a>
+            </li>
+        </ul><!-- End .menu -->
+    </nav><!-- End .main-nav -->
+  </div><!-- End .header-left -->                
 {% endblock menu %}
 
 {% block content %}
@@ -36,8 +36,8 @@
     <nav aria-label="breadcrumb" class="breadcrumb-nav">
         <div class="container">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-                <li class="breadcrumb-item"><a href="#">Shop</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'shop' %}">Shop</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Checkout</li>
             </ol>
         </div><!-- End .container -->

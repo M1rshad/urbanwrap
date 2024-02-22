@@ -13,17 +13,17 @@
                 
             </li>
             <li>
-                <a href="#" class="">About</a>
+                <a href="{% url 'about' %}" class="">About</a>
             </li>
             <li>
-                <a href="blog.html" class="">Contact Us</a>
+                <a href="{% url 'contact_us' %}" class="">Contact Us</a>
             </li>
             <li>
-                <a href="blog.html" class="">FAQ</a>
+                <a href="{% url 'faq' %}" class="">FAQ</a>
             </li>
         </ul><!-- End .menu -->
     </nav><!-- End .main-nav -->
-</div><!-- End .header-left -->  
+  </div><!-- End .header-left -->  
 {% endblock menu %}
     
 

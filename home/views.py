@@ -223,3 +223,16 @@ def wallet(request):
         'transaction_history':transaction_history,
     }
     return render(request, 'home/wallet.html', context)
+
+
+
+def about(request):
+    return render(request, 'home/about.html')
+
+
+def contact_us(request):
+    return render(request, 'home/contact_us.html')
+
+
+def faq(request):
+    return render(request, 'home/faq.html')

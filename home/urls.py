@@ -15,5 +15,8 @@ urlpatterns = [
     path('dashboard/edit-address/<int:address_id>', views.edit_address, name='edit_address'),
     path('dashboard/select-address/<int:address_id>', views.select_address, name='select_address'),
     path('dashboard/delete-address/<int:address_id>', views.delete_address, name='delete_address'),
+    path('about/',views.about, name='about'),
+    path('faq/',views.faq, name='faq'),
+    path('contact-us/',views.contact_us, name='contact_us'),
 
 ]
