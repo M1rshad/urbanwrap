@@ -3,6 +3,8 @@ from email.headerregistry import Address
 from django.shortcuts import get_object_or_404, redirect, render
 from .models import Product, Category
 from user_auth.models import ShippingAddress, User, UserProfile
+from shop.models import WishlistItem
+from shop.views import _wishlist_id
 from admin_panel.forms import EditUserForm
 from user_auth.forms import UserProfileForm, ShippingAddressForm
 from orders.models import Order,Wallet, WalletTransaction
@@ -21,12 +23,18 @@ def index(request):
     recent_sweatshirts = Product.objects.all().filter(category=sweatshirts_category, is_active=True).order_by('-created_date')[:4]
     trousers_category = Category.objects.get(category_name='Trousers')
     recent_trousers = Product.objects.all().filter(category=trousers_category, is_active=True).order_by('-created_date')[:4]
+    if request.user.is_authenticated:
+        wishlist_items = WishlistItem.objects.filter(user=request.user)
+    else:
+        wishlist_items = WishlistItem.objects.filter(wishlist__wishlist_id = _wishlist_id(request))
+    product_wishlist_map = {item.product_id: True for item in wishlist_items}
     context = {
         'featured':featured,
         'recent_t_shirts':recent_t_shirts,
         'recent_joggers':recent_joggers,
         'recent_sweatshirts':recent_sweatshirts,
-        'recent_trousers':recent_trousers
+        'recent_trousers':recent_trousers,
+        'product_wishlist_map':product_wishlist_map,
     }
     return render(request, 'home/index.html', context)
 

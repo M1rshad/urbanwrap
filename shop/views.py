@@ -346,9 +346,15 @@ def search(request):
         if keyword:
             products = Product.objects.order_by('-created_date').filter(Q(description__icontains=keyword) | Q(product_name__icontains=keyword))
             product_count = products.count()
+    if request.user.is_authenticated:
+        wishlist_items = WishlistItem.objects.filter(user=request.user)
+    else:
+        wishlist_items = WishlistItem.objects.filter(wishlist__wishlist_id = _wishlist_id(request))
+    product_wishlist_map = {item.product_id: True for item in wishlist_items}
     context = {
         'products':products,
-        'product_count':product_count
+        'product_count':product_count,
+        'product_wishlist_map':product_wishlist_map,
     }
     return render(request, 'shop/shop.html', context)
 
@@ -503,7 +509,6 @@ def wishlist(request, wishlist_items=None):
     
     context = {
         'wishlist_items' : wishlist_items,
-        #'cart':cart,
     }
     return render(request, 'shop/wishlist.html', context)
 
@@ -533,9 +538,9 @@ def get_stock_status(request):
             if variation:
                 # Check the stock status of the variation
                 if variation.stock > 0:
-                    stock_status = 'In stock'
+                    stock_status = 'in_stock'
                 else:
-                    stock_status = 'Out of stock'
+                    stock_status = 'out_of_stock'
                 
                 return JsonResponse({'stock_status': stock_status})
 

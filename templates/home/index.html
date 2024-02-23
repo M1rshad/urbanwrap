@@ -170,7 +170,11 @@
                                     </a>
                                     
                                     <div class="product-action-vertical">
-                                        <a href="{% url 'add_wishlist' product.id %}" class="btn-product-icon btn-wishlist btn-expandable" title="Add to wishlist"><span>add to wishlist</span></a>
+                                        {% if product.id in product_wishlist_map %}
+                                        <a href="{% url 'add_wishlist' product.id%}" class="btn-product-icon btn-wishlist btn-expandable"><span>View wishlist</span></a>
+                                        {% else %}
+                                        <a href="{% url 'add_wishlist' product.id%}" class="btn-product-icon btn-wishlist btn-expandable"><span>Add to wishlist</span></a>
+                                        {% endif %}
                                     </div><!-- End .product-action -->
 
                                     <div class="product-action ">
@@ -459,7 +463,11 @@
                                             </a>
 
                                             <div class="product-action-vertical">
-                                                <a href="{% url 'add_wishlist' product.id %}" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
+                                                {% if product.id in product_wishlist_map %}
+                                                <a href="{% url 'add_wishlist' product.id%}" class="btn-product-icon btn-wishlist btn-expandable"><span>View wishlist</span></a>
+                                                {% else %}
+                                                <a href="{% url 'add_wishlist' product.id%}" class="btn-product-icon btn-wishlist btn-expandable"><span>Add to wishlist</span></a>
+                                                {% endif %}
                                             </div><!-- End .product-action-vertical -->
                                             
                                             <div class="product-action">
@@ -520,7 +528,11 @@
                                             </a>
 
                                             <div class="product-action-vertical">
-                                                <a href="{% url 'add_wishlist' product.id %}" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
+                                                {% if product.id in product_wishlist_map %}
+                                                <a href="{% url 'add_wishlist' product.id%}" class="btn-product-icon btn-wishlist btn-expandable"><span>View wishlist</span></a>
+                                                {% else %}
+                                                <a href="{% url 'add_wishlist' product.id%}" class="btn-product-icon btn-wishlist btn-expandable"><span>Add to wishlist</span></a>
+                                                {% endif %}
                                             </div><!-- End .product-action-vertical -->
                                             
                                             <div class="product-action">
@@ -581,7 +593,11 @@
                                             </a>
 
                                             <div class="product-action-vertical">
-                                                <a href="{% url 'add_wishlist' product.id %}" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
+                                                {% if product.id in product_wishlist_map %}
+                                                <a href="{% url 'add_wishlist' product.id%}" class="btn-product-icon btn-wishlist btn-expandable"><span>View wishlist</span></a>
+                                                {% else %}
+                                                <a href="{% url 'add_wishlist' product.id%}" class="btn-product-icon btn-wishlist btn-expandable"><span>Add to wishlist</span></a>
+                                                {% endif %}
                                             </div><!-- End .product-action-vertical -->
                                             
                                             <div class="product-action">
@@ -642,7 +658,11 @@
                                             </a>
 
                                             <div class="product-action-vertical">
-                                                <a href="{% url 'add_wishlist' product.id %}" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
+                                                {% if product.id in product_wishlist_map %}
+                                                <a href="{% url 'add_wishlist' product.id%}" class="btn-product-icon btn-wishlist btn-expandable"><span>View wishlist</span></a>
+                                                {% else %}
+                                                <a href="{% url 'add_wishlist' product.id%}" class="btn-product-icon btn-wishlist btn-expandable"><span>Add to wishlist</span></a>
+                                                {% endif %}
                                             </div><!-- End .product-action-vertical -->
                                             
                                             <div class="product-action">

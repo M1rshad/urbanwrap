@@ -44,23 +44,26 @@
             </ol>
         </div><!-- End .container -->
     </nav><!-- End .breadcrumb-nav -->
-
+    
     <div class="page-content">
         <div class="container">
+            {% if wishlist_items %}
             <table class="table table-wishlist table-mobile">
                 <thead>
                     <tr>
                         <th>Product</th>
                         <th>Price</th>
                         <th>Stock Status</th>
-                        <th>Type</th>
+                        <th class="pl-5">Size</th>
                         <th></th>
                         <th></th>
                     </tr>
                 </thead>
 
                 <tbody>
-                                            
+                    
+                        
+                    
                     {% for item in wishlist_items %}
                     <tr data-item-id="{{ item.id }}">
                         
@@ -88,41 +91,30 @@
                             $ {{item.product.price}}
                             {% endif %}
                         </td>
-                            
+                        
                         <td class="stock-col" id="stock-col-{{ item.id }}">
-                            <!-- Display the stock status of the first variation immediately -->
-                            {% if item.product.variant.all %}
-                                {% with first_variation=item.product.variant.first %}
-                                    {% if first_variation.stock > 0 %}
-                                        <span class="in-stock">In stock</span>
-                                    {% else %}
-                                        <span class="out-of-stock">Out of stock</span>
-                                    {% endif %}
-                                {% endwith %}
-                            {% else %}
-                                <!-- Handle the case when there are no variations -->
-                                <span class="out-of-stock">Out of stock</span>
-                            {% endif %}
+                            <!-- Stock status placeholder -->
+                            <p id="stock-status-placeholder-{{ item.id }}">Select size</p>
                         </td>
                         <td class="action-col">
-                        <form action="{% url 'add_cart' item.product.id %}" method="POST">
-                            {% csrf_token %}
-                        <div class="select-custom">
-                            <select name="size" id="size" class="form-control" required>
-                                <option disabled>Select size</option>
-                                
-                                {% for i in item.product.variant.all|dictsort:"id" %}
-                                <option value="{{i.variation_value}}">{{i.variation_value}}</option> 
-                                {% endfor %}
-                            </select>
-                        </div><!-- End .select-custom -->
-                        </td>
+                            <form action="{% url 'add_cart' item.product.id %}" method="POST">
+                                {% csrf_token %}
+                                <div class="select-custom m-5">
+                                    <select name="size" id="size" class="form-control" required>
+                                        <option value="" selected disabled hidden>Select size</option>
+                                        
+                                        {% for i in item.product.variant.all|dictsort:"id" %}
+                                        <option value="{{i.variation_value}}">{{i.variation_value}}</option> 
+                                        {% endfor %}
+                                    </select>
+                                </div><!-- End .select-custom -->
+                            </td>
                         <td class="action-col">
-                            <button type="submit" class="btn btn-block btn-outline-primary-2"><i class="icon-cart-plus"></i>Add to cart</button>
+                            <button id="add-to-cart-button-{{ item.id }}" type="submit" class="btn btn-block btn-outline-primary-2"><i class="icon-cart-plus"></i>Add to cart</button>
                         </td>
                     </form>
-                        <td class="remove-col">
-                            <a href="{% url 'remove_wishlist_item' item.product.id item.id %}"><button class="btn-remove"><i class="icon-close"></i></button></a>
+                    <td class="remove-col">
+                        <a href="{% url 'remove_wishlist_item' item.product.id item.id %}"><button class="btn-remove"><i class="icon-close"></i></button></a>
                         </td>
 
                     </tr>
@@ -132,6 +124,11 @@
                     
                 </tbody>
             </table><!-- End .table table-wishlist -->
+            {% else %}
+            <div class="text-center">
+            <h3 class="m-5 p-5">Your wishlist is empty</h3>
+            </div>
+            {% endif %}
             <div class="wishlist-share">
                 <div class="social-icons social-icons-sm mb-2">
                     <label class="social-label">Share on:</label>
@@ -145,6 +142,7 @@
         </div><!-- End .container -->
     </div><!-- End .page-content -->
 </main><!-- End .main -->
+{% include 'partials/footer.html' %}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function() {
@@ -165,7 +163,17 @@
                 dataType: 'json',  // Specify JSON as the expected data type
                 success: function(response) {
                     // Update stock status in the DOM
-                    $('#stock-status-placeholder-' + itemId).html(response.stock_status);
+                    var stockStatusPlaceholder = $('#stock-status-placeholder-' + itemId);
+                    if (response.stock_status === 'in_stock') {
+                        stockStatusPlaceholder.html('<span class="in-stock">In stock</span>');
+                        $('#add-to-cart-button-' + itemId).prop('disabled', false); // Enable Add to Cart button
+                    } else if (response.stock_status === 'out_of_stock') {
+                        stockStatusPlaceholder.html('<span class="out-of-stock">Out of stock</span>');
+                        $('#add-to-cart-button-' + itemId).prop('disabled', true); // Disable Add to Cart button
+                    } else {
+                        stockStatusPlaceholder.html('Select size');
+                        $('#add-to-cart-button-' + itemId).prop('disabled', true); // Disable Add to Cart button
+                    }
                 },
                 error: function(xhr, status, error) {
                     console.error(xhr.responseText);
@@ -173,5 +181,5 @@
             });
         });
     });
-</script>   
+</script>
 {% endblock content %}
