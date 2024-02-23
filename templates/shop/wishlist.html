@@ -53,6 +53,7 @@
                         <th>Product</th>
                         <th>Price</th>
                         <th>Stock Status</th>
+                        <th>Type</th>
                         <th></th>
                         <th></th>
                     </tr>
@@ -61,7 +62,7 @@
                 <tbody>
                                             
                     {% for item in wishlist_items %}
-                    <tr>
+                    <tr data-item-id="{{ item.id }}">
                         
                         <td class="product-col">
                             <div class="product">
@@ -88,18 +89,42 @@
                             {% endif %}
                         </td>
                             
-                        <td class="stock-col">
-                            
-                            {% for variation in item.product.variant.all  %}
-                                <p>{{variation.variation_value}} - {% if variation.stock > 0 %}<span class="in-stock">In stock</span>{% else %}<span class="out-of-stock">Out of stock</span>{% endif %}</p>
-                            {% endfor %}
+                        <td class="stock-col" id="stock-col-{{ item.id }}">
+                            <!-- Display the stock status of the first variation immediately -->
+                            {% if item.product.variant.all %}
+                                {% with first_variation=item.product.variant.first %}
+                                    {% if first_variation.stock > 0 %}
+                                        <span class="in-stock">In stock</span>
+                                    {% else %}
+                                        <span class="out-of-stock">Out of stock</span>
+                                    {% endif %}
+                                {% endwith %}
+                            {% else %}
+                                <!-- Handle the case when there are no variations -->
+                                <span class="out-of-stock">Out of stock</span>
+                            {% endif %}
                         </td>
                         <td class="action-col">
-                            <a href="{{item.product.get_url}}"><button class="btn btn-block btn-outline-primary-2"><i class="icon-cart-plus"></i>View Product</button></a>
+                        <form action="{% url 'add_cart' item.product.id %}" method="POST">
+                            {% csrf_token %}
+                        <div class="select-custom">
+                            <select name="size" id="size" class="form-control" required>
+                                <option disabled>Select size</option>
+                                
+                                {% for i in item.product.variant.all|dictsort:"id" %}
+                                <option value="{{i.variation_value}}">{{i.variation_value}}</option> 
+                                {% endfor %}
+                            </select>
+                        </div><!-- End .select-custom -->
                         </td>
+                        <td class="action-col">
+                            <button type="submit" class="btn btn-block btn-outline-primary-2"><i class="icon-cart-plus"></i>Add to cart</button>
+                        </td>
+                    </form>
                         <td class="remove-col">
                             <a href="{% url 'remove_wishlist_item' item.product.id item.id %}"><button class="btn-remove"><i class="icon-close"></i></button></a>
                         </td>
+
                     </tr>
                     {% endfor %}
                     
@@ -120,4 +145,33 @@
         </div><!-- End .container -->
     </div><!-- End .page-content -->
 </main><!-- End .main -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Listen for changes in the select dropdown
+        $('select[name="size"]').change(function() {
+            var variationValue = $(this).val();
+            var itemId = $(this).closest('tr').data('item-id'); // Fetching item_id here
+            var url = "{% url 'get_stock_status' %}";
+
+            // Send AJAX request to fetch updated stock status
+            $.ajax({
+                type: 'GET',
+                url: url,
+                data: {
+                    'variation_value': variationValue,
+                    'item_id': itemId // Passing item_id in the AJAX request
+                },
+                dataType: 'json',  // Specify JSON as the expected data type
+                success: function(response) {
+                    // Update stock status in the DOM
+                    $('#stock-status-placeholder-' + itemId).html(response.stock_status);
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+            });
+        });
+    });
+</script>   
 {% endblock content %}

@@ -159,7 +159,13 @@
                                 </div><!-- End .details-action-col -->
 
                                 <div class="details-action-wrapper">
-                                    <a href="#" class="btn-product btn-wishlist" title="Wishlist"><span>Add to Wishlist</span></a>
+                                    
+                                    {% if in_wishlist%}
+                                    <a class="btn-product btn-wishlist" title="Wishlist"><span>Added to Wishlist</span></a>
+                                    {% else %}
+                                    <a href="{% url 'add_wishlist' single_product.id %}" class="btn-product btn-wishlist" title="Wishlist"><span>Add to Wishlist</span></a>
+                                    {% endif %}
+                                        
                                 </div><!-- End .details-action-wrapper -->
                             </div><!-- End .product-details-action -->
 

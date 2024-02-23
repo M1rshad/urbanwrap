@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
+from django.http import JsonResponse
 from home.models import Product, Category, Variation
 from orders.models import Wallet
 from user_auth.models import ShippingAddress, Coupon
@@ -38,15 +39,25 @@ def shop(request, category_slug=None):
                 products = products.filter(price__gte=min_price,is_available=True, is_active=True).order_by('id')
             if max_price:
                 products = products.filter(price__lte=max_price,is_available=True, is_active=True).order_by('id')
+        
+        if request.user.is_authenticated:
+            wishlist_items = WishlistItem.objects.filter(user=request.user)
+        else:
+            wishlist_items = WishlistItem.objects.filter(wishlist__wishlist_id = _wishlist_id(request))
+        product_wishlist_map = {item.product_id: True for item in wishlist_items}
 
         paginator = Paginator(products, 12)
         page = request.GET.get('page')
         paged_product = paginator.get_page(page)
         product_count = products.count()
+
+ 
+                
     context = {
         'products' : paged_product,
         'product_count' : product_count,
         'form': form,
+        'product_wishlist_map': product_wishlist_map,
         }
     return render(request, 'shop/shop.html', context)
 
@@ -56,12 +67,18 @@ def product_detail(request, category_slug, product_slug):
         single_product = Product.objects.get(category__slug=category_slug, slug=product_slug)
         variation = single_product.variant.all().order_by('id')
         in_cart =  CartItem.objects.filter(cart__cart_id=_cart_id(request), product = single_product).exists()
+        if request.user.is_authenticated:
+            in_wishlist=WishlistItem.objects.filter(user=request.user, product=single_product).exists()
+        else:
+            in_wishlist = WishlistItem.objects.filter(wishlist__wishlist_id=_wishlist_id(request), product=single_product).exists()
+        print(in_wishlist)
     except Exception as e:
         raise e
     context = {
         'single_product' : single_product,
         'in_cart' : in_cart,
-        'variation':variation
+        'variation':variation,
+        'in_wishlist':in_wishlist,
         }
     return render(request, 'shop/product_detail.html', context)
 
@@ -111,11 +128,15 @@ def add_cart(request, product_id):
                
                 item.save()
             else:
-                item = CartItem.objects.create(product=product, quantity=1, user=current_user)  
+                item = CartItem.objects.create(product=product, quantity=1, user=current_user)
                 if len(product_variation)>0:
                     item.variations.clear()
                     item.variations.add(*product_variation)
                 item.save()
+            wishlist_item = WishlistItem.objects.filter(user=request.user, product_id=product_id).first()
+            if wishlist_item:
+                wishlist_item.delete()
+
         else:
             cart_item = CartItem.objects.create(
                 product = product,
@@ -126,6 +147,9 @@ def add_cart(request, product_id):
                 cart_item.variations.clear()
                 cart_item.variations.add(*product_variation)
             cart_item.save()
+            wishlist_item = WishlistItem.objects.filter(user=request.user, product_id=product_id).first()
+            if wishlist_item:
+                wishlist_item.delete()
         return redirect('cart')
 
     else:
@@ -173,6 +197,9 @@ def add_cart(request, product_id):
                     item.variations.clear()
                     item.variations.add(*product_variation)
                 item.save()
+            wishlist_item = WishlistItem.objects.filter(wishlist__wishlist_id=_wishlist_id(request), product_id=product_id).first()
+            if wishlist_item:
+                wishlist_item.delete()
         else:
             cart_item = CartItem.objects.create(
                 product = product,
@@ -183,6 +210,9 @@ def add_cart(request, product_id):
                 cart_item.variations.clear()
                 cart_item.variations.add(*product_variation)
             cart_item.save()
+            wishlist_item = WishlistItem.objects.filter(wishlist__wishlist_id=_wishlist_id(request), product_id=product_id).first()
+            if wishlist_item:
+                wishlist_item.delete()
         return redirect('cart')
 
 
@@ -471,7 +501,6 @@ def wishlist(request, wishlist_items=None):
     except Wishlist.DoesNotExist:
         pass
     
-
     context = {
         'wishlist_items' : wishlist_items,
         #'cart':cart,
@@ -488,3 +517,33 @@ def remove_wishlist_item(request, product_id, wishlist_item_id):
     wishlist_item.delete()
     return redirect('wishlist')
 
+
+def get_stock_status(request):
+    if request.method == 'GET' :
+        variation_value = request.GET.get('variation_value')
+        item_id = request.GET.get('item_id')
+
+        try:
+            item = WishlistItem.objects.get(id=item_id)
+            product = item.product
+
+            # Find the variation with the specified variation value for the product
+            variation = Variation.objects.filter(product=product, variation_value=variation_value).first()
+
+            if variation:
+                # Check the stock status of the variation
+                if variation.stock > 0:
+                    stock_status = 'In stock'
+                else:
+                    stock_status = 'Out of stock'
+                
+                return JsonResponse({'stock_status': stock_status})
+
+            # If variation is not found, return an error message
+            return JsonResponse({'error': 'Variation not found'}, status=400)
+
+        except WishlistItem.DoesNotExist:
+            return JsonResponse({'error': 'Item not found'}, status=404)
+    
+    # If the request is not AJAX or not GET, return a 400 Bad Request
+    return JsonResponse({'error': 'Invalid request'}, status=400)

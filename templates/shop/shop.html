@@ -104,7 +104,11 @@
                                 </a>
                                 
                                 <div class="product-action-vertical">
+                                    {% if product.id in product_wishlist_map %}
+                                    <a href="{% url 'add_wishlist' product.id%}" class="btn-product-icon btn-wishlist btn-expandable"><span>added to wishlist</span></a>
+                                    {% else %}
                                     <a href="{% url 'add_wishlist' product.id%}" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
+                                    {% endif %}
                                 </div><!-- End .product-action -->
                                 
                                 <div class="product-action action-icon-top">
