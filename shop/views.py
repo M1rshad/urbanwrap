@@ -92,21 +92,21 @@ def _cart_id(request):
 def add_cart(request, product_id):
     current_user = request.user
     product = Product.objects.get(id=product_id) 
+    quantity=1
 
     #if user is authenticated
     if current_user.is_authenticated:
         product_variation = []
         if request.POST:
-            for item in request.POST:
-                key = item
-                value = request.POST[key]
-        
-        try:
-            variation = Variation.objects.get(product=product, variation_category__iexact=key, variation_value__iexact=value)
-            product_variation.append(variation)
-        except:
-            pass
-
+            for key, value in request.POST.items():
+                if key != 'quantity':
+                    try:
+                        variation = Variation.objects.get(product=product, variation_category__iexact=key, variation_value__iexact=value)
+                        product_variation.append(variation)
+                    except:
+                        pass
+                else:
+                    quantity = int(request.POST.get('quantity', 1))
 
         is_cart_item_exists = CartItem.objects.filter(product=product, user=current_user).exists()
         if is_cart_item_exists:
@@ -124,11 +124,11 @@ def add_cart(request, product_id):
                 index = ex_var_list.index(product_variation)
                 item_id = id[index]
                 item = CartItem.objects.get(product=product, id=item_id)
-                item.quantity +=1
+                item.quantity += quantity
                
                 item.save()
             else:
-                item = CartItem.objects.create(product=product, quantity=1, user=current_user)
+                item = CartItem.objects.create(product=product, quantity=quantity, user=current_user)
                 if len(product_variation)>0:
                     item.variations.clear()
                     item.variations.add(*product_variation)
@@ -140,7 +140,7 @@ def add_cart(request, product_id):
         else:
             cart_item = CartItem.objects.create(
                 product = product,
-                quantity = 1,
+                quantity = quantity,
                 user = current_user
             )
             if len(product_variation)>0:
@@ -155,15 +155,15 @@ def add_cart(request, product_id):
     else:
         product_variation = []
         if request.POST:
-            for item in request.POST:
-                key = item
-                value = request.POST[key]
-        
-        try:
-            variation = Variation.objects.get(product=product, variation_category__iexact=key, variation_value__iexact=value)
-            product_variation.append(variation)
-        except:
-            pass
+            for key, value in request.POST.items():
+                if key != 'quantity':
+                    try:
+                        variation = Variation.objects.get(product=product, variation_category__iexact=key, variation_value__iexact=value)
+                        product_variation.append(variation)
+                    except:
+                        pass
+                else:
+                    quantity = int(request.POST.get('quantity', 1))
 
         try:
             cart = Cart.objects.get(cart_id=_cart_id(request))
@@ -189,10 +189,10 @@ def add_cart(request, product_id):
                 index = ex_var_list.index(product_variation)
                 item_id = id[index]
                 item = CartItem.objects.get(product=product, id=item_id)
-                item.quantity +=1
+                item.quantity +=quantity
                 item.save()
             else:
-                item = CartItem.objects.create(product=product, quantity=1, cart=cart)  
+                item = CartItem.objects.create(product=product, quantity=quantity, cart=cart)  
                 if len(product_variation)>0:
                     item.variations.clear()
                     item.variations.add(*product_variation)
@@ -203,7 +203,7 @@ def add_cart(request, product_id):
         else:
             cart_item = CartItem.objects.create(
                 product = product,
-                quantity = 1,
+                quantity = quantity,
                 cart = cart
             )
             if len(product_variation)>0:
@@ -558,12 +558,9 @@ def check_stock(request):
     if request.method == 'GET':
         product_id = request.GET.get('product_id')
         variation_value = request.GET.get('variation_value')
-        print("Received product ID:", product_id)  # Add this line for debugging
-        print("Received variation value:", variation_value)  # Add this line for debugging
         try:
             variation = Variation.objects.get(product_id=product_id, variation_value=variation_value)
             stock_status = 'in_stock' if variation.stock > 0 else 'out_of_stock'
-            print("Stock status:", stock_status)  # Add this line for debugging
             return JsonResponse({'status': stock_status})
         except Variation.DoesNotExist:
             pass

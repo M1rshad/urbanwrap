@@ -4,6 +4,9 @@ from PIL import Image
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from home.models import Product
+from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
+
 import uuid
 
 # Create your models here.
@@ -64,18 +67,32 @@ class UserProfile(models.Model):
                 img.save(self.dp.path)
                       
     
+
+def validate_phone_number(value):
+    if not value.isdigit():
+        raise ValidationError(_("Phone number must contain only digits"))
+    if len(value) < 10 or len(value) > 15:
+        raise ValidationError(_("Phone number must be between 10 and 15 digits"))
+
+def validate_pin_code(value):
+    if not value.isdigit():
+        raise ValidationError(_("PIN code must contain only digits"))
+    if len(value) != 6:  
+        raise ValidationError(_("PIN code must be exactly 6 digits"))
+    
+
 class ShippingAddress(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     first_name = models.CharField(max_length=50) 
     last_name = models.CharField(max_length=50) 
-    phone = models.CharField(max_length=15) 
+    phone = models.CharField(max_length=15, validators=[validate_phone_number]) 
     email = models.EmailField(max_length=50) 
     address_line_1 = models.CharField(max_length=50) 
     address_line_2 = models.CharField(max_length=50)
     country = models.CharField(max_length=255, null=True, blank=True)
     state = models.CharField(max_length=255, null=True, blank=True)
     city = models.CharField(max_length=255, null=True, blank=True)
-    pin_code = models.CharField(max_length=10, null=True, blank=True)
+    pin_code = models.CharField(max_length=10, null=True, blank=True, validators=[validate_pin_code])
     status = models.BooleanField(default=True)
 
 
