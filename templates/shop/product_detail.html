@@ -133,10 +133,10 @@
                                 <label for="size">Size:</label>
                                 <div class="select-custom">
                                     <select name="size" id="size" class="form-control" required>
-                                        <option disabled>Select size</option>
+                                        <option value="" selected disabled hidden>Select size</option>
                                         
                                         {% for i in variation %}
-                                        <option value="{{i.variation_value}}">{{i.variation_value}}</option> 
+                                        <option value="{{i.variation_value}}" data-stock="{{ i.stock }}">{{i.variation_value}}</option> 
                                         {% endfor %}
                                     </select>
                                 </div><!-- End .select-custom -->
@@ -144,17 +144,14 @@
                                 <a href="#" class="size-guide"><i class="icon-th-list"></i>size guide</a>
                             </div><!-- End .details-filter-row -->
 
+                            <h5 id="stockStatus" class="text-danger m-3"></h5>
                             <div class="product-details-action">
                                 <div class="details-action-col">
                                     <div class="product-details-quantity">
                                         <input type="number" id="qty"   class="form-control" value="1" min="1" max="10" step="1" data-decimals="0" required>
                                     </div><!-- End .product-details-quantity -->
                                     
-                                    {% if single_product.stock <= 0 %}
-                                    <h5 class="text-danger m-3">Out of stock</h5>
-                                    {% else %}
-                                    <button class="btn btn-primary" type=submit><span>Add to cart</span></button>
-                                    {% endif %}
+                                    <button id="addToCartButton" class="btn btn-primary" type=submit><span>Add to cart</span></button>
                         </form>
                                 </div><!-- End .details-action-col -->
 
@@ -517,6 +514,27 @@
         </div><!-- End .container -->
     </div><!-- End .page-content -->
 </main><!-- End .main -->
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#size').change(function() {
+            var selectedVariation = $(this).val();
+            var productId = '{{ single_product.id }}'; // Assuming you're using Django template to get the product ID
+            $.get('/check_stock/', { product_id: productId, variation_value: selectedVariation })
+                .done(function(response) {
+                    if (response.status === 'in_stock') {
+                        $('#stockStatus').text('');
+                        $('#addToCartButton').prop('disabled', false);
+                    } else {
+                        $('#stockStatus').text('Out of stock');
+                        $('#addToCartButton').prop('disabled', true);
+                    }
+                })
+                .fail(function(xhr, status, error) {
+                    // Handle error
+                });
+        });
+    });
+</script>
 {% include 'partials/footer.html' %}
 {% endblock content %}

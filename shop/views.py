@@ -552,3 +552,19 @@ def get_stock_status(request):
     
     # If the request is not AJAX or not GET, return a 400 Bad Request
     return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
+def check_stock(request):
+    if request.method == 'GET':
+        product_id = request.GET.get('product_id')
+        variation_value = request.GET.get('variation_value')
+        print("Received product ID:", product_id)  # Add this line for debugging
+        print("Received variation value:", variation_value)  # Add this line for debugging
+        try:
+            variation = Variation.objects.get(product_id=product_id, variation_value=variation_value)
+            stock_status = 'in_stock' if variation.stock > 0 else 'out_of_stock'
+            print("Stock status:", stock_status)  # Add this line for debugging
+            return JsonResponse({'status': stock_status})
+        except Variation.DoesNotExist:
+            pass
+    return JsonResponse({'status': 'error'})
