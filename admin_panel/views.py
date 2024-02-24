@@ -196,10 +196,10 @@ def add_category(request):
 
 @user_passes_test(is_user_admin, login_url='admin_login')
 def edit_category(request, pk):
-    error_category_name = None
-    error_slug = None
-    error_description = None
-    error_cat_image = None
+    error_category_name = ''
+    error_slug = ''
+    error_description = ''
+    error_cat_image = ''
     instance = Category.objects.get(pk=pk)
     if request.POST:
         form = AddCategoryForm(request.POST, request.FILES, instance=instance)
@@ -270,9 +270,6 @@ def add_product(request):
                 image.save()
 
             return redirect(product_management)
-        else:
-            print(form.errors)
-            print(image_form.errors)
     form = AddProductForm()
     image_form = ProductImageForm()
     context = {

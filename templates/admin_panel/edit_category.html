@@ -68,7 +68,7 @@
                                         class="form-control text-light" 
                                         value="{{form.description.value}}" >
                                         {% if error_category_name != None %}
-                                        {{ error_category_name }}
+                                        {{ error_category_description }}
                                         {% endif %}
                                         
                                       </div>
@@ -83,7 +83,7 @@
                                         {% if form.cat_image.value %}
                                           <img src={{ form.cat_image.value.url }} height=200px>
                                         {% endif %}
-                                        {% if error_category_name != None %}
+                                        {% if error_category_image != None %}
                                         {{ error_cat_image }}
                                         {% endif %}
                                         
