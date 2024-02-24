@@ -62,6 +62,7 @@
                                             type="{{ form.first_name.field.widget.input_type }}"
                                             name="{{ form.first_name.name }}"
                                             id="{{ form.first_name.id_for_label }}" required>
+                                        {{form.first_name.errors}}
                                         </div><!-- End .col-sm-6 -->
 
                                         <div class="col-sm-6">
@@ -70,6 +71,7 @@
                                             type="{{ form.last_name.field.widget.input_type }}"
                                             name="{{ form.last_name.name }}"
                                             id="{{ form.last_name.id_for_label }}" required>
+                                        {{form.last_name.errors}}
                                         </div><!-- End .col-sm-6 -->
                                     </div><!-- End .row -->
                                     <div class="row">
@@ -79,6 +81,7 @@
                                             type="{{ form.phone.field.widget.input_type }}"
                                             name="{{ form.phone.name }}"
                                             id="{{ form.phone.id_for_label }}" required>
+                                        {{form.phone.errors}}
                                         </div><!-- End .col-sm-6 -->
 
                                         <div class="col-sm-6">
@@ -87,6 +90,7 @@
                                             type="{{ form.email.field.widget.input_type }}"
                                             name="{{ form.email.name }}"
                                             id="{{ form.email.id_for_label }}" required>
+                                            {{form.email.errors}}
                                         </div><!-- End .col-sm-6 -->
                                     </div><!-- End .row -->
                                     
@@ -96,12 +100,15 @@
                                     type="{{ form.address_line_1.field.widget.input_type }}"
                                     name="{{ form.address_line_1.name }}"
                                     id="{{ form.address_line_1.id_for_label }}" class="form-control">
+                                    {{form.address_line_1.errors}}
 
                                     <label>Address line 2</label>
                                     <input class="form-control"
                                     type="{{ form.address_line_2.field.widget.input_type }}"
                                     name="{{ form.address_line_2.name }}"
                                     id="{{ form.address_line_2.id_for_label }}" class="form-control">
+                                    {{form.address_line_2.errors}}
+
 
                                     <div class="row">
                                         <div class="col-sm-6">
@@ -110,6 +117,7 @@
                                             type="{{ form.country.field.widget.input_type }}"
                                             name="{{ form.country.name }}"
                                             id="{{ form.country.id_for_label }}" required>
+                                        {{form.country.errors}}
                                         </div><!-- End .col-sm-6 -->
 
                                         <div class="col-sm-6">
@@ -118,6 +126,7 @@
                                             type="{{ form.state.field.widget.input_type }}"
                                             name="{{ form.state.name }}"
                                             id="{{ form.state.id_for_label }}" required>
+                                        {{form.state.errors}}
                                         </div><!-- End .col-sm-6 -->
                                     </div><!-- End .row -->
                                     <div class="row">
@@ -127,6 +136,7 @@
                                             type="{{ form.city.field.widget.input_type }}"
                                             name="{{ form.city.name }}"
                                             id="{{ form.city.id_for_label }}" required>
+                                        {{form.city.errors}}
                                         </div><!-- End .col-sm-6 -->
 
                                         <div class="col-sm-6">
@@ -135,6 +145,7 @@
                                             type="{{ form.pin_code.field.widget.input_type }}"
                                             name="{{ form.pin_code.name }}"
                                             id="{{ form.pin_code.id_for_label }}" required>
+                                        {{form.pin_code.errors}}
                                         </div><!-- End .col-sm-6 -->
                                     </div><!-- End .row -->
 
@@ -142,7 +153,6 @@
                                         <span>SAVE CHANGES</span>
                                         <i class="icon-long-arrow-right"></i>
                                     </button>
-                                    {{form.errors}}
                                 </form>
                                 
                             </div><!-- .End .tab-pane -->
