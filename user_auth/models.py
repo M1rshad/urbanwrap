@@ -80,8 +80,13 @@ class ShippingAddress(models.Model):
 
 
     def save(self, *args, **kwargs):
-        if self.status:
-            ShippingAddress.objects.filter(user=self.user, status=True).update(status=False)
+        if self.pk:  # Check if the instance is an existing record
+            original_instance = ShippingAddress.objects.get(pk=self.pk)
+            if self.status != original_instance.status and self.status:  # Check if status is being changed to True
+                ShippingAddress.objects.filter(user=self.user, status=True).exclude(pk=self.pk).update(status=False)
+        else:  # New record
+            if self.status:
+                ShippingAddress.objects.filter(user=self.user, status=True).update(status=False)
         super().save(*args, **kwargs)
 
     def __str__(self):

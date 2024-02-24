@@ -139,7 +139,7 @@ def update_account_details(request):
 
 @login_required(login_url='log_in')
 def my_address(request):
-    addresses = ShippingAddress.objects.filter(user=request.user)
+    addresses = ShippingAddress.objects.filter(user=request.user).order_by('-id')
     context={
         'addresses':addresses,
     }
