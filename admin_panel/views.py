@@ -16,7 +16,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.mail import send_mail
 from django.db.models.functions import TruncWeek, TruncMonth, TruncDay, ExtractWeek
 from datetime import datetime, timedelta, timezone
-from django.db.models import Sum, F
+from django.db.models import Sum, F, Q
 from .helpers import render_to_pdf
 import openpyxl
 import openpyxl.styles
@@ -130,12 +130,12 @@ def user_management(request):
 
 @user_passes_test(is_user_admin, login_url='admin_login')
 def user_search(request):
+    user_obj=None
     if request.POST:
         search_item = request.POST.get('search_input')
-        if search_item == '':
-            return redirect(user_management)
-        user_obj = User.objects.annotate(
-        search=SearchVector('username','email')).filter(search=search_item)
+        if search_item:
+            user_obj = User.objects.order_by('date_joined').filter(Q(email__icontains=search_item) | Q(username__icontains=search_item))
+        
         context = {'user_obj':user_obj}
         return render(request, 'admin_panel/user_management.html',context)
     else:
@@ -223,12 +223,11 @@ def edit_category(request, pk):
 
 @user_passes_test(is_user_admin, login_url='admin_login')
 def category_search(request):
+    cat_obj=None
     if request.POST:
         search_item = request.POST.get('search_input')
-        if search_item == '':
-            return redirect(category_management)
-        cat_obj = Category.objects.annotate(
-        search=SearchVector('category_name','slug')).filter(search=search_item)
+        if search_item:
+            cat_obj = Category.objects.order_by('id').filter(Q(category_name__icontains=search_item))
         context = {'cat_obj':cat_obj}
         return render(request, 'admin_panel/category_management.html',context)
     else:
@@ -316,12 +315,11 @@ def edit_product(request, pk):
 
 @user_passes_test(is_user_admin, login_url='admin_login')
 def product_search(request):
+    prod_obj = None
     if request.POST:
         search_item = request.POST.get('search_input')
-        if search_item == '':
-            return redirect(product_management)
-        prod_obj = Product.objects.annotate(
-        search=SearchVector('product_name','slug')).filter(search=search_item)
+        if search_item:
+            prod_obj = Product.objects.order_by('id').filter(Q(product_name__icontains=search_item))
         context = {'prod_obj':prod_obj}
         return render(request, 'admin_panel/product_management.html',context)
     else:
@@ -335,12 +333,6 @@ def variant_management(request):
     context = {'var_obj' : var_obj}
     return render(request, 'admin_panel/variant_management.html',context)
 
-
-@user_passes_test(is_user_admin, login_url='admin_login')
-def delete_variant(request, pk):
-    instance = Variation.objects.get(pk=pk)
-    instance.delete()
-    return redirect('variant_management')
 
 
 @user_passes_test(is_user_admin, login_url='admin_login')
@@ -370,12 +362,11 @@ def edit_variant(request, pk):
 
 @user_passes_test(is_user_admin, login_url='admin_login')
 def variant_search(request):
+    var_obj=None
     if request.POST:
         search_item = request.POST.get('search_input')
-        if search_item == '':
-            return redirect(variant_management)
-        var_obj = Variation.objects.annotate(
-        search=SearchVector('product','variation_category')).filter(search=search_item)
+        if search_item:
+            var_obj = Variation.objects.order_by('id').filter(Q(product__product_name__icontains=search_item))
         context = {'var_obj':var_obj}
         return render(request, 'admin_panel/variant_management.html',context)
     else:
@@ -436,6 +427,18 @@ def order_management(request):
     context = {'order_obj' : order_obj}
     return render(request, 'admin_panel/order_management.html',context)
 
+
+@user_passes_test(is_user_admin, login_url='admin_login')
+def order_search(request):
+    order_obj=None
+    if request.POST:
+            search_item = request.POST.get('search_input')
+            if search_item:
+                order_obj = Order.objects.order_by('id').filter(Q(order_number__icontains=search_item)|Q(user__username__icontains=search_item)|Q(user__email__icontains=search_item))
+            context = {'order_obj':order_obj}
+            return render(request, 'admin_panel/order_management.html',context)
+    else:
+        return redirect(order_management)
 
 @user_passes_test(is_user_admin, login_url='admin_login')
 def order_details(request, order_id):

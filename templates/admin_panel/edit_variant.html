@@ -49,6 +49,16 @@
                                     </div>
                                     <div class="col-12">
                                       <div class="form-floating mb-3">
+                                        <label for="stock" class="form-label">Stock</label>
+                                        <input type="{{ form.stock.field.widget.input_type }}"
+                                        name="{{ form.stock.name }}"
+                                        id="{{ form.stock.id_for_label }}"
+                                        class="form-control text-light" 
+                                        value="{{form.stock.value}}" required>
+                                      </div>
+                                    </div>
+                                    <div class="col-12">
+                                      <div class="form-floating mb-3">
                                         <label for="cat_image" class="form-label">Is active</label>
                                         {{form.is_active}}
                                       </div>

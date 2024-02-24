@@ -25,12 +25,12 @@
                               <thead>
                                   <tr>
                                       <th>Product</th>
-                                      <th>Variant category</th>
+                                      <th>Category</th>
                                       <th>Variant value</th>
+                                      <th>Stock</th>
                                       <th>Created at</th>
                                       <th>Is active</th>
                                       <th>Edit</th>
-                                      <th>Delete</th>
                                   </tr>
                               </thead>
                               <tbody>
@@ -39,10 +39,10 @@
                                       <td>{{i.product}}</td>
                                       <td>{{i.variation_category}}</td>
                                       <td>{{i.variation_value}}</td>
+                                      <td>{{i.stock}}</td>
                                       <td>{{i.created_date}}</td>
                                       <td>{{i.is_active}}</td>
                                       <td><button class="btn btn-light"><a href={% url 'edit_variant' i.id %}>Edit</a></button></td>
-                                      <td><button class="btn btn-light"><a href={% url 'delete_variant' i.id%}>Delete</a></button></td>
                                   </tr>
                                   {% endfor %}
                               </tbody>

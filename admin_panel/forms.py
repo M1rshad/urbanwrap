@@ -35,7 +35,7 @@ class AddVariantForm(forms.ModelForm):
 
     class Meta:
         model = Variation
-        fields = ('product', 'variation_category', 'variation_value', 'is_active')
+        fields = ('product', 'variation_category', 'variation_value', 'is_active', 'stock')
 
 
 class ProductImageForm(forms.ModelForm):
