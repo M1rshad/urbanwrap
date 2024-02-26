@@ -62,6 +62,12 @@ class Order(models.Model):
     def __str__(self):
         return self.first_name
     
+@receiver(post_save, sender=Order)
+def update_payment_status(sender, instance, **kwargs):
+    if instance.status == 'Completed' and instance.payment:
+        instance.payment.status = 'Completed'
+        instance.payment.save()
+    
 
 class OrderProduct(models.Model):
 
