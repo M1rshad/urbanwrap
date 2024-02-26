@@ -2,6 +2,14 @@
 
 
 {% block content %}
+<style>
+  .errorlist{
+    color: red;
+    font-size: small;
+    list-style: none;
+    padding-left:0
+  }
+</style>
 <div class="main-panel">
     <div class="content-wrapper">
       <div class="row">
@@ -22,7 +30,7 @@
                                   </div>
                                 </div>
                               
-                                <form action="" method="post" enctype="multipart/form-data">
+                                <form action="{% url 'edit_product' product.id %}" method="post" enctype="multipart/form-data">
                                   {% csrf_token %}
                                   <div class="row gy-3 overflow-hidden">
                                     <div class="col-12">
@@ -34,6 +42,7 @@
                                         class="form-control text-light" 
                                         value="{{ form.product_name.value }}" required>
                                       </div>
+                                      {{error_product_name}}
                                     </div>
                                     <div class="col-12">
                                       <div class="form-floating mb-3">
@@ -44,6 +53,7 @@
                                         class="form-control text-light"  
                                         value="{{ form.slug.value }}" required>
                                       </div>
+                                      {{error_slug}}
                                     </div>
                                     <div class="col-12">
                                       <div class="form-floating mb-3">
@@ -54,6 +64,7 @@
                                         class="form-control text-light" 
                                         value="{{ form.description.value }}" >
                                       </div>
+                                      {{error_description}}
                                     </div>
                                     <div class="col-12">
                                       <div class="form-floating mb-3">
@@ -64,23 +75,24 @@
                                         class="form-control text-light" 
                                         value="{{ form.price.value }}" required>
                                       </div>
+                                      {{error_price}}
                                     </div>
                                     <div class="col-12">
                                       <div class="form-floating mb-3">
                                         <label for="product_images" class="form-label">Product Images</label>
                                         
-                                        
-                                        {% for existing_image  in existing_images %}
-                                        <input type="{{ image_form.image.field.widget.input_type }}"
-                                        name="{{ existing_image.image.name }}"
-                                        value="{{ existing_image.image.value }}"
-                                        id="formFile "multiple
-                                        class="form-control text-light" >
-                                        <img src={{existing_image.image.url}} height=200px>
-                                        <br>
-                                        <label for="product_images" class="form-label text-danger">Delete</label>
-                                        <input type="checkbox" name="delete_images"  value ="{{existing_image.id}}" class="delete-checkbox">
-                                        {% endfor %}
+                                        <div class="col-12">
+                                          <div class="form-floating mb-3">
+                                              {% for image in product.product_img.all %}
+                                                  <div>
+                                                      <img src="{{ image.image.url }}" alt="Product Image" height="150" width="125" class="m-2">
+                                                      <input type="checkbox" name="delete_images" value="{{ image.id }}"> Delete
+                                                  </div>
+                                              {% endfor %}
+                                              <input type="file" name="image" id="product_images" multiple class="form-control text-light">
+                                          </div>
+                                      {{error_product_image}}
+                                      </div>
                                           
                                           
                                       </div>
@@ -102,7 +114,8 @@
                                         <button class="btn bsb-btn-2xl btn-primary " type="submit">Save</button> 
                                         <button class="btn bsb-btn-2xl btn-primary ml-5" type="button"><a href="{% url 'product_management' %}" class="text-light">Back</a></button>
                                     </div>
-                                  </div>
+                                      {{error_category}}
+                                    </div>
                                 </form>
                                 {% for message in messages %}
                                   <p class="text-danger">{{message}}</p>

@@ -519,7 +519,7 @@
     $(document).ready(function() {
         $('#size').change(function() {
             var selectedVariation = $(this).val();
-            var productId = '{{ single_product.id }}'; // Assuming you're using Django template to get the product ID
+            var productId = '{{ single_product.id }}';
             $.get('/check_stock/', { product_id: productId, variation_value: selectedVariation })
                 .done(function(response) {
                     if (response.status === 'in_stock') {

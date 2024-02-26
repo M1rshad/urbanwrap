@@ -1,4 +1,4 @@
-from django.shortcuts import render, HttpResponse 
+from django.shortcuts import render, HttpResponse, get_object_or_404
 from django.http import JsonResponse
 # Create your views here.
 from django.shortcuts import render,redirect
@@ -299,33 +299,61 @@ def add_product(request):
 
 @user_passes_test(is_user_admin, login_url='admin_login')
 def edit_product(request, pk):
-    instance = Product.objects.get(pk=pk)
-    if request.POST:
-        form = AddProductForm(request.POST, instance=instance)
-        image_form = ProductImageForm(request.POST, request.FILES, instance=instance)
-        delete_images = request.POST.getlist('delete_images')
+    product = get_object_or_404(Product, id=pk)
+    error_product_name = ''
+    error_slug = ''
+    error_description = ''
+    error_price = ''
+    error_category = ''
+    error_product_image = ''
+    
+    if request.method == 'POST':
+        form = AddProductForm(request.POST, instance=product)
+        image_form = ProductImageForm(request.POST, request.FILES)
+        
+        # If no image is provided, removing image field from form validation
+        if not request.FILES:
+            form.fields.pop('image', None)
+            image_form.fields.pop('image', None)
+
         if form.is_valid() and image_form.is_valid():
-            product = form.save()
-
-            #delete option for image
-            for image_id in delete_images:
-                product_image = ProductImages.objects.get(id=image_id)
-                product_image.delete()
-
+            form.save()
             for img in request.FILES.getlist('image'):
                 image = ProductImages(image=img, product=product)
                 image.save()
-
+            
+            # For deleting the images
+            if 'delete_images' in request.POST:
+                images_to_delete = request.POST.getlist('delete_images')
+                for image_id in images_to_delete:
+                    image_to_delete = ProductImages.objects.get(id=image_id)
+                    image_to_delete.delete()
+            
             return redirect(product_management)
-    form = AddProductForm(instance=instance)
-    image_form = ProductImageForm(instance=instance)
-    existing_images = instance.product_img.all()
+        else:
+            error_product_name = form['product_name'].errors
+            error_slug = form['slug'].errors
+            error_description = form['description'].errors
+            error_price = form['price'].errors
+            error_category = form['category'].errors
+            error_product_image = image_form.errors 
+            
+    else:
+        form = AddProductForm(instance=product)
+        image_form = ProductImageForm()
+    
     context = {
         'form': form,
         'image_form': image_form,
-        'existing_images':existing_images
-        }
-    return render(request, 'admin_panel/edit_product.html',context)
+        'error_product_name': error_product_name,
+        'error_slug': error_slug,
+        'error_description': error_description,
+        'error_price': error_price,
+        'error_category': error_category,
+        'error_product_image': error_product_image,
+        'product': product,
+    }
+    return render(request, 'admin_panel/edit_product.html', context)
 
 
 @user_passes_test(is_user_admin, login_url='admin_login')
