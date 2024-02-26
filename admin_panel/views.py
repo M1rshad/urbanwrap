@@ -260,6 +260,12 @@ def list_product(request, pk):
 
 @user_passes_test(is_user_admin, login_url='admin_login')
 def add_product(request):
+    error_product_name= ''
+    error_slug= ''
+    error_description= ''
+    error_price= ''
+    error_category= ''
+    error_product_image= ''
     if request.POST:
         form = AddProductForm(request.POST)
         image_form = ProductImageForm(request.POST, request.FILES)
@@ -268,13 +274,25 @@ def add_product(request):
             for img in request.FILES.getlist('image'):
                 image = ProductImages(image=img, product=product)
                 image.save()
-
             return redirect(product_management)
+        else:
+            error_product_name = form['product_name'].errors
+            error_slug = form['slug'].errors
+            error_description = form['description'].errors
+            error_price = form['price'].errors
+            error_category = form['category'].errors
+            error_product_image = image_form['image'].errors
     form = AddProductForm()
     image_form = ProductImageForm()
     context = {
         'form' : form,
-        'image_form' : image_form
+        'image_form' : image_form,
+        'error_product_name': error_product_name,
+        'error_slug': error_slug,
+        'error_description': error_description,
+        'error_price': error_price,
+        'error_category': error_category,
+        'error_product_image': error_product_image,
         }
     return render(request, 'admin_panel/add_product.html',context)
 
