@@ -16,6 +16,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.mail import send_mail
 from django.db.models.functions import TruncWeek, TruncMonth, TruncDay, ExtractWeek
 from datetime import datetime, timedelta, timezone
+from django.utils import timezone as tz
 from django.db.models import Sum, F, Q
 from .helpers import render_to_pdf
 import openpyxl
@@ -633,7 +634,11 @@ def sales_report(request):
         .annotate(total_sold=Sum('quantity'))
         .order_by('-total_sold')[:6]
     )
-    
+    most_sold_products_data = [
+    {'product_name': item['product__product_name'], 'count': item['total_sold']}
+    for item in most_sold_products
+]
+
 
     product_profit_data = []
 
@@ -750,11 +755,19 @@ def sales_report_excel(request):
             worksheet.cell(row=row_num, column=2).style = date_style
 
             worksheet.cell(row=row_num, column=3, value=order_item.order.order_total)
-            # products_list = [f"{item.product.product_name} ({item.quantity} units) - ${item.get_total}" for item in order_item]
-            # products_str = '\n'.join(products_list)
-            # worksheet.cell(row=row_num, column=4, value=products_str)
 
-            row_num += 1
+            # Create a list of formatted strings for products
+            products_list = [f"{order_item.product.product_name} ({order_item.quantity} units) - ${order_item.quantity * order_item.product_price}"]
+            
+            # Join the list with newline characters
+            products_str = '\n'.join(products_list)
+            
+            # Write the formatted string to the worksheet cell
+            worksheet.cell(row=row_num, column=4, value=products_str)
+
+            # Increment row number for the next iteration
+            row_num += 1  # Assuming you have this increment in your code
+
 
         for i in range(1, 4):
             cell = worksheet.cell(row=i, column=2)
@@ -801,30 +814,30 @@ def sales_report_excel(request):
 def get_sales_data(request, period):
     if period == 'week':
         
-        start_date = timezone.now().date() - timezone.timedelta(days=6)
+        start_date = tz.now().date() - tz.timedelta(days=6)
         order_items = OrderProduct.objects.filter(order__created_at__gte=start_date)
         data = (
-            order_items.annotate(day=TruncDay('order__date_ordered'))
+            order_items.annotate(day=TruncDay('order__created_at'))
             .values('day')
             .annotate(total=Sum(F('quantity') * F('product__price')))
             .order_by('day')
         )
         labels = [item['day'].strftime('%A') for item in data]
     elif period == 'month':
-        start_date = timezone.now().date() - timezone.timedelta(days=30)
+        start_date = tz.now().date() - tz.timedelta(days=30)
         order_items = OrderProduct.objects.filter(order__created_at__gte=start_date)
         data = (
-        order_items.annotate(day=TruncDay('order__date_ordered'))
+        order_items.annotate(day=TruncDay('order__created_at'))
         .values('day')
         .annotate(total=Sum(F('quantity') * F('product__price')))
         .order_by('day')
     )
         labels = [item['day'].strftime('%Y-%m-%d') for item in data]
     elif period == 'year':
-        start_date = timezone.now().date() - timezone.timedelta(days=365)
+        start_date = tz.now().date() - tz.timedelta(days=365)
         order_items = OrderProduct.objects.filter(order__created_at__gte=start_date)
         data = (
-            order_items.annotate(month=TruncMonth('order__date_ordered'))
+            order_items.annotate(month=TruncMonth('order__created_at'))
             .values('month')
             .annotate(total=Sum(F('quantity') * F('product__price')))
             .order_by('month')

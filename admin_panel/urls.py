@@ -41,6 +41,7 @@ urlpatterns = [
     path('sales-report/', views.sales_report, name='sales_report'),
     path('sales-report-pdf/', views.sales_report_pdf, name='sales_report_pdf'),
     path('sales-report-excel/', views.sales_report_excel, name='sales_report_excel'),
+    path('admin_panel/get_sales_data/<period>/', views.get_sales_data, name='get_sales_data'),
 
 
 ]
