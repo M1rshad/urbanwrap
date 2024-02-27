@@ -79,22 +79,18 @@ def log_in(request):
                                     item.save()
                 except:
                     pass
-                print('Before entering try block for wishlist functionality')
                 try:
-                    print('entering wishlist area')
                     wishlist = Wishlist.objects.get(wishlist_id=_wishlist_id(request))
                     is_wishlist_item_exists = WishlistItem.objects.filter(wishlist=wishlist).exists()
-                    print(is_wishlist_item_exists)
                     if is_wishlist_item_exists:
                         wishlist_items = WishlistItem.objects.filter(wishlist=wishlist)
-                        print(wishlist_items)
 
                         for item in wishlist_items:
                             item.user=user
                             item.save()
                 except Exception as e:
-                    print(f'Error in wishlist functionality: {e}')
-                        
+                    pass
+                                            
                     if cart.coupon:
                         user.coupon=cart.coupon
                         user.save()

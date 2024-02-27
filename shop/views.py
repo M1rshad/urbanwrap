@@ -558,10 +558,17 @@ def check_stock(request):
     if request.method == 'GET':
         product_id = request.GET.get('product_id')
         variation_value = request.GET.get('variation_value')
+        quantity = int(request.GET.get('quantity', 1))  
+
         try:
             variation = Variation.objects.get(product_id=product_id, variation_value=variation_value)
-            stock_status = 'in_stock' if variation.stock > 0 else 'out_of_stock'
+
+            if variation.stock >= quantity:
+                stock_status = 'in_stock'
+            else:
+                stock_status = 'out_of_stock'
             return JsonResponse({'status': stock_status})
         except Variation.DoesNotExist:
             pass
+    
     return JsonResponse({'status': 'error'})

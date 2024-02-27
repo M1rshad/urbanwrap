@@ -517,10 +517,13 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script>
     $(document).ready(function() {
-        $('#size').change(function() {
-            var selectedVariation = $(this).val();
+        $('#size, #qty').change(function() {
+            var selectedVariation = $('#size').val();
             var productId = '{{ single_product.id }}';
-            $.get('/check_stock/', { product_id: productId, variation_value: selectedVariation })
+            var quantity = $('#qty').val(); // Get the quantity input value
+    
+            // Send AJAX request to check stock with product ID, variation, and quantity
+            $.get('/check_stock/', { product_id: productId, variation_value: selectedVariation, quantity: quantity })
                 .done(function(response) {
                     if (response.status === 'in_stock') {
                         $('#stockStatus').text('');
