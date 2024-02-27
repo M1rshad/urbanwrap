@@ -67,8 +67,8 @@
                                         id="{{ form.description.id_for_label }}"
                                         class="form-control text-light" 
                                         value="{{form.description.value}}" >
-                                        {% if error_category_name != None %}
-                                        {{ error_category_description }}
+                                        {% if error_description != None %}
+                                        {{ error_description }}
                                         {% endif %}
                                         
                                       </div>
@@ -81,9 +81,9 @@
                                         id="{{ form.cat_image.id_for_label }}"
                                         class="form-control text-light" >
                                         {% if form.cat_image.value %}
-                                          <img src={{ form.cat_image.value.url }} height=200px>
+                                        <img src="{{ form.cat_image.value.url }}" height=200px>
                                         {% endif %}
-                                        {% if error_category_image != None %}
+                                        {% if error_cat_image != None %}
                                         {{ error_cat_image }}
                                         {% endif %}
                                         
