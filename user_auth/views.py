@@ -136,7 +136,7 @@ def otp_view(request):
         else:
             messages.error(request, 'An unexpected error occurred during OTP verification. Please try again later.')
 
-    return render(request, 'user_auth/otp.html')
+    return render(request, 'user_auth/otp.html') 
 
 def resend_otp(request):
     send_otp(request)
