@@ -3,12 +3,12 @@ from django.shortcuts import render,redirect
 from .forms import SignupForm
 from django.contrib.auth import login,logout,authenticate
 from .models import User
-from shop.models import Cart, CartItem
+from shop.models import Cart, CartItem, Wishlist, WishlistItem
 from django.contrib import messages
 from datetime import datetime,timedelta
 from django.contrib.auth.hashers import make_password
 from home.views import change_password, index
-from shop.views import _cart_id
+from shop.views import _cart_id, _wishlist_id
 from django.core.mail import send_mail
 from .utils import send_otp, send_otp_2
 import pyotp
@@ -77,7 +77,24 @@ def log_in(request):
                                 for item in cart_items:
                                     item.user = user
                                     item.save()
-             
+                except:
+                    pass
+                print('Before entering try block for wishlist functionality')
+                try:
+                    print('entering wishlist area')
+                    wishlist = Wishlist.objects.get(wishlist_id=_wishlist_id(request))
+                    is_wishlist_item_exists = WishlistItem.objects.filter(wishlist=wishlist).exists()
+                    print(is_wishlist_item_exists)
+                    if is_wishlist_item_exists:
+                        wishlist_items = WishlistItem.objects.filter(wishlist=wishlist)
+                        print(wishlist_items)
+
+                        for item in wishlist_items:
+                            item.user=user
+                            item.save()
+                except Exception as e:
+                    print(f'Error in wishlist functionality: {e}')
+                        
                     if cart.coupon:
                         user.coupon=cart.coupon
                         user.save()
