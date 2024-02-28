@@ -49,7 +49,6 @@ class ProductImageForm(forms.ModelForm):
 
    
 class AddCouponForm(forms.ModelForm):
-
     class Meta:
         model = Coupon
         fields = ('coupon_code', 'discounted_price', 'minimum_amount', 'is_expired')
@@ -63,6 +62,7 @@ class UpdateOrderForm(forms.ModelForm):
 
 
 class AddOfferForm(forms.ModelForm):
+    discount_percentage = forms.DecimalField(min_value=0, max_value=100)
 
     class Meta:
         model = Offer

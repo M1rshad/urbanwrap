@@ -77,6 +77,10 @@ def log_in(request):
                                 for item in cart_items:
                                     item.user = user
                                     item.save()
+
+                        if cart.coupon:
+                            user.coupon=cart.coupon
+                            user.save()
                 except:
                     pass
                 try:
@@ -91,12 +95,9 @@ def log_in(request):
                 except Exception as e:
                     pass
                                             
-                    if cart.coupon:
-                        user.coupon=cart.coupon
-                        user.save()
+                
                         
-                except:
-                    pass
+    
                 login(request, user)
                 url = request.META.get('HTTP_REFERER')
                 try:

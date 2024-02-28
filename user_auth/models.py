@@ -5,6 +5,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from home.models import Product
 from django.core.exceptions import ValidationError
+from django.core.validators import MinValueValidator
 from django.utils.translation import gettext_lazy as _
 
 import uuid
@@ -14,8 +15,8 @@ class Coupon(models.Model):
 
     coupon_code = models.CharField(max_length=10)
     is_expired = models.BooleanField(default=False)
-    discounted_price = models.IntegerField(default=10)
-    minimum_amount = models.IntegerField(default=100)
+    discounted_price = models.PositiveIntegerField(default=10, validators=[MinValueValidator(1)])
+    minimum_amount = models.PositiveIntegerField(default=100, validators=[MinValueValidator(1)])
     is_active = models.BooleanField(default=True)
 
 
