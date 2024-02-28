@@ -15,6 +15,7 @@ import uuid
 # Create your views here.
 def index(request):
     featured = Product.objects.all().filter(is_active=True).order_by('-priority','id')[:4] 
+    sale = Product.objects.all().filter(is_active=True, is_sale=True).order_by('-id')[:4] 
     t_shirt_category = Category.objects.get(category_name='T shirt')
     recent_t_shirts = Product.objects.all().filter(category=t_shirt_category, is_active=True).order_by('-created_date')[:4]
     joggers_category = Category.objects.get(category_name='Joggers')
@@ -30,6 +31,7 @@ def index(request):
     product_wishlist_map = {item.product_id: True for item in wishlist_items}
     context = {
         'featured':featured,
+        'sale':sale,
         'recent_t_shirts':recent_t_shirts,
         'recent_joggers':recent_joggers,
         'recent_sweatshirts':recent_sweatshirts,

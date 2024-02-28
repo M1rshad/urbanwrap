@@ -230,63 +230,67 @@
                                     }
                                 }
                             }'>
+                            {% for product in sale %}
+                                
                             <div class="product product-2">
                                 <figure class="product-media">
-                                    <a href="product.html">
-                                        <img src={% static 'home/assets/images/demos/demo-8/products/product-2-1.jpg' %} alt="Product image" class="product-image">
-                                        <img src={% static 'home/assets/images/demos/demo-8/products/product-2-2.jpg' %} alt="Product image" class="product-image-hover">
-                                    </a>
-
-                                    <div class="product-action-vertical">
-                                        <a href="#" class="btn-product-icon btn-wishlist btn-expandable" title="Add to wishlist"><span>add to wishlist</span></a>
-                                    </div><!-- End .product-action -->
-
-                                    <div class="product-action ">
-                                        <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
-                                    </div><!-- End .product-action -->
-                                </figure><!-- End .product-media -->
-
-                                <div class="product-body">
-                                    <div class="product-cat">
-                                        <a href="#">Shoes</a>
-                                    </div><!-- End .product-cat -->
-                                    <h3 class="product-title"><a href="product.html">Sandals</a></h3><!-- End .product-title -->
-                                    <div class="product-price">
-                                        $24.99
-                                    </div><!-- End .product-price -->
-                                </div><!-- End .product-body -->
-                            </div><!-- End .product -->
-
-                            <div class="product product-2">
-                                <figure class="product-media">
+                                    
+                                    {% if product.is_sale %}
                                     <span class="product-label label-sale">sale</span>
-                                    <a href="product.html">
-                                        <img src={% static 'home/assets/images/demos/demo-8/products/product-3-1.jpg' %} alt="Product image" class="product-image">
-                                        <img src={% static 'home/assets/images/demos/demo-8/products/product-3-2.jpg' %} alt="Product image" class="product-image-hover">
-                                    </a>
+                                    {% else %}
+                                    <span class="product-label label-featured">Featured</span>
+                                    {% endif %}
+                                        
 
+                                    <a href="{{product.get_url}}"> 
+                                        {% if product.product_img.all %}
+                                        {% with first_image=product.product_img.all|first %}
+                                        <img src="{{ first_image.image.url }}" alt="First Image">
+                                        {% endwith %}
+                                        {% endif %}
+                                        {% if product.product_img.all|length >= 2 %}
+                                        {% with second_image=product.product_img.all.1 %}
+                                        <img src={{ second_image.image.url }} alt="Product image" class="product-image-hover">
+                                        {% endwith %}
+                                        {% endif %}
+                                    </a>
+                                    
                                     <div class="product-action-vertical">
-                                        <a href="#" class="btn-product-icon btn-wishlist btn-expandable" title="Add to wishlist"><span>add to wishlist</span></a>
+                                        {% if product.id in product_wishlist_map %}
+                                        <a href="{% url 'add_wishlist' product.id%}" class="btn-product-icon btn-wishlist btn-expandable"><span>View wishlist</span></a>
+                                        {% else %}
+                                        <a href="{% url 'add_wishlist' product.id%}" class="btn-product-icon btn-wishlist btn-expandable"><span>Add to wishlist</span></a>
+                                        {% endif %}
                                     </div><!-- End .product-action -->
 
                                     <div class="product-action ">
-                                        <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
+                                        <a href="{{product.get_url}}" class="btn-product btn-cart"><span>View details</span></a>
                                     </div><!-- End .product-action -->
                                 </figure><!-- End .product-media -->
-
+                                
                                 <div class="product-body">
                                     <div class="product-cat">
-                                        <a href="#">Clothing</a>
+                                        <a href="#">{{product.category}}</a>
                                     </div><!-- End .product-cat -->
-                                    <h3 class="product-title"><a href="product.html">Printed sweatshirt</a></h3><!-- End .product-title -->
+                                    <h3 class="product-title"><a href="product.html">{{product.product_name}}</a></h3><!-- End .product-title -->
                                     <div class="product-price">
-                                        <span class="new-price">Now $7.99</span>
-                                        <span class="old-price">Was $12.99</span>
+                                    {% if product.is_sale == True %}
+                                    <span class="new-price">Now $ {{product.discounted_price}}</span>
+                                    <span class="old-price">Was $ {{product.price}}</span>
+                                    {% else %}
+                                    $ {{product.price}}
+                                    {% endif %}
                                     </div><!-- End .product-price -->
                                 </div><!-- End .product-body -->
                             </div><!-- End .product -->
+                            
+                            {% endfor %}
+                           
+
                         </div><!-- End .owl-carousel -->
                     </div><!-- .End .tab-pane -->
+
+                            
                     <div class="tab-pane p-0 fade" id="products-top-tab" role="tabpanel" aria-labelledby="products-top-link">
                         <div class="owl-carousel owl-simple carousel-equal-height carousel-with-shadow" data-toggle="owl" 
                             data-owl-options='{

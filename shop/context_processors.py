@@ -38,5 +38,5 @@ def wishlist_counter(request):
             
 
 def category_filter(request):
-    cat_filter = Category.objects.all()
+    cat_filter = Category.objects.all().filter(is_active=True)
     return dict(cat_filter=cat_filter)
