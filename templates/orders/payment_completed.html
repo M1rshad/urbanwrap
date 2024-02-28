@@ -98,6 +98,10 @@
                             <div class="invoice-footer mt25">
                                 <p class="text-center">Generated on {{order.created_at}} <a href="#" class="btn btn-default ml15"></p>
                             </div>
+                            <div>
+                                <button class="btn btn-sm btn-dark text-white"><a href="{% url 'home' %}" class="text-white">Go to homepage</a></button>
+                                <button class="btn btn-dark text-white"><a href="{% url 'my_orders' %}" class="text-white">See my orders</a></button>
+                            </div>
                         </div>
                         <!-- col-lg-12 end here -->
                     </div>

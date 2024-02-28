@@ -75,7 +75,7 @@
                                                 <td>${{order.order_total}}</td>
                                                 <td>{{order.payment_method | capfirst}}</td>
                                                 <td>{{order.created_at | date:"d M Y"}}</td>
-                                                {% if order.status != 'Cancelled' %}
+                                                {% if order.status == 'Accepted' %}
                                                 <td><button class="btn btn-light"><a href={% url 'cancel_orders' order.id %}>Cancel Order</a></button></td>
                                                 {% else %}
                                                 <td>{{order.status}}</td>

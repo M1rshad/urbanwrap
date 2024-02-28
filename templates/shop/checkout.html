@@ -46,12 +46,12 @@
     <div class="page-content">
         <div class="checkout">
             <div class="container">
-                <div class="checkout-discount">
+                {% comment %} <div class="checkout-discount">
                     <form action="#">
                         <input type="text" class="form-control" required id="checkout-discount-input">
                         <label for="checkout-discount-input" class="text-truncate">Have a coupon? <span>Click here to enter your code</span></label>
                     </form>
-                </div><!-- End .checkout-discount -->
+                </div><!-- End .checkout-discount --> {% endcomment %}
                 <form action="{% url 'place_order' %}" method=post>
                     {% csrf_token %}
                     <div class="row">
@@ -82,32 +82,40 @@
                                     {% endfor %}
                                     {% else %}
                                     <p>There is no active address. Please select a different address or add a new address.</p>
+
+                                    <button class="btn btn-dark m-3"><a href="{% url 'add_address_checkout' %}" class="text-white">Add address</a></button>
+
                                     {% endif %}
                                 </div><!-- End .card-body -->
                             </div><!-- End .card-dashboard -->
                             <div>
-                                <!-- Button trigger modal -->
+
+
+
+{% if active_shipping_address %}
+    
+
 <!-- Button trigger modal -->
 <a class="mb-2 btn text-info" data-toggle="modal" data-target="#exampleModal">
     Select a different address
 </a>
-  
-  <!-- Modal -->
-  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
-      <div class="modal-content">
+        <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Select a different address</h5>
+            <h5 class="modal-title" id="exampleModalLabel">Select a different address</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
+              <span aria-hidden="true">&times;</span>
+            </button>
         </div>
         <div class="modal-body">
             
             {% if inactive_shipping_address %}
-          
+            
             {% for address in inactive_shipping_address %}
-                
+            
             
             <div class="card card-dashboard">
                 <div class="card-body">
@@ -137,15 +145,16 @@
             {% if existing_address_count < 3 %}
             <button class="btn btn-dark m-3"><a href="{% url 'add_address_checkout' %}" class="text-white">Add address</a></button>
             {% endif %}
-                
-       </div>
-      </div>
+            
+        </div>
     </div>
-  </div>
-                                
-                            </div>
-                                <label>Order notes (optional)</label>
-                                <textarea class="form-control" cols="30" rows="4" placeholder="Notes about your order, e.g. special notes for delivery" name="order_note"></textarea>
+</div>
+</div>
+{% endif %}
+
+</div>
+<label>Order notes (optional)</label>
+<textarea class="form-control" cols="30" rows="4" placeholder="Notes about your order, e.g. special notes for delivery" name="order_note"></textarea>
                         </div><!-- End .col-lg-9 -->
                         <aside class="col-lg-3">
                             <div class="summary">
