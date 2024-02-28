@@ -3,6 +3,8 @@ from email.policy import default
 from django.db import models
 from home.models import Product, Variation
 from datetime import timezone
+from django.core.exceptions import ValidationError
+from django.utils import timezone as tz
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
@@ -124,7 +126,7 @@ class Offer(models.Model):
     discount_percentage = models.DecimalField(max_digits=5, decimal_places=2)
     valid_from = models.DateTimeField(auto_now_add=True)
     valid_to = models.DateField()
-    products = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True, related_name='product')
+    products = models.OneToOneField(Product, on_delete=models.SET_NULL, null=True, related_name='product')
     is_active= models.BooleanField(default=True)
 
     def __str__(self):
@@ -138,6 +140,14 @@ class Offer(models.Model):
             discount_amount = self.products.price * (self.discount_percentage / 100)
             self.products.discounted_price = self.products.price - discount_amount
             self.products.save()
+
+    def clean(self):
+        if self.valid_to is not None and self.valid_to < tz.now().date():
+            raise ValidationError({'valid_to': "Valid to date must be in the future."})
+        
+        if self.valid_from is not None and self.valid_to is not None and self.valid_from > self.valid_to:
+            raise ValidationError({'valid_from': "Valid from date must be before valid to date."})
+        
 
 @receiver(post_save, sender=Offer)
 def update_product_on_offer_creation(sender, instance, created, **kwargs):

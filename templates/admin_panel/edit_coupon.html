@@ -2,6 +2,14 @@
 
 
 {% block content %}
+<style>
+  .errorlist{
+    color: red;
+    font-size: small;
+    list-style: none;
+    padding-left:0
+  }
+</style>
 <div class="main-panel">
     <div class="content-wrapper">
       <div class="row">
@@ -30,12 +38,18 @@
                                         <label for="category_name" class="form-label">Coupon code</label>
                                         {{form.coupon_code}}
                                       </div>
+                                      {% if error_coupon_code != None %}
+                                        <p>{{error_coupon_code}}</p>
+                                      {% endif %}
                                     </div>
                                     <div class="col-12">
                                       <div class="form-floating mb-3">
                                         <label for="slug" class="form-label">Discounted price</label>
                                         {{form.discounted_price}}
                                       </div>
+                                      {% if error_discounted_price != None %}
+                                        <p>{{error_discounted_price}}</p>
+                                      {% endif %}
                                     </div>
                                     <div class="col-12">
                                       <div class="form-floating mb-3">
@@ -46,6 +60,9 @@
                                         id="{{ form.minimum_amount.id_for_label }}"
                                         class="form-control text-light" >
                                       </div>
+                                      {% if error_minimum_amount != None %}
+                                        <p>{{error_minimum_amount}}</p>
+                                      {% endif %}
                                     </div>
                                     <div class="col-12">
                                       <div class="form-floating mb-3">

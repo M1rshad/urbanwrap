@@ -2,6 +2,14 @@
 
 
 {% block content %}
+<style>
+  .errorlist{
+    color: red;
+    font-size: small;
+    list-style: none;
+    padding-left:0
+  }
+</style>
 <div class="main-panel">
     <div class="content-wrapper">
       <div class="row">
@@ -30,18 +38,27 @@
                                         <label for="category_name" class="form-label">Offer name</label>
                                         {{form.name}}
                                       </div>
+                                      {% if error_name != None %}
+                                        <p>{{error_name}}</p>
+                                      {% endif %}
                                     </div>
                                     <div class="col-12">
                                       <div class="form-floating mb-3">
                                         <label for="slug" class="form-label">Discount percentage</label>
                                         {{form.discount_percentage}}
                                       </div>
+                                      {% if error_discount_percentage != None %}
+                                        <p>{{error_discount_percentage}}</p>
+                                      {% endif %}
                                     </div>
                                     <div class="col-12">
                                         <div class="form-floating mb-3">
                                           <label for="variation_value" class="form-label">Valid to</label>
                                           {{form.valid_to}}
                                         </div>
+                                        {% if error_valid_to != None %}
+                                        <p>{{error_valid_to}}</p>
+                                      {% endif %}
                                       </div>
                                       <div class="col-12">
                                         <div class="form-floating mb-3">

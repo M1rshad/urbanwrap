@@ -2,6 +2,14 @@
 
 
 {% block content %}
+<style>
+  .errorlist{
+    color: red;
+    font-size: small;
+    list-style: none;
+    padding-left:0
+  }
+</style>
 <div class="main-panel">
     <div class="content-wrapper">
       <div class="row">
@@ -45,6 +53,9 @@
                                         id="{{ form.variation_value.id_for_label }}"
                                         class="form-control text-light" >
                                       </div>
+                                      {% if error_variant_value != None %}
+                                        <p>{{error_variant_value}}</p>
+                                      {% endif %}
                                     </div>
                                     <div class="col-12">
                                       <div class="form-floating mb-3">
@@ -54,6 +65,9 @@
                                         id="{{ form.stock.id_for_label }}"
                                         class="form-control text-light" >
                                       </div>
+                                      {% if error_stock != None %}
+                                        <p>{{error_stock}}</p>
+                                      {% endif %}
                                     </div>
                                     <div class="col-12">
                                       <div class="form-floating mb-3">

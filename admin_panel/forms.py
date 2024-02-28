@@ -3,6 +3,8 @@ from user_auth.models import User, Coupon
 from home.models import Category, Product, Variation, ProductImages
 from orders.models import Order, Offer
 from django.core.validators import FileExtensionValidator
+from django.core.exceptions import ValidationError
+from django.utils import timezone
 
 
 class EditUserForm(forms.ModelForm):
@@ -67,3 +69,9 @@ class AddOfferForm(forms.ModelForm):
     class Meta:
         model = Offer
         fields = ('name', 'discount_percentage', 'valid_to', 'products')
+
+    def clean_valid_to(self):
+        valid_to = self.cleaned_data.get('valid_to')
+        if valid_to < timezone.now().date():
+            raise ValidationError("Valid to date must be in the future.")
+        return valid_to

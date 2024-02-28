@@ -381,26 +381,44 @@ def variant_management(request):
 
 @user_passes_test(is_user_admin, login_url='admin_login')
 def add_variant(request):
+    error_variant_value=''
+    error_stock=''
     form = AddVariantForm()
     if request.POST:
         form = AddVariantForm(request.POST)
         if form.is_valid():
             form.save()
             return redirect(variant_management)
-    context = {'form' : form}
+        else:
+            error_variant_value=form['variation_value'].errors
+            error_stock=form['stock'].errors
+    context = {
+        'form' : form,
+        'error_variant_value' : error_variant_value,
+        'error_stock' : error_stock,
+        }
     return render(request, 'admin_panel/add_variant.html',context)
 
 
 @user_passes_test(is_user_admin, login_url='admin_login')
 def edit_variant(request, pk):
+    error_variant_value=''
+    error_stock=''
     instance = Variation.objects.get(pk=pk)
     if request.POST:
         form = AddVariantForm(request.POST,instance=instance)
         if form.is_valid():
             form.save()
             return redirect(variant_management)
+        else:
+            error_variant_value=form['variation_value'].errors
+            error_stock=form['stock'].errors
     form = AddVariantForm(instance=instance)
-    context = {'form': form}
+    context = {
+        'form': form,
+        'error_variant_value': error_variant_value,
+        'error_stock': error_stock,
+        }
     return render(request, 'admin_panel/edit_variant.html',context)
 
 
@@ -426,13 +444,25 @@ def coupon_management(request):
 
 @user_passes_test(is_user_admin, login_url='admin_login')
 def add_coupon(request):
+    error_coupon_code = ''
+    error_discounted_price = ''
+    error_minimum_amount = ''
     form = AddCouponForm()
     if request.POST:
         form = AddCouponForm(request.POST)
         if form.is_valid():
             form.save()
             return redirect(coupon_management)
-    context = {'form' : form}
+        else:
+            error_coupon_code = form['coupon_code'].errors
+            error_discounted_price = form['discounted_price'].errors
+            error_minimum_amount = form['minimum_amount'].errors
+    context = {
+        'form' : form,
+        'error_coupon_code' : error_coupon_code,
+        'error_discounted_price' : error_discounted_price,
+        'error_minimum_amount' : error_minimum_amount,
+        }
     return render(request, 'admin_panel/add_coupon.html',context)
 
 
@@ -454,14 +484,26 @@ def list_coupon(request, pk):
 
 @user_passes_test(is_user_admin, login_url='admin_login')
 def edit_coupon(request, pk):
+    error_coupon_code = ''
+    error_discounted_price = ''
+    error_minimum_amount = ''
     instance = Coupon.objects.get(pk=pk)
     if request.POST:
         form = AddCouponForm(request.POST,instance=instance)
         if form.is_valid():
             form.save()
             return redirect(coupon_management)
+        else:
+            error_coupon_code = form['coupon_code'].errors
+            error_discounted_price = form['discounted_price'].errors
+            error_minimum_amount = form['minimum_amount'].errors
     form = AddCouponForm(instance=instance)
-    context = {'form': form}
+    context = {
+        'form': form,
+        'error_coupon_code' : error_coupon_code,
+        'error_discounted_price' : error_discounted_price,
+        'error_minimum_amount' : error_minimum_amount,
+        }
     return render(request, 'admin_panel/edit_coupon.html',context)
 
 
@@ -562,26 +604,50 @@ def offer_management(request):
 
 @user_passes_test(is_user_admin, login_url='admin_login')
 def add_offer(request):
+    error_name = ''
+    error_discount_percentage = ''
+    error_valid_to = ''
     form = AddOfferForm()
     if request.POST:
         form = AddOfferForm(request.POST)
         if form.is_valid():
             form.save()
             return redirect(offer_management)
+        else:
+            error_name = form['name'].errors
+            error_discount_percentage = form['discount_percentage'].errors
+            error_valid_to = form['valid_to'].errors
         
-    context = {'form' : form}
+    context = {
+        'form' : form,
+        'error_name' : error_name,
+        'error_discounted_percentage' : error_discount_percentage,
+        'error_valid_to' : error_valid_to,
+        }
     return render(request, 'admin_panel/add_offer.html', context)
 
 @user_passes_test(is_user_admin, login_url='admin_login')
 def edit_offer(request, offer_id):
+    error_name = ''
+    error_discount_percentage = ''
+    error_valid_to = ''
     instance = Offer.objects.get(pk=offer_id)
     if request.POST:
         form = AddOfferForm(request.POST,instance=instance)
         if form.is_valid():
             form.save()
             return redirect(offer_management)
+        else:
+            error_name = form['name'].errors
+            error_discount_percentage = form['discount_percentage'].errors
+            error_valid_to = form['valid_to'].errors
     form = AddOfferForm(instance=instance)
-    context = {'form': form}
+    context = {
+        'form': form,
+        'error_name' : error_name,
+        'error_discounted_percentage' : error_discount_percentage,
+        'error_valid_to' : error_valid_to,
+        }
     return render(request, 'admin_panel/edit_offer.html', context)
 
 
