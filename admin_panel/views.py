@@ -589,8 +589,10 @@ def edit_offer(request, offer_id):
 def deactivate_offer(request, pk):
     instance = Offer.objects.get(pk=pk)
     instance.is_active=False
-    instance.is_sale=False
     instance.save()
+    product = instance.products
+    product.is_sale = False
+    product.save()
     return redirect('offer_management')
 
 
@@ -598,8 +600,9 @@ def deactivate_offer(request, pk):
 def activate_offer(request, pk):
     instance = Offer.objects.get(pk=pk)
     instance.is_active=True
-    instance.is_sale=True
+    instance.products.is_sale=True
     instance.save()
+    
     return redirect('offer_management')
 
 @user_passes_test(is_user_admin, login_url='admin_login')

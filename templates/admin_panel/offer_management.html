@@ -24,6 +24,7 @@
                                       <th>Valid till</th>
                                       <th>Products</th>
                                       <th>Edit</th>
+                                      <th>Is sale</th>
                                       <th>Deactivate</th>
                                   </tr>
                               </thead>
@@ -35,7 +36,7 @@
                                       <td>{{i.valid_to}}</td>
                                       <td>{{i.products}}</td>
                                       <td><button class="btn btn-light"><a href={% url 'edit_offer' i.id %}>Edit</a></button></td>
-
+                                      <td>{{i.products.is_sale}}</td>
                                       {% if i.is_active%}
                                       <td><button class="btn btn-light"><a href={% url 'deactivate_offer' i.id%}>Deactivate</a></button></td>
                                       {% else %}
