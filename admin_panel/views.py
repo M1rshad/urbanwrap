@@ -607,6 +607,7 @@ def add_offer(request):
     error_name = ''
     error_discount_percentage = ''
     error_valid_to = ''
+    error_products = ''
     form = AddOfferForm()
     if request.POST:
         form = AddOfferForm(request.POST)
@@ -617,12 +618,15 @@ def add_offer(request):
             error_name = form['name'].errors
             error_discount_percentage = form['discount_percentage'].errors
             error_valid_to = form['valid_to'].errors
+            error_products = form['products'].errors
+
         
     context = {
         'form' : form,
         'error_name' : error_name,
         'error_discounted_percentage' : error_discount_percentage,
         'error_valid_to' : error_valid_to,
+        'error_products' : error_products,
         }
     return render(request, 'admin_panel/add_offer.html', context)
 

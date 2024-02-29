@@ -65,6 +65,9 @@
                                           <label for="variation_value" class="form-label">Products</label>
                                           {{form.products   }}
                                         </div>
+                                        {% if error_products != None %}
+                                        <p>{{error_products}}</p>
+                                      {% endif %}
                                       </div>
                                     <div class="col-12">
                                       <div class="d-grid">
