@@ -210,15 +210,24 @@ def change_password(request):
 
         user = User.objects.get(email__exact=request.user.email)
         if new_password == confirm_password:
+            if len(new_password) < 8:
+                messages.error(request, 'Password must be atleast 8 characters')
+                return redirect('change_password') 
+            if (" " in new_password):
+                messages.error(request, 'Password should not contain space')
+                return redirect('change_password')
             success = user.check_password(current_password)
             if success:
                 user.set_password(new_password)
                 user.save()
                 messages.success(request, 'Password has been updated')
+                return redirect('change_password')
             else:
                 messages.error(request, 'Passwords does not match')
+                return redirect('change_password')
         else:
             messages.error(request, 'Current password is incorrect! Enter a valid password.')
+            return redirect('change_password')
 
     return render(request, 'home/change_password.html')
 
