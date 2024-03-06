@@ -55,7 +55,18 @@ class AddCouponForm(forms.ModelForm):
         model = Coupon
         fields = ('coupon_code', 'discounted_price', 'minimum_amount', 'is_expired')
 
+    def clean(self):
+            cleaned_data = super().clean()
+            discounted_price = cleaned_data.get('discounted_price')
+            minimum_amount = cleaned_data.get('minimum_amount')
 
+            if discounted_price is not None and minimum_amount is not None:
+                if discounted_price >= minimum_amount:
+                    raise forms.ValidationError("Discounted price should be less than the minimum amount.")
+
+            return cleaned_data
+    
+    
 class UpdateOrderForm(forms.ModelForm):
 
     class Meta:

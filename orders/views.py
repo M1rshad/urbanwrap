@@ -1,4 +1,3 @@
-from codecs import oem_decode
 from django.shortcuts import get_object_or_404, render, redirect, HttpResponse
 from shop.models import CartItem
 from home.models import Product
