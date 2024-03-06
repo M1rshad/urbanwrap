@@ -2,6 +2,8 @@ from django.shortcuts import render
 from django.shortcuts import render,redirect
 from .forms import SignupForm
 from django.contrib.auth import login,logout,authenticate
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
 from .models import User
 from shop.models import Cart, CartItem, Wishlist, WishlistItem
 from django.contrib import messages
@@ -206,14 +208,24 @@ def update_password(request):
     if request.POST:
         password1 = request.POST['password1']
         password2 = request.POST['password2']
-        if password1 == password2:
-            user = User.objects.get(email__exact=request.session['email'])
-            user.set_password(password1)
-            user.save()
-            messages.success(request, 'The password has upated')
-            return redirect(log_in)
-        else:
-            messages.error(request, 'The password did not match')
+
+        if password1 != password2:
+            messages.error(request, 'New password and confirm password do not match.')
+            return redirect('update_password')
+        
+        try:
+            # Validate new password using Django's built-in validators
+            validate_password(password1, user=request.user)
+        except ValidationError as error:
+            messages.error(request, error)
+            return redirect('update_password')
+        
+        user = User.objects.get(email__exact=request.session['email'])
+        user.set_password(password1)
+        user.save()
+        messages.success(request, 'The password has upated')
+        return redirect(log_in)
+         
     return render(request, 'user_auth/update_password.html')
 def log_out(request):
     logout(request)

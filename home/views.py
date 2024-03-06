@@ -1,6 +1,7 @@
 from email import message
 from email.headerregistry import Address
 from django.shortcuts import get_object_or_404, redirect, render
+from django.contrib.auth.password_validation import validate_password
 from .models import Product, Category
 from user_auth.models import ShippingAddress, User, UserProfile
 from shop.models import WishlistItem
@@ -9,6 +10,8 @@ from admin_panel.forms import EditUserForm
 from user_auth.forms import UserProfileForm, ShippingAddressForm
 from orders.models import Order,Wallet, WalletTransaction
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate
+from django.core.exceptions import ValidationError
 from django.contrib import messages
 from django.core.mail import send_mail
 import uuid
@@ -208,26 +211,29 @@ def change_password(request):
         new_password = request.POST['new_password']
         confirm_password = request.POST['confirm_password']
 
-        user = User.objects.get(email__exact=request.user.email)
-        if new_password == confirm_password:
-            if len(new_password) < 8:
-                messages.error(request, 'Password must be atleast 8 characters')
-                return redirect('change_password') 
-            if (" " in new_password):
-                messages.error(request, 'Password should not contain space')
-                return redirect('change_password')
-            success = user.check_password(current_password)
-            if success:
-                user.set_password(new_password)
-                user.save()
-                messages.success(request, 'Password has been updated')
-                return redirect('change_password')
-            else:
-                messages.error(request, 'Passwords does not match')
-                return redirect('change_password')
-        else:
-            messages.error(request, 'Current password is incorrect! Enter a valid password.')
+        # Check if new password matches confirm password
+        if new_password != confirm_password:
+            messages.error(request, 'New password and confirm password do not match.')
             return redirect('change_password')
+
+        try:
+            # Validate new password using Django's built-in validators
+            validate_password(new_password, user=request.user)
+        except ValidationError as error:
+            messages.error(request, error)
+            return redirect('change_password')
+
+        # Authenticate user with current password
+        user = authenticate(username=request.user.username, password=current_password)
+        if user is None:
+            messages.error(request, 'Current password is incorrect.')
+            return redirect('change_password')
+
+        # Update user's password
+        user.set_password(new_password)
+        user.save()
+        messages.success(request, 'Password has been updated successfully.')
+        return redirect('change_password')
 
     return render(request, 'home/change_password.html')
 
