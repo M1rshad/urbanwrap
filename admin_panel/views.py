@@ -19,6 +19,7 @@ from datetime import datetime, timedelta, timezone
 from django.utils import timezone as tz
 from django.db.models import Sum, F, Q
 from .helpers import render_to_pdf
+from django.views.decorators.csrf import csrf_exempt
 import openpyxl
 import openpyxl.styles
 from openpyxl.utils import get_column_letter
@@ -31,6 +32,7 @@ def is_user_admin(user):
 
 
 @never_cache
+@csrf_exempt
 def admin_login(request):
     if request.user.is_authenticated and request.user.is_superuser:
         return redirect(admin_panel)
@@ -47,6 +49,7 @@ def admin_login(request):
     return render(request, 'admin_panel/admin_login.html')
 
 
+@csrf_exempt
 @never_cache
 @user_passes_test(is_user_admin, login_url='admin_login')
 def admin_panel(request):
@@ -120,6 +123,7 @@ def log_out(request):
     return redirect(admin_login)
 
 
+@csrf_exempt
 @never_cache
 @user_passes_test(is_user_admin, login_url='admin_login')
 def user_management(request):
@@ -129,6 +133,7 @@ def user_management(request):
 
 
 
+@csrf_exempt
 @user_passes_test(is_user_admin, login_url='admin_login')
 def user_search(request):
     user_obj=None
@@ -143,6 +148,7 @@ def user_search(request):
         return redirect(user_management)
 
 
+@csrf_exempt
 @user_passes_test(is_user_admin, login_url='admin_login')
 def block_user(request,pk):
     instance = User.objects.get(pk=pk)
@@ -151,6 +157,7 @@ def block_user(request,pk):
     return redirect('user_management')
 
 
+@csrf_exempt
 @user_passes_test(is_user_admin, login_url='admin_login')
 def unblock_user(request,pk):
     instance = User.objects.get(pk=pk)
@@ -160,6 +167,7 @@ def unblock_user(request,pk):
 
 
 @never_cache
+@csrf_exempt
 @user_passes_test(is_user_admin, login_url='admin_login')
 def category_management(request):
     cat_obj = Category.objects.all().order_by('id')
@@ -167,6 +175,7 @@ def category_management(request):
     return render(request, 'admin_panel/category_management.html',context)
 
 
+@csrf_exempt
 @user_passes_test(is_user_admin, login_url='admin_login')
 def unlist_category(request, pk):
     instance = Category.objects.get(pk=pk)
@@ -175,6 +184,7 @@ def unlist_category(request, pk):
     return redirect('category_management')
 
 
+@csrf_exempt
 @user_passes_test(is_user_admin, login_url='admin_login')
 def list_category(request, pk):
     instance = Category.objects.get(pk=pk)
@@ -183,6 +193,7 @@ def list_category(request, pk):
     return redirect('category_management')
 
 
+@csrf_exempt
 @user_passes_test(is_user_admin, login_url='admin_login')
 def add_category(request):
     form = AddCategoryForm()
@@ -195,6 +206,7 @@ def add_category(request):
     return render(request, 'admin_panel/add_category.html',context)
 
 
+@csrf_exempt
 @user_passes_test(is_user_admin, login_url='admin_login')
 def edit_category(request, pk):
     error_category_name = ''
@@ -222,6 +234,7 @@ def edit_category(request, pk):
     return render(request, 'admin_panel/edit_category.html',context)
 
 
+@csrf_exempt
 @user_passes_test(is_user_admin, login_url='admin_login')
 def category_search(request):
     cat_obj=None
@@ -236,6 +249,7 @@ def category_search(request):
 
 
 @never_cache
+@csrf_exempt
 @user_passes_test(is_user_admin, login_url='admin_login')
 def product_management(request):
     prod_obj = Product.objects.all().order_by('id')
@@ -243,6 +257,7 @@ def product_management(request):
     return render(request, 'admin_panel/product_management.html',context)
 
 
+@csrf_exempt
 @user_passes_test(is_user_admin, login_url='admin_login')
 def unlist_product(request, pk):
     instance = Product.objects.get(pk=pk)
@@ -251,6 +266,7 @@ def unlist_product(request, pk):
     return redirect('product_management')
 
 
+@csrf_exempt
 @user_passes_test(is_user_admin, login_url='admin_login')
 def list_product(request, pk):
     instance = Product.objects.get(pk=pk)
@@ -259,6 +275,7 @@ def list_product(request, pk):
     return redirect('product_management')
 
 
+@csrf_exempt
 @user_passes_test(is_user_admin, login_url='admin_login')
 def add_product(request):
     error_product_name= ''
@@ -298,6 +315,7 @@ def add_product(request):
     return render(request, 'admin_panel/add_product.html',context)
 
 
+@csrf_exempt
 @user_passes_test(is_user_admin, login_url='admin_login')
 def edit_product(request, pk):
     product = get_object_or_404(Product, id=pk)
@@ -357,6 +375,7 @@ def edit_product(request, pk):
     return render(request, 'admin_panel/edit_product.html', context)
 
 
+@csrf_exempt
 @user_passes_test(is_user_admin, login_url='admin_login')
 def product_search(request):
     prod_obj = None
@@ -371,6 +390,7 @@ def product_search(request):
     
 
 @never_cache
+@csrf_exempt
 @user_passes_test(is_user_admin, login_url='admin_login')
 def variant_management(request):
     var_obj = Variation.objects.all().order_by('id')
@@ -379,6 +399,7 @@ def variant_management(request):
 
 
 
+@csrf_exempt
 @user_passes_test(is_user_admin, login_url='admin_login')
 def add_variant(request):
     error_variant_value=''
@@ -400,6 +421,7 @@ def add_variant(request):
     return render(request, 'admin_panel/add_variant.html',context)
 
 
+@csrf_exempt
 @user_passes_test(is_user_admin, login_url='admin_login')
 def edit_variant(request, pk):
     error_variant_value=''
@@ -422,6 +444,7 @@ def edit_variant(request, pk):
     return render(request, 'admin_panel/edit_variant.html',context)
 
 
+@csrf_exempt
 @user_passes_test(is_user_admin, login_url='admin_login')
 def variant_search(request):
     var_obj=None
@@ -435,6 +458,7 @@ def variant_search(request):
         return redirect(variant_management)
     
 
+@csrf_exempt
 @user_passes_test(is_user_admin, login_url='admin_login')
 def coupon_management(request):
     coupon_obj = Coupon.objects.all().order_by('id')
@@ -442,6 +466,7 @@ def coupon_management(request):
     return render(request, 'admin_panel/coupon_management.html',context)
 
 
+@csrf_exempt
 @user_passes_test(is_user_admin, login_url='admin_login')
 def add_coupon(request):
     error_coupon_code = ''
@@ -466,6 +491,7 @@ def add_coupon(request):
     return render(request, 'admin_panel/add_coupon.html',context)
 
 
+@csrf_exempt
 @user_passes_test(is_user_admin, login_url='admin_login')
 def unlist_coupon(request, pk):
     instance = Coupon.objects.get(pk=pk)
@@ -474,6 +500,7 @@ def unlist_coupon(request, pk):
     return redirect('coupon_management')
 
 
+@csrf_exempt
 @user_passes_test(is_user_admin, login_url='admin_login')
 def list_coupon(request, pk):
     instance = Coupon.objects.get(pk=pk)
@@ -482,6 +509,7 @@ def list_coupon(request, pk):
     return redirect('coupon_management')
 
 
+@csrf_exempt
 @user_passes_test(is_user_admin, login_url='admin_login')
 def edit_coupon(request, pk):
     error_coupon_code = ''
@@ -507,6 +535,7 @@ def edit_coupon(request, pk):
     return render(request, 'admin_panel/edit_coupon.html',context)
 
 
+@csrf_exempt
 @user_passes_test(is_user_admin, login_url='admin_login')
 def order_management(request):
     order_obj = Order.objects.all().filter(is_ordered=True).order_by('-id')
@@ -514,6 +543,7 @@ def order_management(request):
     return render(request, 'admin_panel/order_management.html',context)
 
 
+@csrf_exempt
 @user_passes_test(is_user_admin, login_url='admin_login')
 def order_search(request):
     order_obj=None
@@ -526,6 +556,7 @@ def order_search(request):
     else:
         return redirect(order_management)
 
+@csrf_exempt
 @user_passes_test(is_user_admin, login_url='admin_login')
 def order_details(request, order_id):
     order = Order.objects.get(id=order_id)
@@ -549,6 +580,7 @@ def order_details(request, order_id):
     return render(request, 'admin_panel/order_details.html',context)
 
 
+@csrf_exempt
 @user_passes_test(is_user_admin, login_url='admin_login')
 def cancel_order(request, order_id):
     order_obj = Order.objects.get(id=order_id)
@@ -594,6 +626,7 @@ def cancel_order(request, order_id):
 
     return redirect('order_management')
 
+@csrf_exempt
 @user_passes_test(is_user_admin, login_url='admin_login')
 def offer_management(request):
     offers = Offer.objects.all().order_by('-id')
@@ -602,6 +635,7 @@ def offer_management(request):
     }
     return render(request, 'admin_panel/offer_management.html', context)
 
+@csrf_exempt
 @user_passes_test(is_user_admin, login_url='admin_login')
 def add_offer(request):
     error_name = ''
@@ -631,6 +665,7 @@ def add_offer(request):
     return render(request, 'admin_panel/add_offer.html', context)
 
 @user_passes_test(is_user_admin, login_url='admin_login')
+@csrf_exempt
 def edit_offer(request, offer_id):
     error_name = ''
     error_discount_percentage = ''
@@ -655,6 +690,7 @@ def edit_offer(request, offer_id):
     return render(request, 'admin_panel/edit_offer.html', context)
 
 
+@csrf_exempt
 @user_passes_test(is_user_admin, login_url='admin_login')
 def deactivate_offer(request, pk):
     instance = Offer.objects.get(pk=pk)
@@ -666,6 +702,7 @@ def deactivate_offer(request, pk):
     return redirect('offer_management')
 
 
+@csrf_exempt
 @user_passes_test(is_user_admin, login_url='admin_login')
 def activate_offer(request, pk):
     instance = Offer.objects.get(pk=pk)
@@ -675,6 +712,7 @@ def activate_offer(request, pk):
     
     return redirect('offer_management')
 
+@csrf_exempt
 @user_passes_test(is_user_admin, login_url='admin_login')
 def sales_report(request):
     all_orders = Order.objects.all()
@@ -743,6 +781,7 @@ def sales_report(request):
     return render(request, 'admin_panel/sales_report.html', context)
 
 
+@csrf_exempt
 @user_passes_test(is_user_admin, login_url='admin_login')
 def sales_report_pdf(request):
     
@@ -794,6 +833,7 @@ def sales_report_pdf(request):
 
     return HttpResponse('Failed to generate PDF')
 
+@csrf_exempt
 @user_passes_test(is_user_admin, login_url='admin_login')
 def sales_report_excel(request):
     try:
@@ -886,6 +926,7 @@ def sales_report_excel(request):
         print(f"Error generating Excel file: {e}")
         return HttpResponse("Failed to generate Excel file", status=500)
     
+@csrf_exempt
 @user_passes_test(is_user_admin, login_url='admin_login')
 def get_sales_data(request, period):
     if period == 'week':

@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render,redirect
 from .forms import SignupForm
 from django.contrib.auth import login,logout,authenticate
@@ -19,6 +19,7 @@ import requests
 
 # Create your views here.
 
+@csrf_exempt
 def sign_up(request):
     form = SignupForm()
     if request.POST:
@@ -36,6 +37,8 @@ def sign_up(request):
     context = {'form' : form}
     return render(request, 'user_auth/user_signup.html', context)
 
+
+@csrf_exempt
 def log_in(request):
     if request.POST:
         email = request.POST.get('email')
@@ -120,6 +123,8 @@ def log_in(request):
 
     return render(request, 'user_auth/user_login.html')
 
+
+@csrf_exempt
 def otp_view(request):
     if request.POST:
         otp = request.POST['otp']
@@ -154,12 +159,16 @@ def otp_view(request):
 
     return render(request, 'user_auth/otp.html') 
 
+
+@csrf_exempt
 def resend_otp(request):
     send_otp(request)
     messages.info(request, 'The OTP has sent again, please check now.')
     return redirect(otp_view)
 
 
+
+@csrf_exempt
 def forgot_password(request):
     if request.POST:     
         email = request.POST['email']
@@ -198,12 +207,14 @@ def forgot_password_otp(request):
     return render(request, 'user_auth/forgot_password_otp.html')
 
 
+@csrf_exempt
 def resend_otp_2(request):
     send_otp_2(request)
     messages.info(request, 'The OTP has sent again, please check now.')
     return redirect(forgot_password_otp)
 
 
+@csrf_exempt
 def update_password(request):
     if request.POST:
         password1 = request.POST['password1']
@@ -227,6 +238,9 @@ def update_password(request):
         return redirect(log_in)
          
     return render(request, 'user_auth/update_password.html')
+
+
+@csrf_exempt
 def log_out(request):
     logout(request)
     return redirect(index)

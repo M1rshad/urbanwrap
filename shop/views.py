@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
+from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from home.models import Product, Category, Variation
 from orders.models import Wallet
@@ -63,6 +64,7 @@ def shop(request, category_slug=None):
     return render(request, 'shop/shop.html', context)
 
 
+@csrf_exempt
 def product_detail(request, category_slug, product_slug):
     try:
         single_product = Product.objects.get(category__slug=category_slug, slug=product_slug)
@@ -88,7 +90,7 @@ def _cart_id(request):
         cart = request.session.create()
     return cart
 
-
+@csrf_exempt
 def add_cart(request, product_id):
     current_user = request.user
     product = Product.objects.get(id=product_id) 
@@ -223,6 +225,7 @@ def add_cart(request, product_id):
         return redirect('cart')
 
 
+@csrf_exempt
 def decrement_cart(request, product_id, cart_item_id):
     product = get_object_or_404(Product, id=product_id)
     try:
@@ -251,6 +254,7 @@ def remove_cart_item(request, product_id, cart_item_id):
     return redirect('cart')
 
 
+@csrf_exempt
 def cart(request, total=0, quantity=0, cart_items=None):
     try:
         tax = 0 
@@ -331,7 +335,7 @@ def cart(request, total=0, quantity=0, cart_items=None):
     return render(request, 'shop/cart.html', context)
 
     
-
+@csrf_exempt
 def remove_coupon(request, cart_id):
     cart = Cart.objects.get(cart_id=cart_id)
     cart.coupon = None
@@ -340,6 +344,7 @@ def remove_coupon(request, cart_id):
     return redirect('cart')
 
 
+@csrf_exempt
 def remove_coupons(request):
     user = request.user
     user.coupon = None
@@ -367,6 +372,7 @@ def search(request):
     return render(request, 'shop/shop.html', context)
 
 
+@csrf_exempt
 @login_required(login_url='log_in')
 def checkout(request, total=0, quantity=0, cart_items=None):
 
@@ -412,6 +418,8 @@ def checkout(request, total=0, quantity=0, cart_items=None):
     }
     return render(request, 'shop/checkout.html', context)
 
+
+@csrf_exempt
 @login_required(login_url='log_in')
 def select_address_checkout(request, address_id):
     shipping_address = ShippingAddress.objects.get(id=address_id)
@@ -441,6 +449,7 @@ def edit_address_checkout(request, address_id):
     return render(request, 'home/edit_address.html', context)
 
 
+@csrf_exempt
 @login_required(login_url='log_in')
 def add_address_checkout(request):
     if request.POST:
@@ -504,6 +513,7 @@ def add_wishlist(request, product_id):
     
     
 
+@csrf_exempt
 def wishlist(request, wishlist_items=None):
     try:
         if request.user.is_authenticated:
@@ -531,6 +541,7 @@ def remove_wishlist_item(request, product_id, wishlist_item_id):
     return redirect('wishlist')
 
 
+@csrf_exempt
 def get_stock_status(request):
     if request.method == 'GET' :
         variation_value = request.GET.get('variation_value')
@@ -561,7 +572,7 @@ def get_stock_status(request):
     # If the request is not AJAX or not GET, return a 400 Bad Request
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
-
+@csrf_exempt
 def check_stock(request):
     if request.method == 'GET':
         product_id = request.GET.get('product_id')

@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404, render, redirect, HttpResponse
+from django.views.decorators.csrf import csrf_exempt
 from shop.models import CartItem
 from home.models import Product
 from user_auth.models import ShippingAddress
@@ -15,7 +16,7 @@ from django.contrib import messages
 # Create your views here.
 
 
-
+@csrf_exempt
 def payments(request):
     return render(request, 'orders/payments.html')
 
@@ -113,7 +114,9 @@ def place_order(request, total=0, quantity=0):
         
         else:
             return redirect('checkout')
-        
+
+
+@csrf_exempt
 def cod_completed(request, order_id):
     current_user = request.user
 
@@ -189,6 +192,7 @@ def cod_completed(request, order_id):
     return render(request, 'orders/order_completed.html', context)
 
 
+@csrf_exempt
 def wallet_completed(request, order_id):
     current_user = request.user
 
@@ -277,6 +281,7 @@ def wallet_completed(request, order_id):
     return render(request, 'orders/order_completed.html', context)
 
 
+@csrf_exempt
 def paypal_payment_completed(request, order_id):
     current_user = request.user
 
@@ -351,7 +356,7 @@ def paypal_payment_completed(request, order_id):
 
     return render(request, 'orders/payment_completed.html', context)
 
-
+@csrf_exempt
 def paypal_payment_failed(request):
     return render(request, 'orders/payment_failed.html')
 

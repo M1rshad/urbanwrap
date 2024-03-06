@@ -1,6 +1,7 @@
 from email import message
 from email.headerregistry import Address
 from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.password_validation import validate_password
 from .models import Product, Category
 from user_auth.models import ShippingAddress, User, UserProfile
@@ -44,6 +45,7 @@ def index(request):
     return render(request, 'home/index.html', context)
 
 
+@csrf_exempt
 @login_required(login_url='log_in')
 def dashboard(request):
     orders = Order.objects.all().filter(user=request.user, is_ordered=True).order_by('-id')
@@ -120,6 +122,7 @@ def cancel_orders(request, order_id):
 
 
 @login_required(login_url='log_in')
+@csrf_exempt
 def update_account_details(request):
     user_profile = UserProfile.objects.get(user=request.user)
     if request.POST:
@@ -142,6 +145,7 @@ def update_account_details(request):
 
 
 @login_required(login_url='log_in')
+@csrf_exempt
 def my_address(request):
     addresses = ShippingAddress.objects.filter(user=request.user).order_by('-id')
     context={
@@ -150,6 +154,7 @@ def my_address(request):
     return render(request, 'home/my_address.html',context)
 
 @login_required(login_url='log_in')
+@csrf_exempt
 def add_address(request):
     
     max_address_allowed=3
@@ -174,6 +179,7 @@ def add_address(request):
 
 
 @login_required(login_url='log_in')
+@csrf_exempt
 def edit_address(request, address_id):
     address = ShippingAddress.objects.get(id=address_id)
     if request.POST:
@@ -190,6 +196,7 @@ def edit_address(request, address_id):
 
 
 @login_required(login_url='log_in')
+@csrf_exempt
 def delete_address(request, address_id):
     address = ShippingAddress.objects.get(id=address_id)
     address.delete()
@@ -197,6 +204,7 @@ def delete_address(request, address_id):
 
 
 @login_required(login_url='log_in')
+@csrf_exempt
 def select_address(request, address_id):
     shipping_address = ShippingAddress.objects.get(id=address_id)
     shipping_address.status=True
@@ -205,6 +213,7 @@ def select_address(request, address_id):
 
 
 @login_required(login_url='log_in')
+@csrf_exempt
 def change_password(request):
     if request.POST:
         current_password = request.POST['current_password']
@@ -238,6 +247,7 @@ def change_password(request):
     return render(request, 'home/change_password.html')
 
 
+@csrf_exempt
 @login_required(login_url='log_in')
 def wallet(request):
     wallet = Wallet.objects.get(user=request.user)
