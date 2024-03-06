@@ -110,9 +110,9 @@
                                         {% endif %}</td>
                                     <td class="quantity-col">
                                         <div class="input-group quantity-selector">
-                                            <button class="text-white btn-dark"><a href={% url 'decrement_cart' item.product.id item.id %} type="button" class="text-white" aria-describedby="inputQuantitySelector" data-bs-step="down">
+                                            <a href={% url 'decrement_cart' item.product.id item.id %} type="button" class="text-white" aria-describedby="inputQuantitySelector" data-bs-step="down"><button class="text-white btn-dark">
                                                 <span class="visually-hidden">-</span>
-                                            </a></button>
+                                            </button></a>
                                             <input type="number" id="inputQuantitySelector" class="text-center" aria-live="polite"  name="quantity" title="quantity" value="{{item.quantity}}" min="0" max="10" step="1" data-bs-round="0" aria-label="Quantity selector "style="width:4rem;" readonly>
                                             <form action="{% url 'add_cart' item.product.id %}" method=post>
                                                 {% csrf_token %}

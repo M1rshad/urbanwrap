@@ -150,7 +150,7 @@
                                     <div class="product-details-quantity">
                                         <input type="number" id="qty" name="quantity"  class="form-control" value="1" min="1" max="10" step="1" data-decimals="0" required> 
                                     </div><!-- End .product-details-quantity -->
-                                    
+                                    <input type="hidden" id="variation-id-input" name="variation_id" value="{{ variation.id }}">
                                     <button id="addToCartButton" class="btn btn-primary" type=submit><span>Add to cart</span></button>
                         </form>
                                 </div><!-- End .details-action-col -->
@@ -490,6 +490,7 @@
                         </div><!-- End .product-action-vertical -->
 
                         <div class="product-action">
+                            
                             <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
                         </div><!-- End .product-action -->
                     </figure><!-- End .product-media -->

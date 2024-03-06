@@ -72,7 +72,6 @@ def product_detail(request, category_slug, product_slug):
             in_wishlist=WishlistItem.objects.filter(user=request.user, product=single_product).exists()
         else:
             in_wishlist = WishlistItem.objects.filter(wishlist__wishlist_id=_wishlist_id(request), product=single_product).exists()
-        print(in_wishlist)
     except Exception as e:
         raise e
     context = {
@@ -108,6 +107,13 @@ def add_cart(request, product_id):
                         pass
                 else:
                     quantity = int(request.POST.get('quantity', 1))
+        
+        # # Check if the total stock of selected variations is sufficient
+        # total_stock = sum(variation.stock for variation in product_variation)
+        # if total_stock < quantity:
+        #     messages.error(request, 'Insufficient stock.')
+        #     return redirect('product_detail')
+
 
         is_cart_item_exists = CartItem.objects.filter(product=product, user=current_user).exists()
         if is_cart_item_exists:
@@ -323,6 +329,7 @@ def cart(request, total=0, quantity=0, cart_items=None):
         
     }
     return render(request, 'shop/cart.html', context)
+
     
 
 def remove_coupon(request, cart_id):
@@ -573,3 +580,21 @@ def check_stock(request):
             pass
     
     return JsonResponse({'status': 'error'})
+
+
+# def check_stock_cart(request):
+#     if request.method == 'POST':
+#         product_id = request.POST.get('product_id')
+#         variation_id = request.POST.get('variation_id')
+#         quantity = int(request.POST.get('quantity'))
+
+#         try:
+#             variation = Variation.objects.get(id=variation_id, product_id=product_id)
+#             if variation.stock >= quantity:
+#                 return JsonResponse({'status': 'success', 'message': 'In stock'})
+#             else:
+#                 return JsonResponse({'status': 'error', 'message': 'Out of stock'})
+#         except Variation.DoesNotExist:
+#             return JsonResponse({'status': 'error', 'message': 'Variation not found'})
+    
+#     return JsonResponse({'status': 'error', 'message': 'Invalid request'})
